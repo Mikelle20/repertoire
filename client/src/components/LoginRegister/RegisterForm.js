@@ -4,7 +4,8 @@ import axios from 'axios'
 function RegisterForm () {
   const [formData, setFormData] = React.useState({
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   })
 
   const handleChange = (Event) => {
@@ -18,40 +19,42 @@ function RegisterForm () {
 
   const handleSubmit = (Event) => {
     Event.preventDefault()
-    // console.log(formData)
-
-    axios({
-      method: 'post',
-      url: '/authorize/register/',
-      data: formData,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: '*/*'
-      }
-
-    }).then((res) => {
-    //   const { userCreated } = res.data
-      if (res) {
-        const scopes = 'user-read-currently-playing playlist-modify-public user-library-modify playlist-modify-private playlist-read-collaborative playlist-read-private'
-        const authorizeEndpoint = 'https://accounts.spotify.com/authorize?'
-
-        const authObject = {
-          response_type: 'code',
-          client_id: '87b59a7fa8cf4a0b85c227afc162a118',
-          scope: scopes,
-          redirect_uri: 'http://localhost:3000/login',
-          show_dialog: true
+    if (formData.password === formData.confirmPassword) {
+      axios({
+        method: 'post',
+        url: '/authorize/register/',
+        data: formData,
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: '*/*'
         }
-        const authQueryString = new URLSearchParams(authObject).toString()
-        window.location.href = authorizeEndpoint + authQueryString
-      }
-    })
+
+      }).then((res) => {
+        if (res) {
+          const scopes = 'user-read-currently-playing playlist-modify-public user-library-modify playlist-modify-private playlist-read-collaborative playlist-read-private'
+          const authorizeEndpoint = 'https://accounts.spotify.com/authorize?'
+
+          const authObject = {
+            response_type: 'code',
+            client_id: process.env.REACT_APP_CLIENT_ID,
+            scope: scopes,
+            redirect_uri: process.env.REACT_APP_REDIRECT_URI,
+            show_dialog: true
+          }
+          const authQueryString = new URLSearchParams(authObject).toString()
+          window.location.href = authorizeEndpoint + authQueryString
+        }
+      })
+    } else { console.log('passwords must match') }
   }
   return (
     <>
-      <div>
-       <form onSubmit={handleSubmit}>
+      <div className='authContainer'>
+       <form
+       className='authForm'
+       onSubmit={handleSubmit}>
             <input
+            className='authInput'
             name='email'
             placeholder='Email'
             value={formData.email}
@@ -59,13 +62,22 @@ function RegisterForm () {
             >
             </input>
             <input
+            className='authInput'
             name='password'
             placeholder='Password'
             value={formData.password}
             onChange={handleChange}
             >
             </input>
-            <button>Submit</button>
+            <input
+            className='authInput'
+            name='confirmPassword'
+            placeholder='Confirm Password'
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            >
+            </input>
+            <button className='btn'>Submit</button>
        </form>
       </div>
     </>

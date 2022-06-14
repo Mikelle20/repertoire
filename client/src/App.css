@@ -218,3 +218,33 @@ html, body {
     font-size: small;
   }
 }
+
+/* REGISTER PAGE */
+
+.authContainer{
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.authForm{
+  display: flex;
+  flex-direction: column;
+  width: 20rem;
+  height: 25rem;
+  background-color: #2f3b72;
+
+  
+  padding: 2rem;
+}
+
+.authInput{
+  height: 2.5rem;
+  border-radius: 25px;
+
+  padding-left: 25px;
+  margin-top: 2rem;
+
+}
