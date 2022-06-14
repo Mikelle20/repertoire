@@ -89,7 +89,7 @@ function Landing () {
 
         <div className='breakerRight'>
           <h2 className='landingHeader'>Music Recommendation Made Easy.</h2>
-          <h3 className='landingText'> Recommend, rate, and discuss the music you and your friends are currently listening to.</h3>
+          <h3 className='landingText'>Recommend, rate, and discuss the music you and your friends are currently listening to.</h3>
           <motion.button className='signIn'
             whileTap={{ scale: 0.9 }}
           >
