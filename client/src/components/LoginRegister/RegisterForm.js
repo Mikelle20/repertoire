@@ -1,11 +1,18 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable import/no-absolute-path */
+/* eslint-disable no-unused-vars */
 import React from 'react'
 import axios from 'axios'
+import { motion } from 'framer-motion'
+import logo from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/logos/listening-music.png'
+import { Link } from 'react-router-dom'
 
 function RegisterForm () {
   const [formData, setFormData] = React.useState({
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    passwordsMatch: true
   })
 
   const handleChange = (Event) => {
@@ -15,7 +22,26 @@ function RegisterForm () {
         [Event.target.name]: Event.target.value
       }
     })
+    console.log(formData)
   }
+
+  React.useEffect(() => {
+    if (formData.password === formData.confirmPassword) {
+      setFormData((prevState) => {
+        return {
+          ...prevState,
+          passwordsMatch: true
+        }
+      })
+    } else {
+      setFormData((prevState) => {
+        return {
+          ...prevState,
+          passwordsMatch: false
+        }
+      })
+    }
+  }, [formData])
 
   const handleSubmit = (Event) => {
     Event.preventDefault()
@@ -23,7 +49,10 @@ function RegisterForm () {
       axios({
         method: 'post',
         url: '/authorize/register/',
-        data: formData,
+        data: {
+          email: formData.email,
+          password: formData.password
+        },
         headers: {
           'Content-Type': 'application/json',
           Accept: '*/*'
@@ -52,32 +81,49 @@ function RegisterForm () {
       <div className='authContainer'>
        <form
        className='authForm'
-       onSubmit={handleSubmit}>
-            <input
-            className='authInput'
-            name='email'
-            placeholder='Email'
-            value={formData.email}
-            onChange={handleChange}
-            >
-            </input>
-            <input
-            className='authInput'
-            name='password'
-            placeholder='Password'
-            value={formData.password}
-            onChange={handleChange}
-            >
-            </input>
-            <input
-            className='authInput'
-            name='confirmPassword'
-            placeholder='Confirm Password'
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            >
-            </input>
-            <button className='btn'>Submit</button>
+      //  onSubmit={handleSubmit}
+      >
+      <div className='authHeader'><img className='logoAuth' src={logo}/>Repertoire</div>
+      <div className='signUpContainer'>Sign Up</div>
+      <input
+      className='authInput'
+      name='email'
+      placeholder='Email'
+      value={formData.email}
+      onChange={handleChange}
+      >
+      </input>
+      <input
+      className='authInput'
+      name='password'
+      placeholder='Password'
+      type='password'
+      value={formData.password}
+      onChange={handleChange}
+      >
+      </input>
+      <input
+      className='authInput'
+      name='confirmPassword'
+      placeholder='Confirm Password'
+      type='password'
+      value={formData.confirmPassword}
+      onChange={handleChange}
+      >
+      </input>
+      {formData.passwordsMatch ? <motion.button className='btn' whileTap={{ scale: 0.9 }}>Register</motion.button> : <div className='errorMessage'>Passwords do not match.</div> }
+      <div className='authFooter'>
+        <Link
+        className='authLink'
+        to={''}>
+          Reset Password
+        </Link>
+        <Link
+        className='authLink'
+        to={''}>
+          Sign In
+        </Link>
+      </div>
        </form>
       </div>
     </>

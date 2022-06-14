@@ -1,7 +1,9 @@
+/* eslint-disable import/no-absolute-path */
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable no-unused-vars */
 import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import logo from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/logos/listening-music.png'
 
 function Landing () {
   const variants = {
@@ -59,7 +61,7 @@ function Landing () {
       >
       </motion.div>
       <div>
-        <h1 className='landingTitle'><img className='logo' src={require('../assets/logos/listening-music.png')}></img>Repertoire</h1>
+        <h1 className='landingTitle'><img className='logo' src={logo}></img>Repertoire</h1>
       </div>
       <motion.div className='contentContainer'
         initial={{ y: -1000 }}
