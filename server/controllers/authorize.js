@@ -9,20 +9,40 @@ require('dotenv').config()
 
 const registerUser = async (req, res) => {
   const { email, password } = req.body
+  const emailRegex = /^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/
+  const isEmail = emailRegex.test(email)
+
   db.User.findOne({
     where: { email }
   }).then(async (data) => {
     const userFound = data
-    if (!userFound) {
-      const hashedPassword = bcrypt.hashSync(password, 10)
-      await db.User.create({
-        password: hashedPassword,
-        email,
-        user_id: nanoid()
-      })
-      return res.json({ user_created: true })
+    if (password.length > 7) {
+      if (isEmail) {
+        if (!userFound) {
+          const hashedPassword = bcrypt.hashSync(password, 10)
+          await db.User.create({
+            password: hashedPassword,
+            email,
+            user_id: nanoid()
+          })
+          return res.json({ user_created: true })
+        } else {
+          return res.json({
+            userCreated: false,
+            errorText: 'User already associated with email.'
+          })
+        }
+      } else {
+        return res.json({
+          userCreated: false,
+          errorText: 'Please enter valid email.'
+        })
+      }
     } else {
-      return res.send('user already associated with the credintials provided.')
+      return res.json({
+        userCreated: false,
+        errorText: 'Password must greater than 7 characters.'
+      })
     }
   })
 }
