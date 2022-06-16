@@ -54,6 +54,7 @@ function RegisterForm () {
     axios({
       method: 'post',
       url: '/authorize/register/',
+      withCredentials: true,
       data: {
         email: formData.email,
         password: formData.password
@@ -132,7 +133,7 @@ function RegisterForm () {
         </Link>
         <Link
         className='authLink'
-        to={''}>
+        to={'/login'}>
           Sign In
         </Link>
       </div>

@@ -25,7 +25,7 @@ const registerUser = async (req, res) => {
             email,
             user_id: nanoid()
           })
-          return res.json({ user_created: true })
+          return res.json({ userCreated: true })
         } else {
           return res.json({
             userCreated: false,
@@ -45,6 +45,10 @@ const registerUser = async (req, res) => {
       })
     }
   })
+}
+
+const testPassport = (req, res) => {
+  res.json(req.user)
 }
 
 const getRefreshToken = async (req, res) => {
@@ -84,7 +88,7 @@ const getRefreshToken = async (req, res) => {
     Authorization: `Bearer ${accessToken}`
   }
 
-  axios({
+  await axios({
     method: 'get',
     url: 'https://api.spotify.com/v1/me',
     headers: bearerAuth
@@ -106,6 +110,10 @@ const getRefreshToken = async (req, res) => {
       })
     }
   })
+
+  db.User.findOne({
+    where: { email }
+  }).then(resp => res.json(resp.dataValues))
 }
 
 const getAccessToken = (req, res) => {
@@ -132,5 +140,6 @@ const getAccessToken = (req, res) => {
 module.exports = {
   getRefreshToken,
   getAccessToken,
-  registerUser
+  registerUser,
+  testPassport
 }
