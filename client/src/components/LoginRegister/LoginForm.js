@@ -11,6 +11,13 @@ function LoginForm () {
     password: ''
   })
 
+  const [codeExpired, setCodeExpired] = React.useState(true)
+
+  const [error, setError] = React.useState({
+    isError: false,
+    errorText: 'Incorrect username or password.'
+  })
+
   const queryParams = window.location.search || null
   const handleChange = (Event) => {
     setFormData(prevState => {
@@ -20,7 +27,6 @@ function LoginForm () {
       }
     })
   }
-
   const handleSubmit = (Event) => {
     Event.preventDefault()
 
@@ -36,7 +42,21 @@ function LoginForm () {
         console.log(res)
       }).catch(error => console.log(error))
     } else {
-      console.log('query params not present')
+      axios({
+        method: 'POST',
+        url: 'http://localhost:5000/authorize/passport',
+        withCredentials: true,
+        data: formData
+      }).then((res) => {
+        console.log(res)
+      }).catch(
+        setError((prevState) => {
+          return {
+            ...prevState,
+            isError: true
+          }
+        })
+      )
     }
   }
   return (
@@ -64,6 +84,7 @@ function LoginForm () {
           onChange={handleChange}
           >
           </input>
+          {error.isError && <div className='errorMessage'>{error.errorText}</div>}
           <motion.button className='btn' whileTap={{ scale: 0.9 }}>Sign In</motion.button>
           <div className='authFooter'>
             <Link
@@ -73,8 +94,8 @@ function LoginForm () {
             </Link>
             <Link
             className='authLink'
-            to={'/login'}>
-              Sign In
+            to={'/register'}>
+              Register
             </Link>
           </div>
         </form>

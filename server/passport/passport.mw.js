@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt')
 const { default: axios } = require('axios')
 const { setAccount } = require('../helpers/auth')
 const CustomStrategy = require('passport-custom').Strategy
+const LocalStrategy = require('passport-local').Strategy
 
 require('dotenv').config()
 
@@ -12,14 +13,12 @@ passport.serializeUser((user, done) => {
   done(null, user)
 })
 passport.deserializeUser((user, done) => {
-  db.User.findOne({ where: { user_id: user.user_id } }).then(data => {
-    done(null, data.dataValues)
-  })
+  done(null, user)
 })
 
 passport.use(
   new CustomStrategy(
-    async function verify (req, done) {
+    async function (req, done) {
       const accessCode = req.body.accessCode || null
       const { email, password } = req.body
       if (accessCode) {
@@ -31,12 +30,18 @@ passport.use(
               const hashedPassword = user.dataValues.password
               if (bcrypt.compareSync(password, hashedPassword)) {
                 setAccount(accessCode, email)
-                done(null, user.dataValues)
+                db.User.findOne({
+                  attributes: ['email', 'user_id']
+                }).then((data) => {
+                  console.log(data.dataValues)
+                  return done(null, data.dataValues)
+                })
+              // done(null, user.dataValues)
               } else {
-                done(null, false, { message: 'Incorrect Email or Password' })
+                return done(null, { message: 'Incorrect Email or Password' })
               }
             } else {
-              done(null, false, { message: 'Incorrect Email or Password' })
+              return done(null, { message: 'Incorrect Email or Password' })
             }
           } catch (error) {}
         })
@@ -48,7 +53,12 @@ passport.use(
             if (data) {
               const hashedPassword = data.dataValues.password
               if (bcrypt.compareSync(password, hashedPassword)) {
-                done(null, data.dataValues)
+                db.User.findOne({
+                  attributes: ['email', 'user_id', 'profile_image', 'rating'],
+                  where: { email }
+                }).then((data) => {
+                  return done(null, data.dataValues)
+                })
               } else {
                 done(null, false, { message: 'Incorrect email or password' })
               }

@@ -48,7 +48,13 @@ const registerUser = async (req, res) => {
 }
 
 const testPassport = (req, res) => {
-  res.json(req.user)
+  if (req.user) {
+    return res.json(req.user)
+  } else {
+    return res.json({
+      errorText: 'Incorrect email or password.'
+    })
+  }
 }
 
 const getRefreshToken = async (req, res) => {

@@ -5,6 +5,7 @@ import './App.css'
 import { Route, Routes } from 'react-router'
 import Landing from './pages/Landing'
 import SettingUp from './pages/SettingUp'
+import Home from './pages/Home'
 import { useDispatch } from 'react-redux'
 import { setUser } from './features/userSlice'
 import Register from './pages/Register'
@@ -65,6 +66,7 @@ function App () {
         <Route path='/settingup' element={<SettingUp />} />
         <Route path='/register' element={<Register />} />
         <Route path='/login' element={<Login />} />
+        <Route path='/home' element={<Home />} />
       </Routes>
       {/* <form onSubmit={handleSubmit}>
           <input
