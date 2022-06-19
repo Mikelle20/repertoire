@@ -11,15 +11,19 @@ const getAccess = async (refreshToken) => {
   return accessToken.data.accessToken
 }
 
-const setAccount = (accessCode, email) => {
-  axios({
+const setAccount = async (accessCode, email) => {
+  let accountSet
+  await axios({
     method: 'POST',
     url: 'http://localhost:5000/authorize/refresh_token',
     data: {
       accessCode,
       email
     }
+  }).then((res) => {
+    accountSet = res.data
   })
+  return accountSet
 }
 
 module.exports = {

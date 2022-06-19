@@ -245,8 +245,8 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 20rem;
-  height: 25rem;
+  max-width: 20rem;
+  max-height: 25rem;
   background-color: #42559f;
   border-radius: 15px;
 
@@ -255,13 +255,15 @@ html, body {
 }
 
 .authInput{
-  width: 16rem;
-  height: 2.5rem;
+  min-width: 16rem;
+  min-height: 2.5rem;
   border-radius: 25px;
 
-  padding-left: 25px;
+  padding: 0px 25px;
   margin-top: 1rem;
 
+  border: none;
+  outline-width: 0px;
 }
 
 .signUpContainer{
@@ -301,4 +303,81 @@ html, body {
 .authLink{
   text-decoration-line: none;
   color: #c3cbeb;
+}
+
+/* LOGIN PAGE */
+
+.landingContainer{
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+.expiredContainer{
+  margin: auto;
+  display: flex;
+  max-width: 25rem;
+  max-height: 20rem;
+  position: absolute;
+  align-self: center;
+  justify-self: center;
+  justify-content: center;
+  align-items: center;
+  border-radius: 25px;
+  background-color: #c3cbeb;
+  z-index: 1;
+}
+
+.closeModalBtn{
+  border: none;
+  padding: 1rem;
+  background-color: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: larger;
+}
+
+.passwordContainer{
+  min-width: 16rem;
+  min-height: 2.5rem;
+
+  padding: 0px 25px;
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  outline: none;
+  border: 1px solid #374669;
+  border-radius: 25px;
+  background : #fff;
+  align-items : center;
+  overflow: hidden;
+}
+
+.authPasswordInput{
+  border: none;
+  outline-width: 0px;
+}
+
+.pageContainer{
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+}
+
+.pageContainerBlur>:not(#modal){
+  filter: blur(8px);
+  -webkit-filter: blur(8px);
+}
+
+.modalMessage{
+  padding: 1.1rem;
+  margin-top: 1.75rem;
+  font-size: larger;
 }

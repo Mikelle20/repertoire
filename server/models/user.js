@@ -21,7 +21,8 @@ module.exports = (sequelize, DataTypes) => {
     profile_image: DataTypes.STRING,
     rating: DataTypes.FLOAT,
     user_id: DataTypes.STRING,
-    password: DataTypes.STRING
+    password: DataTypes.STRING,
+    spotify_connected: DataTypes.BOOLEAN
 
   }, {
     sequelize,

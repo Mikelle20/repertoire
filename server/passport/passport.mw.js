@@ -24,24 +24,23 @@ passport.use(
       if (accessCode) {
         db.User.findOne({
           where: { email }
-        }).then((user) => {
+        }).then(async (user) => {
           try {
             if (user) {
               const hashedPassword = user.dataValues.password
               if (bcrypt.compareSync(password, hashedPassword)) {
-                setAccount(accessCode, email)
+                await setAccount(accessCode, email)
                 db.User.findOne({
-                  attributes: ['email', 'user_id']
+                  attributes: ['email', 'user_id', 'profile_image', 'rating', 'spotify_connected', 'display_name'],
+                  where: { email }
                 }).then((data) => {
-                  console.log(data.dataValues)
                   return done(null, data.dataValues)
                 })
-              // done(null, user.dataValues)
               } else {
-                return done(null, { message: 'Incorrect Email or Password' })
+                return done(null, false, { message: 'Incorrect Email or Password' })
               }
             } else {
-              return done(null, { message: 'Incorrect Email or Password' })
+              return done(null, false, { message: 'Incorrect Email or Password' })
             }
           } catch (error) {}
         })
@@ -54,16 +53,15 @@ passport.use(
               const hashedPassword = data.dataValues.password
               if (bcrypt.compareSync(password, hashedPassword)) {
                 db.User.findOne({
-                  attributes: ['email', 'user_id', 'profile_image', 'rating'],
+                  attributes: ['email', 'user_id', 'profile_image', 'rating', 'spotify_connected', 'display_name'],
                   where: { email }
                 }).then((data) => {
                   return done(null, data.dataValues)
                 })
               } else {
-                done(null, false, { message: 'Incorrect email or password' })
+                done(null, false, { message: 'Incorrect Email or Password' })
               }
             } else {
-              console.log('unauthorized')
               done(null, false, { message: 'Incorrect Email or Password' })
             }
           })

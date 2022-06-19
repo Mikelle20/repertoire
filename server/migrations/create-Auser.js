@@ -20,6 +20,11 @@ module.exports = {
           min: 8
         }
       },
+      spotify_connected: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+      },
       display_name: {
         type: Sequelize.STRING,
         unique: false,

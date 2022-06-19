@@ -52,9 +52,16 @@ const testPassport = (req, res) => {
     return res.json(req.user)
   } else {
     return res.json({
-      errorText: 'Incorrect email or password.'
+      errorText: 'Incorrect'
     })
   }
+}
+
+const accountConnected = (req, res) => {
+  const { email } = req.body
+  db.User.update({ spotify_connected: true }, {
+    where: { email }
+  }).then(res.json({ accountConnected: true }))
 }
 
 const getRefreshToken = async (req, res) => {
@@ -117,9 +124,7 @@ const getRefreshToken = async (req, res) => {
     }
   })
 
-  db.User.findOne({
-    where: { email }
-  }).then(resp => res.json(resp.dataValues))
+  res.json(true)
 }
 
 const getAccessToken = (req, res) => {
@@ -147,5 +152,6 @@ module.exports = {
   getRefreshToken,
   getAccessToken,
   registerUser,
-  testPassport
+  testPassport,
+  accountConnected
 }
