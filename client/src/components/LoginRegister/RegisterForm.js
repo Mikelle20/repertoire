@@ -7,6 +7,11 @@ import { motion } from 'framer-motion'
 import logo from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/logos/listening-music.png'
 import { Link } from 'react-router-dom'
 
+import locked from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/lock_closed.png'
+import unlocked from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/lock_open.png'
+import passwordIcon from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/password.png'
+import emailIcon from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/email.png'
+
 function RegisterForm () {
   const [formData, setFormData] = React.useState({
     email: '',
@@ -19,6 +24,8 @@ function RegisterForm () {
     isError: false,
     errorText: ''
   })
+
+  const [togglePassword, setTogglePassword] = React.useState(false)
 
   const handleChange = (Event) => {
     setFormData(prevState => {
@@ -97,32 +104,57 @@ function RegisterForm () {
       >
       <div className='authHeader'><img className='logoAuth' src={logo}/>Repertoire</div>
       <div className='signUpContainer'>Sign Up</div>
-      <input
-      className='authInput'
-      name='email'
-      placeholder='Email'
-      value={formData.email}
-      onChange={handleChange}
-      >
-      </input>
-      <input
-      className='authInput'
-      name='password'
-      placeholder='Password'
-      type='password'
-      value={formData.password}
-      onChange={handleChange}
-      >
-      </input>
-      <input
-      className='authInput'
-      name='confirmPassword'
-      placeholder='Confirm Password'
-      type='password'
-      value={formData.confirmPassword}
-      onChange={handleChange}
-      >
-      </input>
+      <div className='inputContainer'>
+           <span>
+              <img src={emailIcon} className='inputIcon'></img>
+            </span>
+            <input
+            className='authInput'
+            name='email'
+            placeholder='Email'
+            value={formData.email}
+            onChange={handleChange}
+            >
+            </input>
+          </div>
+          <div className='inputContainer'>
+            <span>
+              <img src={passwordIcon} className='inputIcon'></img>
+            </span>
+            <input
+            className='authInput'
+            name='password'
+            placeholder='Password'
+            type={togglePassword ? '' : 'password'}
+            value={formData.password}
+            onChange={handleChange}
+            >
+            </input>
+            <span onClick={() => {
+              setTogglePassword(!togglePassword)
+            }}>
+              <img src={togglePassword ? unlocked : locked} className='inputIcon'></img>
+            </span>
+          </div>
+          <div className='inputContainer'>
+            <span>
+              <img src={passwordIcon} className='inputIcon'></img>
+            </span>
+            <input
+            className='authInput'
+            name='confirmPassword'
+            placeholder='Confirm Password'
+            type={togglePassword ? '' : 'password'}
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            >
+            </input>
+            {/* <span onClick={() => {
+              setTogglePassword(!togglePassword)
+            }}>
+              <img src={togglePassword ? unlocked : locked} className='inputIcon'></img>
+            </span> */}
+          </div>
       {error.isError && <div className='errorMessage'> {error.errorText} </div>}
       {formData.passwordsMatch ? <motion.button className='btn' whileTap={{ scale: 0.9 }}>Register</motion.button> : <div className='errorMessage'>Passwords do not match.</div> }
       <div className='authFooter'>

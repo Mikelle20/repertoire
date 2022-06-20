@@ -8,7 +8,10 @@ import logo from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/ass
 import { Link, Navigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { setUser } from '../../features/userSlice'
-
+import locked from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/lock_closed.png'
+import unlocked from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/lock_open.png'
+import passwordIcon from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/password.png'
+import emailIcon from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/email.png'
 function LoginForm () {
   const [formData, setFormData] = React.useState({
     email: '',
@@ -126,17 +129,25 @@ function LoginForm () {
         >
           <div className='authHeader'><img className='logoAuth' src={logo}/>Repertoire</div>
           <div className='signUpContainer'>Sign In</div>
-          <input
-          className='authInput'
-          name='email'
-          placeholder='Email'
-          value={formData.email}
-          onChange={handleChange}
-          >
-          </input>
-          <div className='passwordContainer'>
+          <div className='inputContainer'>
+           <span>
+              <img src={emailIcon} className='inputIcon'></img>
+            </span>
             <input
-            className='authPasswordInput'
+            className='authInput'
+            name='email'
+            placeholder='Email'
+            value={formData.email}
+            onChange={handleChange}
+            >
+            </input>
+          </div>
+          <div className='inputContainer'>
+            <span>
+              <img src={passwordIcon} className='inputIcon'></img>
+            </span>
+            <input
+            className='authInput'
             name='password'
             placeholder='Password'
             type={togglePassword ? '' : 'password'}
@@ -147,7 +158,7 @@ function LoginForm () {
             <span onClick={() => {
               setTogglePassword(!togglePassword)
             }}>
-              ICON
+              <img src={togglePassword ? unlocked : locked} className='inputIcon'></img>
             </span>
           </div>
           {error.isError && <div className='errorMessage'>{error.errorText}</div>}
