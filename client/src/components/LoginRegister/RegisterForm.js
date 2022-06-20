@@ -98,25 +98,25 @@ function RegisterForm () {
   return (
     <>
       <div className='authContainer'>
-       <form
-       className='authForm'
-       onSubmit={handleSubmit}
-      >
-      <div className='authHeader'><img className='logoAuth' src={logo}/>Repertoire</div>
-      <div className='signUpContainer'>Sign Up</div>
-      <div className='inputContainer'>
-           <span>
-              <img src={emailIcon} className='inputIcon'></img>
-            </span>
-            <input
-            className='authInput'
-            name='email'
-            placeholder='Email'
-            value={formData.email}
-            onChange={handleChange}
-            >
-            </input>
-          </div>
+        <form
+        className='authForm'
+        onSubmit={handleSubmit}
+        >
+          <div className='authHeader'><img className='logoAuth' src={logo}/>Repertoire</div>
+          <div className='signUpContainer'>Sign Up</div>
+          <div className='inputContainer'>
+            <span>
+                <img src={emailIcon} className='inputIcon'></img>
+              </span>
+              <input
+              className='authInput'
+              name='email'
+              placeholder='Email'
+              value={formData.email}
+              onChange={handleChange}
+              >
+              </input>
+            </div>
           <div className='inputContainer'>
             <span>
               <img src={passwordIcon} className='inputIcon'></img>
@@ -149,27 +149,22 @@ function RegisterForm () {
             onChange={handleChange}
             >
             </input>
-            {/* <span onClick={() => {
-              setTogglePassword(!togglePassword)
-            }}>
-              <img src={togglePassword ? unlocked : locked} className='inputIcon'></img>
-            </span> */}
           </div>
-      {error.isError && <div className='errorMessage'> {error.errorText} </div>}
-      {formData.passwordsMatch ? <motion.button className='btn' whileTap={{ scale: 0.9 }}>Register</motion.button> : <div className='errorMessage'>Passwords do not match.</div> }
-      <div className='authFooter'>
-        <Link
-        className='authLink'
-        to={''}>
-          Reset Password
-        </Link>
-        <Link
-        className='authLink'
-        to={'/login'}>
-          Sign In
-        </Link>
-      </div>
-       </form>
+          {error.isError && <div className='errorMessage'> {error.errorText} </div>}
+          {formData.passwordsMatch ? <motion.button className='btn' whileTap={{ scale: 0.9 }}>Register</motion.button> : <div className='errorMessage'>Passwords do not match.</div> }
+          <div className='authFooter'>
+            <Link
+            className='authLink'
+            to={''}>
+              Reset Password
+            </Link>
+            <Link
+            className='authLink'
+              to={'/login'}>
+              Sign In
+            </Link>
+          </div>
+        </form>
       </div>
     </>
 

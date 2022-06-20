@@ -5,7 +5,6 @@ import RegisterForm from '../components/LoginRegister/RegisterForm'
 function Register () {
   return (
     <div>
-        Register
         <RegisterForm />
     </div>
   )

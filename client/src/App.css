@@ -19,7 +19,7 @@ html, body {
 
 .landingTop{
   width: 100%;
-  height: 27.5rem;
+  height: /*27.5rem*/ 50vh;
   background-color:  #42559f;
   border-bottom-right-radius: 20%;
   -webkit-transform: skewY(2.5deg);
@@ -36,7 +36,7 @@ html, body {
 
 .landingBottom{
   width: 100%;
-  height: 15rem;
+  height: 25vh;
   background-color: #42559f;
 
   position: absolute;
@@ -47,6 +47,7 @@ html, body {
   background-color: transparent;
   display: grid;
   width: 80%;
+  margin: 20%;
   /* height: 100%; */
   grid-column-gap: 1vw;
   padding-top: 4rem;
@@ -56,7 +57,8 @@ html, body {
 }
 
 .logo{
-  max-width: 7%;
+  margin-top: 1%;
+  max-width: 9%;
 }
 
 .landingTitle{
@@ -164,7 +166,7 @@ html, body {
 
 .landingHeader{
   font-size: 3rem;
-  max-width: 80%;
+  max-width: fit-content;
   margin-bottom: 0rem;
 }
 
@@ -195,20 +197,25 @@ html, body {
   }
 
   .landingAlbums{
-    grid-gap: 1rem;
+    display: grid;
+    width: fit-content;
+  }
+  
+  .albumImg, .albumImg2{
+    border-radius: 0px;
   }
 
   .landingAlbum1, .landingAlbum2, .landingAlbum3, .landingAlbum4{
-    width: 4.3rem;
+    width: 50vw;
   }
 
   .landingBreaker{
-    margin-left: 2rem;
+    /* margin-left: 2rem; */
   }
 
   .landingAlbum1, .landingAlbum2{
-    margin-top: 5rem;
-    margin-bottom: -2rem;
+    /* margin-top: 5rem;
+    margin-bottom: -2rem; */
   }
 
   .signIn{
@@ -244,9 +251,10 @@ html, body {
 .authForm{
   display: flex;
   flex-direction: column;
+  margin: 20%;
   align-items: center;
-  max-width: 20rem;
-  max-height: 28rem;
+  max-width: fit-content;
+  max-height: fit-content;
   background-color: #42559f;
   border-radius: 15px;
 
