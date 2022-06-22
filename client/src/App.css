@@ -275,7 +275,7 @@ html, body {
 } */
 
 .inputIcon{
-  max-width: 50%;
+  max-width: 45%;
   color: red;
 }
 
@@ -392,4 +392,100 @@ html, body {
   padding: 1.1rem;
   margin-top: 1.75rem;
   font-size: larger;
+}
+
+.homeContainer{
+  width: fit-content;
+  height: 100%;
+  /* background-color: blue; */
+  display: flex;
+  align-items: center;
+}
+
+.leftHome{
+  max-width: 50vw;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 7% 5%;
+  /* padding-right: 20%; */
+  /* background-color: green; */
+}
+
+.rightHome{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  justify-self: center;
+  width: 50vw;
+  height: 100%;
+  /* background-color: pink; */
+}
+
+.ratingContainer{
+  margin-top: 10%;
+}
+
+.socialDiv{
+  width: 36vw;
+  height: 48vw;
+  background-color: purple;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid black;
+}
+
+.socialDiv::-webkit-scrollbar{
+  display: none;
+}
+
+.socialItem{
+  width: 100%;
+  height: fit-content;
+  background-color: brown;
+  border-bottom: 1px solid black;
+  padding: 5%;
+}
+
+
+.homeTitle{
+  /* background-color: red; */
+  font-size: 3.5vw;
+  width: fit-content;
+  height: fit-content;
+}
+
+.homeHeader{
+  width: fit-content;
+  font-size: 2.25vw;
+  /* background-color: yellow; */
+}
+
+.sideScrollDiv{
+  display: flex;
+  min-height: fit-content;
+  max-width: 40vw;
+  overflow-x: scroll;
+  overflow-y: hidden;
+
+}
+
+.sideScrollDiv::-webkit-scrollbar{
+  display: none;
+}
+
+.sideItem{
+  display: inline-flex;
+  border-radius: 15px;
+  justify-content: center;
+  align-items: center;
+  background-color: orange;
+  margin: 2%;
+  min-width: 12vw;
+  height: 12vw;
 }
