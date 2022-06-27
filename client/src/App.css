@@ -394,6 +394,9 @@ html, body {
   font-size: larger;
 }
 
+
+/* HOME PAGE */
+
 .homeContainer{
   width: fit-content;
   height: 100%;
@@ -437,6 +440,7 @@ html, body {
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   border: 2px solid black;
 }
 
@@ -448,13 +452,16 @@ html, body {
   width: 100%;
   height: fit-content;
   background-color: brown;
-  border-bottom: 1px solid black;
+  border: 1px solid black;
   padding: 5%;
+  display: block;
+  z-index: 2;
 }
 
 
 .homeTitle{
-  /* background-color: red; */
+  display: flex;
+  align-items: center;
   font-size: 3.5vw;
   width: fit-content;
   height: fit-content;
@@ -469,6 +476,7 @@ html, body {
 .sideScrollDiv{
   display: flex;
   min-height: fit-content;
+  padding: 5% 0% 5% 0%;
   max-width: 40vw;
   overflow-x: scroll;
   overflow-y: hidden;
@@ -488,4 +496,35 @@ html, body {
   margin: 2%;
   min-width: 12vw;
   height: 12vw;
+}
+
+.heart { 
+    position: relative; 
+    max-width: 4%; 
+    max-height: 4%; 
+} 
+
+.heart:before, .heart:after { 
+    position: absolute; 
+    content: ""; 
+    left: 50px; 
+    top: 0; 
+    width: 2rem; 
+    height: 80px; 
+    background: red; 
+    border-radius: 50px 50px 0 0; 
+    transform: rotate(-45deg); 
+    transform-origin: 0 100%; 
+} 
+
+.heart:after { 
+    left: 0; 
+    transform: rotate(45deg); 
+    transform-origin :100% 100%; 
+}
+
+.profilePic{
+  border-radius: 50%;
+  margin-right: 2%;
+  max-width: 20%;
 }

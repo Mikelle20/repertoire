@@ -94,6 +94,7 @@ function LoginForm () {
 
         if (spotify_connected) {
           dispatch(setUser(user))
+          window.localStorage.setItem('user', JSON.stringify(user))
           setRedirect(true)
         } else {
           const scopes = 'user-read-currently-playing playlist-modify-public user-library-modify playlist-modify-private playlist-read-collaborative playlist-read-private'
