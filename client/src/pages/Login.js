@@ -16,27 +16,11 @@ function Login () {
     setIsExpired(false)
   }
   return (
-    <div>
+    <div className='landingContainer'>
+      <div className='pageContainer'>
       <LoginForm/>
+      </div>
     </div>
-  // <div className={isExpired ? 'pageContainer pageContainerBlur' : 'pageContainer'}>
-  //     {isExpired && <motion.div
-  //       drag
-  //       dragSnapToOrigin
-  //       id='modal'
-  //       className='expiredContainer'>
-  //         <motion.button
-  //         onClick={closeError}
-  //         whileTap={{ scale: 0.8 }}
-  //         className='closeModalBtn'>
-  //             X
-  //         </motion.button>
-  //         <p className='modalMessage'>Authorization code has expired. In order to continue, you must re-register.</p>
-  //       </motion.div>}
-  //   <div className='authContainer'>
-  //   <LoginForm/>
-  //   </div>
-  // </div>
   )
 }
 

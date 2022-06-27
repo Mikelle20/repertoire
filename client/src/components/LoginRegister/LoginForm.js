@@ -97,7 +97,7 @@ function LoginForm () {
           window.localStorage.setItem('user', JSON.stringify(user))
           setRedirect(true)
         } else {
-          const scopes = 'user-read-currently-playing playlist-modify-public user-library-modify playlist-modify-private playlist-read-collaborative playlist-read-private'
+          const scopes = 'user-top-read playlist-modify-public user-library-modify playlist-modify-private playlist-read-collaborative playlist-read-private'
           const authorizeEndpoint = 'https://accounts.spotify.com/authorize?'
 
           const authObject = {

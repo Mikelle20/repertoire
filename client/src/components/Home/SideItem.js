@@ -1,12 +1,15 @@
+/* eslint-disable react/prop-types */
+
 import React from 'react'
 import { motion } from 'framer-motion'
 
-function SideItem () {
+function SideItem (props) {
   return (
     <motion.div
     whileHover={{ scale: 1.2 }}
     className='sideItem'>
-      Side Item
+      {props.artist.image}
+      help
     </motion.div>
   )
 }

@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const auth = require('./routes/auth')
 const suggestion = require('./routes/suggestion')
+const home = require('./routes/home')
 const cors = require('cors')
 const { corsOptions } = require('./corsOptions/config')
 const passport = require('passport')
@@ -36,6 +37,7 @@ app.use(passport.session())
 
 app.use('/authorize', auth)
 app.use('/suggestion', suggestion)
+app.use('/home', home)
 
 app.get('/logout', function (req, res, next) {
   req.logout(function (err) {

@@ -61,6 +61,10 @@ function App () {
   return (
 
   <>
+      <div className='landingContainer'>
+        <div className='landingTop'></div>
+        <div className='landingBottom'></div>
+      </div>
       <Routes>
         <Route path='/landing' element={<Landing />} />
         <Route path='/settingup' element={<SettingUp />} />

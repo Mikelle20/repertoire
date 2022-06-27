@@ -4,8 +4,10 @@ import RegisterForm from '../components/LoginRegister/RegisterForm'
 
 function Register () {
   return (
-    <div>
-        <RegisterForm />
+    <div className='landingContainer'>
+      <div className='pageContainer'>
+      <RegisterForm/>
+      </div>
     </div>
   )
 }
