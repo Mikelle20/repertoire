@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 const { default: axios } = require('axios')
+const { getAccess } = require('../helpers/auth')
 const ratingAvg = require('../helpers/rating')
-const getAccess = require('../helpers/auth')
 const db = require('../models')
 
 const search = async (req, res) => {
@@ -10,36 +10,45 @@ const search = async (req, res) => {
   //     method:'GET',
   //     url: 'http://localhost:5000/authorize/access_token'
   // }).then(data => access_token = data.access_token)
-  const { track } = req.body
-  const accessToken = 'BQANe2uVGsPpzPpjKtl1JdcbgOosatl1zajDtqeUHE1wxxnI_eAeEojBB7-BWcYpldvI3MQVKi2unjkjkmBHnss-Tp11n6zttG4lAgZxwKttevnaNHbGsq82gORDsj7UGnew62JN19pcU6JQoEDz8ocDKD59jePOh1HCijRmnYjk--h90lMp126_xn5FqfI8sjTGnOURtwcG1mL1l9vC5qOLUMkwwF9YMOCDs6mfJymbLA'
+  const { search, user } = req.body
+  let refreshToken
+  const arr = []
+
+  await db.User.findOne({
+    attributes: ['refresh_token'],
+    where: { user_id: user.user_id }
+  }).then(data => {
+    refreshToken = data.dataValues.refresh_token
+  })
+
+  const accessToken = await getAccess(refreshToken)
   const endPoint = 'https://api.spotify.com/v1/search?q='
   const bearer = 'Bearer ' + accessToken
   const headers = {
     Accept: 'application/json',
     Authorization: bearer,
     'Content-Type': 'application/json'
-
   }
 
-  const response = await axios({
+  await axios({
     method: 'GET',
-    url: endPoint + `track%3A${track}&type=track&market=ES&limit=20`,
+    url: endPoint + `track%3A${search}&type=track&market=ES&limit=10`,
     headers
-  })
+  }).then((resp) => {
+    console.log(resp)
+    const tracks = resp.data.tracks.items
 
-  const tracks = response.data.tracks.items
-  const arr = []
-  for (const element of tracks) {
-    const track = {
-      title: element.name,
-      cover: element.album.images[0].url,
-      artist: element.artists[0].name,
-      explicit: element.explicit,
-      songId: element.id
+    for (const element of tracks) {
+      const track = {
+        title: element.name,
+        cover: element.album.images[0].url,
+        artist: element.artists[0].name,
+        explicit: element.explicit,
+        songId: element.id
+      }
+      arr.push(track)
     }
-
-    arr.push(track)
-  }
+  })
 
   res.json(arr)
 }

@@ -13,22 +13,31 @@ function Home () {
 
   let greeting
 
-  let topArtists, artists
-
   if (hours > 4 && hours < 12) greeting = 'Morning'
   if (hours >= 12 && hours < 18) greeting = 'Afternoon'
   if (hours <= 4 || hours >= 18) greeting = 'Evening'
 
-  axios({
-    method: 'POST',
-    url: 'http://localhost:5000/home/setHome',
-    data: { user },
-    withCredentials: true
-  }).then(res => {
-    topArtists = res.data.items
-    artists = topArtists.map((artist) => {
-      return <SideItem key={artist.id} artist={artist} image={artist.images[0].url}/>
+  const [data, setData] = React.useState([])
+
+  React.useEffect(() => {
+    axios({
+      method: 'POST',
+      url: 'http://localhost:5000/home/setHome',
+      data: { user },
+      withCredentials: true
+    }).then(res => {
+      console.log(res.data.items[0].images[0].url)
+      setData(res.data.items)
     })
+  }, [])
+
+  const artists = data.map((artist) => {
+    return <SideItem
+     artist={artist}
+     key={artist.id}
+     image={artist.images[0].url}
+     name={artist.name}
+     />
   })
 
   return (

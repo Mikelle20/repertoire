@@ -8,8 +8,7 @@ function SideItem (props) {
     <motion.div
     whileHover={{ scale: 1.2 }}
     className='sideItem'>
-      {props.artist.image}
-      help
+      <img className='topArtist' src={props.image} alt={props.name}></img>
     </motion.div>
   )
 }

@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux'
 import { setUser } from './features/userSlice'
 import Register from './pages/Register'
 import Login from './pages/Login'
+import Suggestion from './pages/Suggestion'
 
 function App () {
   const dispatch = useDispatch()
@@ -71,6 +72,7 @@ function App () {
         <Route path='/register' element={<Register />} />
         <Route path='/login' element={<Login />} />
         <Route path='/home' element={<Home />} />
+        <Route path='/suggestion' element={<Suggestion />} />
       </Routes>
       {/* <form onSubmit={handleSubmit}>
           <input

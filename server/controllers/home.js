@@ -25,7 +25,9 @@ const setHome = async (req, res) => {
     method: 'GET',
     url: 'https://api.spotify.com/v1/me/top/artists?time_range=short_term&limit=10&offset=0',
     headers
-  }).then(data => res.json({ items: data.data.items }))
+  })
+    .then(data => res.json({ items: data.data.items }))
+    .catch(err => console.log(err))
 }
 
 module.exports = {
