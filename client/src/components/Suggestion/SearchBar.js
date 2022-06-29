@@ -14,13 +14,7 @@ function SearchBar () {
 
   const [tracks, setTracks] = React.useState([])
 
-  const handleChange = (Event) => {
-    setFormData(prevState => {
-      return {
-        ...prevState,
-        [Event.target.name]: Event.target.value
-      }
-    })
+  React.useEffect(() => {
     axios({
       method: 'POST',
       url: 'http://localhost:5000/suggestion/search',
@@ -28,7 +22,15 @@ function SearchBar () {
       withCredentials: true
     }).then((res) => {
       setTracks(res.data)
-      console.log(res.data)
+    })
+  }, [formData.search])
+
+  const handleChange = (Event) => {
+    setFormData(prevState => {
+      return {
+        ...prevState,
+        [Event.target.name]: Event.target.value
+      }
     })
   }
 

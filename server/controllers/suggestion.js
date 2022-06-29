@@ -5,11 +5,6 @@ const ratingAvg = require('../helpers/rating')
 const db = require('../models')
 
 const search = async (req, res) => {
-  // let access_token
-  // axios({
-  //     method:'GET',
-  //     url: 'http://localhost:5000/authorize/access_token'
-  // }).then(data => access_token = data.access_token)
   const { search, user } = req.body
   let refreshToken
   const arr = []
@@ -35,7 +30,6 @@ const search = async (req, res) => {
     url: endPoint + `track%3A${search}&type=track&market=ES&limit=10`,
     headers
   }).then((resp) => {
-    console.log(resp)
     const tracks = resp.data.tracks.items
 
     for (const element of tracks) {
