@@ -4,6 +4,7 @@ const auth = require('./routes/auth')
 const suggestion = require('./routes/suggestion')
 const home = require('./routes/home')
 const friends = require('./routes/friends')
+const playlist = require('./routes/playlist')
 const cors = require('cors')
 const { corsOptions } = require('./corsOptions/config')
 const passport = require('passport')
@@ -40,6 +41,7 @@ app.use('/authorize', auth)
 app.use('/suggestion', suggestion)
 app.use('/home', home)
 app.use('/friends', friends)
+app.use('/playlist', playlist)
 
 app.get('/logout', function (req, res, next) {
   req.logout(function (err) {

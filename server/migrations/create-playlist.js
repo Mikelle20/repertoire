@@ -17,12 +17,9 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      status: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-          isIn: [['public', 'private']]
-        }
+      is_private: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
       },
       createdAt: {
         allowNull: false,

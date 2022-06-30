@@ -11,6 +11,7 @@ import { setUser } from './features/userSlice'
 import Register from './pages/Register'
 import Login from './pages/Login'
 import Suggestion from './pages/Suggestion'
+import Playlists from './pages/Playlists'
 
 function App () {
   const dispatch = useDispatch()
@@ -61,7 +62,7 @@ function App () {
   }
   return (
 
-  <>
+    <>
       <div className='landingContainer'>
         <div className='landingTop'></div>
         <div className='landingBottom'></div>
@@ -73,25 +74,8 @@ function App () {
         <Route path='/login' element={<Login />} />
         <Route path='/home' element={<Home />} />
         <Route path='/suggestion' element={<Suggestion />} />
+        <Route path='/playlists' element={<Playlists/>} />
       </Routes>
-      {/* <form onSubmit={handleSubmit}>
-          <input
-            placeholder='email'
-            name='email'
-            value={formData.email}
-            onChange={handleChange}
-          >
-          </input>
-
-          <input
-            placeholder='password'
-            name='password'
-            value={formData.password}
-            onChange={handleChange}
-          >
-          </input>
-          <button>Submit!</button>
-        </form> */}
     </>
 
   )
