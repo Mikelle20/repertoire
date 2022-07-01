@@ -19,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'PlaylistAccess',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
+    updatedAt: false
   })
   return PlaylistAccess
 }

@@ -1,6 +1,8 @@
+/* eslint-disable no-return-assign */
 const { getAccess } = require('../helpers/auth')
 const db = require('../models')
 const { default: axios } = require('axios')
+const { setPlaylists } = require('../helpers/playlists')
 
 const createPlaylist = async (req, res) => {
   const { user } = req.body
@@ -32,9 +34,45 @@ const createPlaylist = async (req, res) => {
       description,
       public: !isPrivate
     }
+  }).then(resp => {
+    const data = resp.data
+
+    db.Playlist.create({
+      playlist_id: data.id,
+      author_id: data.owner.id,
+      is_private: isPrivate
+    })
+  })
+}
+
+const getPlaylists = async (req, res) => {
+  const { user } = req.body
+  let refreshToken
+
+  await db.User.findOne({
+    attributes: ['refresh_token'],
+    where: { user_id: user.user_id }
+  }).then((data) => {
+    refreshToken = data.dataValues.refresh_token
+  })
+
+  const accessToken = await getAccess(refreshToken)
+
+  const headers = {
+    Accept: 'application/json',
+    Authorization: `Bearer ${accessToken}`
+  }
+
+  await db.Playlist.findAll({
+    attributes: ['playlist_id', 'is_private'],
+    where: { author_id: user.user_id }
+  }).then(async (resp) => {
+    const playlists = await setPlaylists(resp, headers)
+    res.send(playlists)
   })
 }
 
 module.exports = {
-  createPlaylist
+  createPlaylist,
+  getPlaylists
 }

@@ -27,7 +27,7 @@ function PlaylistModal () {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log('sljksfkj')
+    dispatch(closeModal())
     axios({
       method: 'POST',
       url: 'http://localhost:5000/playlist/createPlaylist',
@@ -36,7 +36,7 @@ function PlaylistModal () {
     })
   }
   return (
-    <div className='searchModal'>
+    <div className='playlistModal'>
       <form
       onSubmit={handleSubmit}
       className='playlistModalForm'>

@@ -20,7 +20,9 @@ module.exports = (sequelize, DataTypes) => {
     receiver_id: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'Suggestion'
+    modelName: 'Suggestion',
+    onDelete: 'CASCADE',
+    updatedAt: false
   })
   return Suggestion
 }

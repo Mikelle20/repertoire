@@ -7,19 +7,44 @@ import addPng from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/a
 import PlaylistModal from '../components/Playlists/PlaylistModal'
 import { useDispatch, useSelector } from 'react-redux'
 import { openModal } from '../features/PlaylistModalSlice'
+import axios from 'axios'
+import { getPlaylists } from '../features/playlistSlice'
 
 function Playlists () {
   const { isOpen } = useSelector(state => state.playlistModal)
+  const { playlists } = useSelector(store => store.playlist)
+  const user = JSON.parse(window.localStorage.getItem('user'))
+  // const [playlists, setPlaylists] = React.useState([])
   const dispatch = useDispatch()
+
+  // React.useEffect(() => {
+  //   console.log('hi')
+  //   axios({
+  //     method: 'POST',
+  //     url: '/playlist/getPlaylists',
+  //     withCredentials: true,
+  //     data: { user }
+  //   }).then(res => {
+  //     console.log(res.data)
+  //     setPlaylists([...res.data])
+  //   })
+  // }, [isOpen])
+
+  React.useEffect(() => {
+    dispatch(getPlaylists(user))
+    console.log(playlists)
+  }, [isOpen])
+
+  const playlistCards = playlists.map((playlist) => {
+    return <Playlist key={playlist.id} playlist={playlist} />
+  })
   return (
         <div className='landingContainer'>
             <div className='pageContainer'>
                 Playlists
                 {isOpen && <PlaylistModal/>}
                 <div className='playlistContainer'>
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((box) => {
-                      return <Playlist key={box}/>
-                    })}
+                    {playlistCards}
                     <motion.button
                     className='newPlaylistBtn'
                     whileHover={{ scale: 1.1 }}

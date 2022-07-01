@@ -21,7 +21,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Rating',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
+    updatedAt: false
   })
   return Rating
 }
