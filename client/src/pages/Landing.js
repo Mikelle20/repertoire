@@ -4,19 +4,10 @@
 import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import logo from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/logos/listening-music.png'
+import { Link } from 'react-router-dom'
 
 function Landing () {
   const variants = {
-    visibleX: {
-      x: 0,
-      transition: {
-        when: 'beforeChildren',
-        // staggerChildren: 3,
-        type: 'spring',
-        damping: 15
-      }
-    },
-
     visibleY: {
       y: 0,
       transition: {
@@ -48,18 +39,8 @@ function Landing () {
     }
   }
   return (
-    <motion.div className='landingContainer'
-      initial={{ x: -10000 }}
-      variants={variants}
-      animate='visibleX'
+    <motion.div className='landerContainer'
     >
-      <motion.div className='landingTop'
-      >
-      </motion.div>
-
-      <motion.div className='landingBottom'
-      >
-      </motion.div>
       <div>
         <h1 className='landingTitle'><img className='logo' src={logo}></img>Repertoire</h1>
       </div>
@@ -92,11 +73,13 @@ function Landing () {
         <div className='breakerRight'>
           <h2 className='landingHeader'>Music Recommendation Made Easy.</h2>
           <h3 className='landingText'>Recommend, rate, and discuss the music you and your friends are currently listening to.</h3>
-          <motion.button className='signIn'
-            whileTap={{ scale: 0.9 }}
-          >
-            <p>Sign In</p>
-          </motion.button>
+          <Link to='/login'>
+            <motion.button className='signIn'
+              whileTap={{ scale: 0.9 }}
+            >
+              <p>Sign In</p>
+            </motion.button>
+          </Link>
         </div>
       </motion.div>
     </motion.div>

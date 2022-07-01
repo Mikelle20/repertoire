@@ -68,7 +68,7 @@ function App () {
         <div className='landingBottom'></div>
       </div>
       <Routes>
-        <Route path='/landing' element={<Landing />} />
+        <Route path='/' element={<Landing />} />
         <Route path='/settingup' element={<SettingUp />} />
         <Route path='/register' element={<Register />} />
         <Route path='/login' element={<Login />} />

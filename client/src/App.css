@@ -48,13 +48,15 @@ html, body {
 .contentContainer{
   /* background-color: blueviolet; */
   display: grid;
-  width: fit-content;
-  margin: 20%;
-  /* height: 100%; */
+  width: 100vw;
+  /* align-items: center;
+  justify-items: center; */
+  justify-self: center;
+  align-self: center;
+  height: fit-content;
   grid-column-gap: 1vw;
-  padding-top: 4rem;
   justify-content: center;
-  z-index: 1;
+  z-index: 2;
 
 }
 
@@ -73,18 +75,27 @@ html, body {
   left: 0%;
 }
 
+.landerContainer{
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+
+}
+
 .landingAlbums{
  display: grid;
- width: 15rem;
- grid-row: 1;
- grid-column: 1;
- grid-gap: 2.5vw;
+ justify-items: center;
+ width: 100%;
+ grid-column-gap: 0.5rem;
+ grid-row-gap: 2rem;
+ grid-template-columns: repeat(auto-fit, minmax(6rem, 12rem));
+ grid-auto-rows: auto;
 
 
 }
 .albumImg{
   border-radius: 20px;
-  max-width: 110%;
+  max-width: 10rem;
 
   /* -webkit-animation-name: fade;
   -webkit-animation-iteration-count: infinite;
@@ -96,9 +107,10 @@ html, body {
 
 .albumImg2{
   border-radius: 20px;
-  max-width: 110%;
+  max-width: 10rem;
   position: absolute;
   top: 0;
+  left: 0;
 }
 
 /* @-webkit-keyframes fade {
@@ -118,14 +130,14 @@ html, body {
 
 
 .landingAlbum1{
-  margin-top: 4rem;
+  /* margin-top: 4rem; */
   position: relative;
   grid-column: 1;
   grid-row: 1;
 }
 
 .landingAlbum2{
-  margin-top: 4rem;
+  /* margin-top: 4rem; */
   position: relative;
   grid-column: 2;
   grid-row: 1;
@@ -146,7 +158,8 @@ html, body {
 }
 
 .landingBreaker{
-  margin-left: 1.5rem;
+  margin-left: 1rem;
+  border-radius: 20px;
   background-color: #7d8eda;
   width: .4rem;
   height: 100%;
@@ -155,9 +168,9 @@ html, body {
 }
 
 .breakerRight{
-  /* background-color: red; */
   width: 100%;
   display: flex;
+  height: 100%;
   flex-direction: column;
   flex-wrap: wrap;
   justify-content: center;
@@ -167,13 +180,13 @@ html, body {
 }
 
 .landingHeader{
-  font-size: 3rem;
+  font-size: x-large;
   max-width: fit-content;
   margin-bottom: 0rem;
 }
 
 .landingText{
-  font-size: 1.5rem;
+  font-size: large;
   margin-top: 0.75rem;
 }
 
@@ -190,38 +203,32 @@ html, body {
   border-radius: 25px;
 }
 
-@media only screen and (max-width: 600px) {
-  .landingHeader{
-    font-size: 7vw;
-  }
-  .landingText{
-    font-size: 5vw;
+@media only screen and (max-width: 600px){
+  .contentContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0% 10%;
   }
 
   .landingAlbums{
-    display: grid;
-    width: fit-content;
-  }
-  
-  .albumImg, .albumImg2{
-    border-radius: 0px;
+    justify-items: start;
   }
 
-  .landingAlbum1, .landingAlbum2, .landingAlbum3, .landingAlbum4{
-    width: 50vw;
+  .albumImg, .albumImg2{
+    margin: 0px;
+    max-width: 8rem;
   }
 
   .landingBreaker{
-    /* margin-left: 2rem; */
+    opacity: 0;
   }
+}
 
-  .landingAlbum1, .landingAlbum2{
-    /* margin-top: 5rem;
-    margin-bottom: -2rem; */
-  }
-
-  .signIn{
-    font-size: small;
+@media only screen and (max-width: 300px){
+  .albumImg, .albumImg2{
+    max-width: 6rem;
   }
 }
 
@@ -322,13 +329,13 @@ html, body {
 
 /* LOGIN PAGE */
 
-.landingContainer{
+/* .landingContainer{
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 
-}
+} */
 .expiredContainer{
   margin: auto;
   display: flex;
