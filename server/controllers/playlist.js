@@ -39,9 +39,20 @@ const createPlaylist = async (req, res) => {
 
     db.Playlist.create({
       playlist_id: data.id,
+      title,
       author_id: data.owner.id,
       is_private: isPrivate
     })
+
+    const playlistAcess = accessList.map((element) => {
+      return {
+        playlist_id: data.id,
+        title,
+        user_id: user.user_id,
+        friend_id: element
+      }
+    })
+    db.PlaylistAccess.bulkCreate(playlistAcess)
   })
 }
 

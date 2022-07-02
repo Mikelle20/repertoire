@@ -3,49 +3,132 @@
 import axios from 'axios'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { motion } from 'framer-motion'
 import { setFriends } from '../../features/friendsSlice'
 import { closeModal } from '../../features/searchModalSlice'
 import SearchFriends from './SearchFriends'
+import FriendPlaylist from './FriendPlaylist'
 import explicitPng from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/explicit.png'
 function SearchModal () {
   const { search } = useSelector(store => store.searchModal)
   const { friends } = useSelector(store => store.friends)
+  const user = JSON.parse(window.localStorage.getItem('user'))
   const dispatch = useDispatch()
 
-  const user = JSON.parse(window.localStorage.getItem('user'))
+  const [formData, setFormData] = React.useState({
+    suggestion: search.songId,
+    friend_id: '',
+    playlist_id: ''
+  })
+
+  const [friendPlaylists, setFriendPlaylists] = React.useState([])
+
+  const [modalFriends, setModalFriends] = React.useState(friends)
 
   React.useEffect(() => {
-    // axios({
-    //   method: 'POST',
-    //   url: 'http://localhost:5000/friends/getFriends',
-    //   withCredentials: true,
-    //   data: { user }
-    // }).then(res => {
-    //   dispatch(setFriends(res.data))
-    //   console.log(res.data)
-    // })
-    console.log(friends)
-  }, [])
-  const friendIcons = friends.map((friend) => {
+    if (formData.friend_id) {
+      axios({
+        method: 'POST',
+        url: 'http://localhost:5000/suggestion/accessedPlaylists',
+        withCredentials: true,
+        data: { user, friend: formData.friend_id }
+      }).then(res => {
+        setFriendPlaylists(res.data)
+      })
+    }
+  }, [formData.friend_id])
+
+  const handleClick = (id) => {
+    setFormData((prevState) => {
+      return {
+        ...prevState,
+        friend_id: prevState.friend_id === id ? '' : id
+      }
+    })
+
+    setModalFriends((prevState) => {
+      return prevState.map((friend) => {
+        return friend.user_id === id ? { ...friend, checked: !friend.checked } : { ...friend, checked: false }
+      })
+    })
+  }
+
+  const selectPlaylist = (id) => {
+    setFormData((prevState) => {
+      return {
+        ...prevState,
+        playlist_id: prevState.playlist_id === id ? '' : id
+      }
+    })
+
+    setFriendPlaylists((prevState) => {
+      return prevState.map((playlist) => {
+        return playlist.playlistId === id ? { ...playlist, checked: !playlist.checked } : { ...playlist, checked: false }
+      })
+    })
+
+    console.log(formData, friendPlaylists)
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    axios({
+      method: 'POST',
+      url: 'http://localhost:5000/suggestion/',
+      withCredentials: true,
+      data: { formData, user }
+    })
+  }
+
+  const friendIcons = modalFriends.map((friend) => {
     return <SearchFriends
-    key={friend.user_id}
-    friend={friend}
+      key={friend.user_id}
+      friend={friend}
+      handleClick={handleClick}
     />
   })
+
+  const friendPlaylistIcons = friendPlaylists.map(element => {
+    return <FriendPlaylist
+      key={element.playlistId}
+      playlist={element}
+      selectPlaylist={selectPlaylist}
+      />
+  })
   return (
-    <div className='searchModal'>
+    <motion.div
+    drag
+    dragSnapToOrigin
+    className='searchModal'>
         <div className='searchModalTop'>
             <img src={search.cover} className='searchModalImg'></img>
             <div className='searchModalText'>{search.title.length >= 15 ? `${search.title.split(' ').slice(0, 3).join(' ')}...` : search.title} {search.explicit && <img src={explicitPng} className='modalPng'></img>}</div>
             <div className='searchModalText'>{search.artist}</div>
         </div>
         <div className='searchModalBottom'>
-            <div>
+            <div className='modalFriends'>
               {friendIcons}
             </div>
         </div>
-        <button onClick={() => dispatch(closeModal())} className='btn'>close</button>
-    </div>
+        {formData.friend_id &&
+          <div className='modalFriendsPlaylists'>
+            {friendPlaylistIcons}
+          </div>
+        }
+        <div className='buttonModalContainer'>
+          <motion.button
+          style={{ marginRight: '20%' }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => dispatch(closeModal())} className='btn'>
+            Close
+          </motion.button>
+          <motion.button
+          whileTap={{ scale: 0.9 }}
+          onClick={() => dispatch(closeModal())} className='btn'>
+            Create
+          </motion.button>
+        </div>
+    </motion.div>
   )
 }
 

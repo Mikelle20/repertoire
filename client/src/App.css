@@ -596,17 +596,18 @@ html, body {
   color: #c3cbeb;
 }
 
+
 .searchModal{
   padding-bottom: 3%;
   display: flex;
   flex-direction: column;
-  max-width: 70%;
+  max-width: 55%;
   height: fit-content;
   position: absolute;
   justify-content: center;
   align-items: center;
   border-radius: 15px;
-  background-color: #2A3564;
+  background-color: #8F9ED8;
   z-index: 1;
 }
 
@@ -637,21 +638,21 @@ html, body {
   align-items: center;
   justify-content: center;
   font-size: x-large;
-  color: #c3cbeb;
+  color: black;
 }
 
 .searchModalBottom{
   display: flex;
   justify-content: center;
-  border-top: 1px solid #c3cbeb;
+  border-top: 1px solid black;
   padding-top: 4%;
-  width: 90%;
+  width: 80%;
 }
 
 .modalFriends{
   display: grid;
-  width: 12rem;
-  padding-top: 2%;
+  min-width: 13rem;
+  padding: 2%;
   border: 1px solid black;
   border-radius: 15px;
   grid-template-columns: repeat(auto-fit, minmax(rem, 1fr));
@@ -660,6 +661,35 @@ html, body {
   justify-items: center;
   align-content: center;
   overflow-y: scroll;
+}
+
+.modalFriendsPlaylists{
+  display: flex;
+  flex-direction: column;
+  margin: 3%;
+  min-width: 13rem;
+  margin-top: 5%;
+  padding: 5%;
+  border: 1px solid black;
+  border-radius: 15px;
+  overflow-y: scroll;
+}
+
+.friendPlaylist{
+  display: flex;
+  margin-bottom: 1.5%;
+  justify-content: center;
+  align-items: center;
+}
+
+.friendPlaylistClicked{
+  display: flex;
+  margin-bottom: 1.5%;
+  padding: 2%;
+  justify-content: center;
+  align-items: center;
+  background-color: #6D80CF;
+  border-radius: 5px;
 }
 
 .friendContainer{
@@ -690,7 +720,7 @@ html, body {
 }
 
 .friendName{
-  color:#c3cbeb;
+  color:black;
   font-size: 0.8rem;
   font-weight: bolder;
 }

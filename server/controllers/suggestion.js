@@ -2,6 +2,7 @@
 const { default: axios } = require('axios')
 const { getAccess } = require('../helpers/auth')
 const ratingAvg = require('../helpers/rating')
+const { stripPlaylists } = require('../helpers/suggestion')
 const db = require('../models')
 
 const search = async (req, res) => {
@@ -114,17 +115,49 @@ const rate = async (req, res) => {
 
 const getAccessedPlaylists = async (req, res) => {
   const { user, friend } = req.body
+  let playlistsAccessed = []
+  let refreshToken
 
-  db.PlaylistAccess.findAll({
-    attributes: ['playlist_id'],
+  await db.User.findOne({
+    attributes: ['refresh_token'],
+    where: { user_id: friend }
+  }).then(data => {
+    refreshToken = data.dataValues.refresh_token
+  })
+
+  const accessToken = await getAccess(refreshToken)
+
+  const headers = {
+    Accept: 'application/json',
+    Authorization: `Bearer ${accessToken}`
+  }
+
+  await db.PlaylistAccess.findAll({
+    attributes: ['playlist_id', 'title'],
     where: {
       user_id: user.user_id,
       friend_id: friend
     }
+  }).then(async (resp) => {
+    playlistsAccessed = await stripPlaylists(resp, headers)
   })
+
+  await db.Playlist.findAll({
+    attributes: ['playlist_id', 'title'],
+    where: {
+      author_id: user.user_id,
+      is_private: false
+    }
+  }).then(async (resp) => {
+    const otherPlaylists = await stripPlaylists(resp, headers)
+    playlistsAccessed = [...playlistsAccessed, ...otherPlaylists]
+  })
+
+  res.send(playlistsAccessed)
 }
 module.exports = {
   search,
   suggest,
-  rate
+  rate,
+  getAccessedPlaylists
 }

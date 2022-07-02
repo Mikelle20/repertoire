@@ -18,18 +18,6 @@ function Playlists () {
   const user = JSON.parse(window.localStorage.getItem('user'))
   const dispatch = useDispatch()
 
-  // React.useEffect(() => {
-  //   axios({
-  //     method: 'POST',
-  //     url: 'http://localhost:5000/friends/getFriends',
-  //     withCredentials: true,
-  //     data: { user }
-  //   }).then(res => {
-  //     dispatch(setFriends(res.data))
-  //     console.log(res.data)
-  //   })
-  // }, [])
-
   React.useEffect(() => {
     dispatch(getPlaylists(user))
     dispatch(getFriends(user))

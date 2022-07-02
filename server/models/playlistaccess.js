@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   PlaylistAccess.init({
     user_id: DataTypes.STRING,
     playlist_id: DataTypes.STRING,
-    friend_id: DataTypes.STRING
+    friend_id: DataTypes.STRING,
+    title: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'PlaylistAccess',

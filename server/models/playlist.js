@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   Playlist.init({
     playlist_id: DataTypes.STRING,
     author_id: DataTypes.STRING,
-    is_private: DataTypes.BOOLEAN
+    is_private: DataTypes.BOOLEAN,
+    title: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Playlist',
