@@ -9,30 +9,30 @@ import { useDispatch, useSelector } from 'react-redux'
 import { openModal } from '../features/PlaylistModalSlice'
 import axios from 'axios'
 import { getPlaylists } from '../features/playlistSlice'
+import { getFriends } from '../features/friendsSlice'
 
 function Playlists () {
   const { isOpen } = useSelector(state => state.playlistModal)
   const { playlists } = useSelector(store => store.playlist)
+  const { friends } = useSelector(store => store.friends)
   const user = JSON.parse(window.localStorage.getItem('user'))
-  // const [playlists, setPlaylists] = React.useState([])
   const dispatch = useDispatch()
 
   // React.useEffect(() => {
-  //   console.log('hi')
   //   axios({
   //     method: 'POST',
-  //     url: '/playlist/getPlaylists',
+  //     url: 'http://localhost:5000/friends/getFriends',
   //     withCredentials: true,
   //     data: { user }
   //   }).then(res => {
+  //     dispatch(setFriends(res.data))
   //     console.log(res.data)
-  //     setPlaylists([...res.data])
   //   })
-  // }, [isOpen])
+  // }, [])
 
   React.useEffect(() => {
     dispatch(getPlaylists(user))
-    console.log(playlists)
+    dispatch(getFriends(user))
   }, [isOpen])
 
   const playlistCards = playlists.map((playlist) => {

@@ -1,19 +1,34 @@
 /* eslint-disable no-unused-vars */
 import React from 'react'
 import axios from 'axios'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { closeModal } from '../../features/PlaylistModalSlice'
 import { motion } from 'framer-motion'
+import SearchFriends from '../Suggestion/SearchFriends'
 
 function PlaylistModal () {
   const dispatch = useDispatch()
   const user = JSON.parse(window.localStorage.getItem('user'))
+  const { friends } = useSelector(store => store.friends)
   const [formData, setFormData] = React.useState({
     title: '',
     description: '',
     isPrivate: false,
     accessList: []
   })
+
+  const [searchFriends, setSearchFriends] = React.useState(friends)
+
+  React.useEffect(() => {
+    if (!formData.isPrivate) {
+      setFormData((prevState) => {
+        return {
+          ...prevState,
+          accessList: []
+        }
+      })
+    }
+  }, [formData.isPrivate])
 
   const handleChange = (e) => {
     setFormData(prevState => {
@@ -35,6 +50,43 @@ function PlaylistModal () {
       data: { formData, user }
     })
   }
+
+  const handleClick = (id) => {
+    const idExists = formData.accessList.includes(id)
+
+    if (idExists) {
+      setFormData((prevState) => {
+        const newList = prevState.accessList.filter(element => element !== id)
+        return {
+          ...prevState,
+          accessList: newList
+        }
+      })
+    } else {
+      setFormData((prevState) => {
+        return {
+          ...prevState,
+          accessList: [...formData.accessList, id]
+        }
+      })
+    }
+
+    setSearchFriends((prevState) => {
+      return prevState.map((friend) => {
+        return friend.user_id === id ? { ...friend, checked: !friend.checked } : friend
+      })
+    })
+
+    console.log(formData)
+  }
+
+  const friendIcons = searchFriends.map((friend) => {
+    return <SearchFriends
+      key={friend.user_id}
+      friend={friend}
+      handleClick={handleClick}
+    />
+  })
   return (
     <div className='playlistModal'>
       <form
@@ -67,6 +119,11 @@ function PlaylistModal () {
           ></input>
           <label htmlFor='isPrivate'>Private?</label>
         </div>
+        {formData.isPrivate &&
+          <div className='modalFriends'>
+            {friendIcons}
+          </div>
+        }
         <div className='modalButtonContainer'>
           <motion.button
           whileTap={{ scale: 0.9 }}

@@ -12,6 +12,7 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import Suggestion from './pages/Suggestion'
 import Playlists from './pages/Playlists'
+import Playlist from './pages/Playlist'
 
 function App () {
   const dispatch = useDispatch()
@@ -68,13 +69,14 @@ function App () {
         <div className='landingBottom'></div>
       </div>
       <Routes>
-        <Route path='/' element={<Landing />} />
-        <Route path='/settingup' element={<SettingUp />} />
-        <Route path='/register' element={<Register />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/home' element={<Home />} />
-        <Route path='/suggestion' element={<Suggestion />} />
+        <Route path='/' element={<Landing/>} />
+        <Route path='/settingup' element={<SettingUp/>} />
+        <Route path='/register' element={<Register/>} />
+        <Route path='/login' element={<Login/>} />
+        <Route path='/home' element={<Home/>} />
+        <Route path='/suggestion' element={<Suggestion/>} />
         <Route path='/playlists' element={<Playlists/>} />
+        <Route path='/playlist/:id' element={<Playlist/>} />
       </Routes>
     </>
 

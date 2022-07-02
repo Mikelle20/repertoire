@@ -7,8 +7,18 @@ const addFriend = async (req, res) => {
     attributes: ['user_1', 'user_2', 'status'],
     where: {
       [Op.or]: [
-        { user_1: user.email },
-        { user_1: friend }
+        {
+          [Op.and]: [
+            { user_1: user.email },
+            { user_2: friend }
+          ]
+        },
+        {
+          [Op.and]: [
+            { user_1: friend },
+            { user_2: user.email }
+          ]
+        }
       ]
     }
   })
@@ -50,6 +60,7 @@ const getFriends = (req, res) => {
       ]
     }
   }).then((resp) => {
+    console.log(resp)
     const arr = []
     resp.forEach(element => {
       if (element.dataValues.user_2 === user.email) {
@@ -64,7 +75,9 @@ const getFriends = (req, res) => {
       where: {
         [Op.or]: arr
       }
-    }).then(resp => res.send(resp))
+    }).then(resp => {
+      res.send(resp)
+    })
   })
 }
 

@@ -23,6 +23,10 @@ module.exports = {
           key: 'playlist_id'
         }
       },
+      friend_id: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

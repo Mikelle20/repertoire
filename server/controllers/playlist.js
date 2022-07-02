@@ -7,7 +7,7 @@ const { setPlaylists } = require('../helpers/playlists')
 const createPlaylist = async (req, res) => {
   const { user } = req.body
   const { title, isPrivate, accessList, description } = req.body.formData
-  console.log(title, isPrivate, accessList, user)
+  console.log(title, isPrivate, accessList)
   let refreshToken
 
   await db.User.findOne({

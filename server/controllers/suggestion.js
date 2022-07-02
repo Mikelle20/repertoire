@@ -111,6 +111,18 @@ const rate = async (req, res) => {
     where: { user_id: recieverId }
   })
 }
+
+const getAccessedPlaylists = async (req, res) => {
+  const { user, friend } = req.body
+
+  db.PlaylistAccess.findAll({
+    attributes: ['playlist_id'],
+    where: {
+      user_id: user.user_id,
+      friend_id: friend
+    }
+  })
+}
 module.exports = {
   search,
   suggest,
