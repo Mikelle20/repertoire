@@ -16,7 +16,7 @@ function SearchModal () {
   const dispatch = useDispatch()
 
   const [formData, setFormData] = React.useState({
-    suggestion: search.songId,
+    song_id: search.songId,
     friend_id: '',
     playlist_id: ''
   })
@@ -67,16 +67,19 @@ function SearchModal () {
       })
     })
 
-    console.log(formData, friendPlaylists)
+    console.log(formData)
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
     axios({
       method: 'POST',
-      url: 'http://localhost:5000/suggestion/',
+      url: 'http://localhost:5000/suggestion/suggest',
       withCredentials: true,
       data: { formData, user }
+    }).then(res => {
+      dispatch(closeModal())
+      console.log(res.data)
     })
   }
 
@@ -124,7 +127,7 @@ function SearchModal () {
           </motion.button>
           <motion.button
           whileTap={{ scale: 0.9 }}
-          onClick={() => dispatch(closeModal())} className='btn'>
+          onClick={handleSubmit} className='btn'>
             Create
           </motion.button>
         </div>

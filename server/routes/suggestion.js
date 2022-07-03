@@ -3,7 +3,7 @@ const { search, suggest, getAccessedPlaylists } = require('../controllers/sugges
 const router = express.Router()
 
 router.post('/search', search)
-router.post('suggest', suggest)
+router.post('/suggest', suggest)
 router.post('/accessedPlaylists', getAccessedPlaylists)
 
 module.exports = router

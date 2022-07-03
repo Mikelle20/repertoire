@@ -88,7 +88,10 @@ function PlaylistModal () {
     />
   })
   return (
-    <div className='playlistModal'>
+    <motion.div
+    drag
+    dragSnapToOrigin
+    className='playlistModal'>
       <form
       onSubmit={handleSubmit}
       className='playlistModalForm'>
@@ -138,7 +141,7 @@ function PlaylistModal () {
           >Create</motion.button>
         </div>
       </form>
-    </div>
+    </motion.div>
   )
 }
 

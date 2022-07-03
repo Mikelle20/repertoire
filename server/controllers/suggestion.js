@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
 const { default: axios } = require('axios')
 const { getAccess } = require('../helpers/auth')
@@ -49,16 +50,27 @@ const search = async (req, res) => {
 }
 
 const suggest = async (req, res) => {
-  const user = req.user
-  const { reciever, songId, playlistId } = req.body
-  db.Suggestion.Create({
-    song_id: songId,
-    playlist_id: playlistId,
+  const { friend_id, song_id, playlist_id } = req.body.formData
+  const { user } = req.body
+
+  await db.Suggestion.create({
+    song_id,
+    playlist_id,
     sender_id: user.user_id,
-    reciever_id: reciever
+    receiver_id: friend_id
   })
 
-  const refreshToken = await db.User.FindOne({ where: { user_id: reciever } })
+  let refreshToken
+
+  await db.User.findOne({
+    attributes: ['refresh_token'],
+    where: {
+      user_id: friend_id
+    }
+  }).then(resp => {
+    refreshToken = resp.dataValues.refresh_token
+    console.log(refreshToken)
+  })
   const accessToken = await getAccess(refreshToken)
   const bearer = 'Bearer ' + accessToken
 
@@ -68,12 +80,14 @@ const suggest = async (req, res) => {
     'Content-Type': 'application/json'
   }
 
-  const endPoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks?uris=spotify%3Atrack%3A${songId}`
+  const endPoint = `https://api.spotify.com/v1/playlists/${playlist_id}/tracks?uris=spotify%3Atrack%3A${song_id}`
 
   axios({
     method: 'POST',
     url: endPoint,
     headers
+  }).then(resp => {
+    res.send('track added')
   })
 }
 
@@ -135,8 +149,8 @@ const getAccessedPlaylists = async (req, res) => {
   await db.PlaylistAccess.findAll({
     attributes: ['playlist_id', 'title'],
     where: {
-      user_id: user.user_id,
-      friend_id: friend
+      user_id: friend,
+      friend_id: user.user_id
     }
   }).then(async (resp) => {
     playlistsAccessed = await stripPlaylists(resp, headers)
@@ -145,7 +159,7 @@ const getAccessedPlaylists = async (req, res) => {
   await db.Playlist.findAll({
     attributes: ['playlist_id', 'title'],
     where: {
-      author_id: user.user_id,
+      author_id: friend,
       is_private: false
     }
   }).then(async (resp) => {

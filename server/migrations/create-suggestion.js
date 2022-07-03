@@ -5,11 +5,11 @@ module.exports = {
       id: {
         allowNull: false,
         autoIncrement: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        primaryKey: true
       },
       song_id: {
         type: Sequelize.STRING,
-        primaryKey: true,
         allowNull: false
       },
 

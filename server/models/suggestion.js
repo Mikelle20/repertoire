@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate (models) {
-      Suggestion.belongsTo(models.User, { foreignKey: 'senderId' })
+      Suggestion.belongsTo(models.User, { foreignKey: 'sender_id' })
     }
   }
   Suggestion.init({
