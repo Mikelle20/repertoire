@@ -28,8 +28,18 @@ const addFriend = async (req, res) => {
     db.Friend.update({ status: 'friend' }, {
       where: {
         [Op.or]: [
-          { user_1: user.user_id },
-          { user_1: friend }
+          {
+            [Op.and]: [
+              { user_1: user.user_id },
+              { user_2: friend }
+            ]
+          },
+          {
+            [Op.and]: [
+              { user_2: user.user_id },
+              { user_1: friend }
+            ]
+          }
         ]
       }
     })
@@ -83,7 +93,7 @@ const getFriends = (req, res) => {
 }
 
 const searchFriends = async (req, res) => {
-  const { user, friend } = req.body
+  const { user, search } = req.body
 
   const users = await db.User.findAll({
     attributes: ['profile_image', 'display_name', 'user_id'],
@@ -97,7 +107,7 @@ const searchFriends = async (req, res) => {
         {
           user_id: {
             [Op.startsWith]: [
-              friend
+              search
             ]
           }
         }
@@ -138,7 +148,7 @@ const searchFriends = async (req, res) => {
       }
     }
   }
-  console.log(userFriends, strippedFriends)
+  res.send(userFriends)
 }
 
 module.exports = {

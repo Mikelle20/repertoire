@@ -13,6 +13,7 @@ import Login from './pages/Login'
 import Suggestion from './pages/Suggestion'
 import Playlists from './pages/Playlists'
 import Playlist from './pages/Playlist'
+import Friends from './pages/Friends'
 
 function App () {
   const dispatch = useDispatch()
@@ -77,6 +78,7 @@ function App () {
         <Route path='/suggestion' element={<Suggestion/>} />
         <Route path='/playlists' element={<Playlists/>} />
         <Route path='/playlist/:id' element={<Playlist/>} />
+        <Route path='/friends' element={<Friends/>} />
       </Routes>
     </>
 

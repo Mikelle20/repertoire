@@ -19,8 +19,18 @@ const getStatus = async (searcher, arr) => {
     await db.Friend.findOne({
       where: {
         [Op.or]: [
-          { user_1: searcher },
-          { user_1: arr[i].user_id }
+          {
+            [Op.and]: [
+              { user_1: searcher },
+              { user_2: arr[i].user_id }
+            ]
+          },
+          {
+            [Op.and]: [
+              { user_2: searcher },
+              { user_1: arr[i].user_id }
+            ]
+          }
         ]
       }
     }).then(res => {
