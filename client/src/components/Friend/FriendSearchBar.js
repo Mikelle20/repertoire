@@ -15,11 +15,12 @@ function FriendSearchBar () {
   const [friendsResults, setFriendsResults] = React.useState([])
 
   const handleSubmit = (id) => {
-    setFriendsResults((prevState) => {
-      prevState.map(friend => {
-        return friend.user_id === id ? { ...friend, status: friend.status + 1 } : { ...friend }
-      })
-    })
+    // setFriendsResults((prevState) => {
+    //   prevState.map(friend => {
+    //     return friend.user_id === id ? { ...friend, status: friend.status + 1 } : { ...friend }
+    //   })
+    // })
+    // console.log(friendsResults)
     axios({
       method: 'POST',
       url: 'http://localhost:5000/friends/addFriend',
@@ -37,10 +38,9 @@ function FriendSearchBar () {
         withCredentials: true
       }).then((res) => {
         setFriendsResults(res.data)
-        console.log(friendsResults)
       })
     }
-  }, [formData.search])
+  }, [formData.search, friendsResults])
 
   const handleChange = (Event) => {
     setFormData(prevState => {
