@@ -151,7 +151,7 @@ const friendsAccess = async (req, res) => {
           ...resp[i].dataValues
         })
       }
-      console.log(friends)
+      res.send(friends)
     })
     // console.log(users)
   } else {
@@ -184,7 +184,7 @@ const friendsAccess = async (req, res) => {
           ...resp[i].dataValues
         })
       }
-      console.log(friends)
+      res.send(friends)
     })
     // console.log(users)
   }

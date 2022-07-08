@@ -887,16 +887,20 @@ label{
   width: 75%;
   height: fit-content;
   background-color: rebeccapurple;
+  border-radius: 15px;
 }
 
 .leftPlayContainer{
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   height: 100%;
   width: 50%;
   padding: 3%;
-  background-color: red;
+  color: #c3cbeb;
+  background-color: #2A3564;
+  border-radius: 15px 0px 0px 15px;
 }
 
 .rightPlayContainer{
@@ -905,7 +909,8 @@ label{
   align-items: center;
   height: 100%;
   width: 50%;
-  background-color: pink;
+  background-color: #42559f;
+  border-radius: 15px 0px 0px 15px;
 }
 
 .playlistPageCover{
@@ -913,6 +918,37 @@ label{
   border-top-left-radius: 20px;
   max-width: 75%;
   margin-bottom: 3%;
+}
+
+.playlistTitle{
+  font-size: x-large;
+  font-weight: bolder;
+  margin: 3% 0%;
+}
+
+.playlistDescription{
+  font-size: medium;
+  font-weight: bold;
+}
+
+.playlistFriendsContainer{
+  display: flex;
+  border: 1px solid #c3cbeb;
+  justify-content: center;
+  margin-top: 5%;
+  padding: 5%;
+  border-radius: 15px;
+  width: 80%;
+  height: 8rem;
+  color: #c3cbeb;
+  overflow-y: scroll;
+}
+
+.playFriendName{
+  color: #c3cbeb;
+  font-size: 0.8rem;
+  margin-top: 1%;
+  font-weight: bolder;
 }
 
 /* SEARCH FRIEND PAGE */

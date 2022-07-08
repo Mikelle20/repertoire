@@ -5,7 +5,8 @@ const url = 'http://localhost:5000/playlist/getPlaylists'
 
 const initialState = {
   playlists: [],
-  playlist: {}
+  playlist: {},
+  playlistFriends: []
 }
 
 export const getPlaylists = createAsyncThunk('playlist/getPlaylists', async (user) => {
@@ -34,6 +35,21 @@ export const getPlaylist = createAsyncThunk('playlist/getPlaylist', async (creds
   } catch (error) {}
 })
 
+export const getPlaylistFriends = createAsyncThunk('playlist/getPlaylistFriends', async (creds) => {
+  try {
+    const res = await (await axios({
+      method: 'POST',
+      url: 'http://localhost:5000/playlist/friendsAccess',
+      data: {
+        user: creds.user,
+        playlistInfo: creds.playlistInfo
+      }
+    })).data
+
+    return res
+  } catch (error) {}
+})
+
 const playlistSlice = createSlice({
   name: 'playlists',
   initialState,
@@ -43,6 +59,9 @@ const playlistSlice = createSlice({
     },
     [getPlaylist.fulfilled]: (state, { payload }) => {
       state.playlist = payload
+    },
+    [getPlaylistFriends.fulfilled]: (state, { payload }) => {
+      state.playlistFriends = payload
     }
   }
 
