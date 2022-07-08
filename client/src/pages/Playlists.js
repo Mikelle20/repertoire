@@ -14,7 +14,6 @@ import { getFriends } from '../features/friendsSlice'
 function Playlists () {
   const { isOpen } = useSelector(state => state.playlistModal)
   const { playlists } = useSelector(store => store.playlist)
-  const { friends } = useSelector(store => store.friends)
   const user = JSON.parse(window.localStorage.getItem('user'))
   const dispatch = useDispatch()
 

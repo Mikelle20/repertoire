@@ -169,9 +169,67 @@ const getAccessedPlaylists = async (req, res) => {
 
   res.send(playlistsAccessed)
 }
+
+const getSuggestions = async (req, res) => {
+  const { user, playlistId } = req.body
+
+  let refreshToken
+
+  await db.User.findOne({
+    attributes: ['refresh_token'],
+    where: { user_id: user.user_id }
+  }).then(data => {
+    refreshToken = data.dataValues.refresh_token
+  })
+
+  const accessToken = await getAccess(refreshToken)
+
+  const headers = {
+    Accept: 'application/json',
+    Authorization: `Bearer ${accessToken}`
+  }
+
+  const suggestions = await db.Suggestion.findAll({
+    attributes: ['song_id', 'sender_id'],
+    where: {
+      playlist_id: playlistId,
+      receiver_id: user.user_id
+    }
+  })
+
+  const arr = []
+
+  for (let i = 0; i < suggestions.length; i++) {
+    const sender = await db.User.findOne({
+      attributes: ['display_name', 'profile_image'],
+      where: {
+        user_id: suggestions[i].dataValues.sender_id
+      }
+    })
+
+    const song = await (await axios({
+      method: 'GET',
+      url: `https://api.spotify.com/v1/tracks/${suggestions[i].dataValues.song_id}`,
+      headers
+    })).data
+
+    arr.push({
+      songId: suggestions[i].dataValues.song_id,
+      senderId: suggestions[i].dataValues.sender_id,
+      senderImage: sender.dataValues.profile_image,
+      senderName: sender.dataValues.display_name,
+      songName: song.name,
+      songImage: song.album.images[0].url
+    })
+  }
+
+  res.send(arr)
+}
+
 module.exports = {
   search,
   suggest,
   rate,
-  getAccessedPlaylists
+  getAccessedPlaylists,
+  getSuggestions
 }

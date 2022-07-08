@@ -3,10 +3,15 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { useSelector } from 'react-redux'
 import PlaylistFriend from './PlaylistFriend'
+import Suggestion from './Suggestion'
 
 function PlaylistContainer (props) {
   const { playlistFriends } = useSelector(store => store.playlist)
+  const { playlistSuggestions } = useSelector(store => store.playlist)
 
+  const suggestions = playlistSuggestions.map(suggestion => {
+    return <Suggestion key={suggestion.songId} suggestion={suggestion} />
+  })
   const friendIcons = playlistFriends.map(friend => {
     return <PlaylistFriend key={friend.user_id} friend={friend} />
   })
@@ -21,6 +26,9 @@ function PlaylistContainer (props) {
           </div>
         </div>
         <div className='rightPlayContainer'>
+          <div className='suggestContainer'>
+            {suggestions}
+          </div>
         </div>
     </motion.div>
   )
