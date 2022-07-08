@@ -29,6 +29,15 @@ function FriendSearchBar () {
     }).then(res => console.log(res.data))
   }
 
+  const handleDelete = (id) => {
+    axios({
+      method: 'DELETE',
+      url: 'http://localhost:5000/friends/deleteFriend',
+      withCredentials: true,
+      data: { friend: id, user }
+    })
+  }
+
   React.useEffect(() => {
     if (formData.search.length) {
       axios({
@@ -52,7 +61,7 @@ function FriendSearchBar () {
   }
 
   const searches = friendsResults.map(friend => {
-    return <FriendResult key={friend.user_id} friend={friend} addFriend={handleSubmit} />
+    return <FriendResult key={friend.user_id} friend={friend} addFriend={handleSubmit} deleteFriend={handleDelete} />
   })
   return (
     <div className='searchContainer'>

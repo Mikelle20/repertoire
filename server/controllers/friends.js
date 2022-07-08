@@ -151,8 +151,34 @@ const searchFriends = async (req, res) => {
   res.send(userFriends)
 }
 
+const deleteFriend = async (req, res) => {
+  const { friend, user } = req.body
+
+  await db.Friend.destroy({
+    where: {
+      [Op.or]: [
+        {
+          [Op.and]: [
+            { user_1: user.user_id },
+            { user_2: friend }
+          ]
+        },
+        {
+          [Op.and]: [
+            { user_2: user.user_id },
+            { user_1: friend }
+          ]
+        }
+      ]
+    }
+  })
+
+  res.send('friendship deleted')
+}
+
 module.exports = {
   addFriend,
   getFriends,
-  searchFriends
+  searchFriends,
+  deleteFriend
 }

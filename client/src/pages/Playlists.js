@@ -18,12 +18,10 @@ function Playlists () {
   const user = JSON.parse(window.localStorage.getItem('user'))
   const dispatch = useDispatch()
 
-  const [change, setChange] = React.useState([])
-
   React.useEffect(() => {
     dispatch(getPlaylists(user))
     dispatch(getFriends(user))
-  }, [isOpen, change])
+  }, [isOpen])
 
   const playlistCards = playlists.map((playlist) => {
     return <Playlist key={playlist.id} playlist={playlist} />

@@ -19,9 +19,12 @@ function FriendResult (props) {
       : props.friend.status === 2
         ? <div className='acceptDeclineContainer'>
         <motion.span className='acceptButton' whileTap={{ scale: 0.9 }} onClick={() => props.addFriend(props.friend.user_id)}>Accept <img src={accept} className='acceptPng'></img></motion.span>
-        <motion.span className='declineButton' whileTap={{ scale: 0.9 }}>Decline <img src={decline} className='declinePng'></img></motion.span>
+        <motion.span className='declineButton' whileTap={{ scale: 0.9 }} onClick={() => props.deleteFriend(props.friend.user_id)}>Decline <img src={decline} className='declinePng'></img></motion.span>
       </div>
-        : <span className='friendButton'>Friend</span>}
+        : <div className='acceptDeclineContainer'>
+            <span className='friendButton'>Friend</span>
+            <motion.span className='declineButton' whileTap={{ scale: 0.9 }} onClick={() => props.deleteFriend(props.friend.user_id)}>Remove<img src={decline} className='declinePng'></img></motion.span>
+          </div>}
 </div>
   )
 }

@@ -874,8 +874,45 @@ label{
 /* INDIVIUAL PLAYLIST PAGE */
 
 .container{
+  width: 100vw;
+  height: 100vh;
   display: flex;
+  justify-content: center;
+  align-items: center;
   z-index: 1;
+}
+
+.playContainer{
+  display: flex;
+  width: 75%;
+  height: fit-content;
+  background-color: rebeccapurple;
+}
+
+.leftPlayContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 50%;
+  padding: 3%;
+  background-color: red;
+}
+
+.rightPlayContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 50%;
+  background-color: pink;
+}
+
+.playlistPageCover{
+  border-radius: 20px;
+  border-top-left-radius: 20px;
+  max-width: 75%;
+  margin-bottom: 3%;
 }
 
 /* SEARCH FRIEND PAGE */
@@ -903,7 +940,7 @@ label{
 .friendButton{
   font-size: small;
   font-weight: bolder;
-  max-width: 15%;
+  max-width: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;
