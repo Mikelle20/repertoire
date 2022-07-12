@@ -5,7 +5,7 @@ import React from 'react'
 import axios from 'axios'
 import { motion } from 'framer-motion'
 import logo from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/logos/listening-music.png'
-import { Link, Navigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { setUser } from '../../features/userSlice'
 import locked from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/lock_closed.png'
@@ -15,12 +15,12 @@ import emailIcon from '/Users/ambarreinoso/Desktop/projects/repertoire/client/sr
 function LoginForm () {
   const [formData, setFormData] = React.useState({
     email: '',
-    password: ''
+    password: '',
+    rememberMe: false
   })
 
   const dispatch = useDispatch()
-
-  const [redirect, setRedirect] = React.useState(false)
+  const navigate = useNavigate()
 
   const [togglePassword, setTogglePassword] = React.useState(false)
 
@@ -30,18 +30,19 @@ function LoginForm () {
   })
 
   const queryParams = window.location.search || null
-  const handleChange = (Event) => {
+  const handleChange = (e) => {
     setFormData(prevState => {
+      const { value, name, type, checked } = e.target
       return {
         ...prevState,
-        [Event.target.name]: Event.target.value
+        [name]: type === 'checkbox' ? checked : value
       }
     })
   }
 
   let user
-  const handleSubmit = (Event) => {
-    Event.preventDefault()
+  const handleSubmit = (e) => {
+    e.preventDefault()
 
     if (queryParams) {
       const accessCode = queryParams.match('=(.*)')[1]
@@ -52,6 +53,7 @@ function LoginForm () {
         withCredentials: true,
         data: { ...formData, accessCode }
       }).then(async (res) => {
+        console.log(res.data)
         user = res.data
         setError(prevState => {
           return {
@@ -65,8 +67,13 @@ function LoginForm () {
           url: 'http://localhost:5000/authorize/accountConnected',
           data: { email: formData.email }
         }).then(async () => {
-          await dispatch(setUser(user))
-          setRedirect(true)
+          if (formData.rememberMe) {
+            window.localStorage.setItem('user', JSON.stringify(user))
+            navigate('/home', { state: formData.email })
+          } else {
+            window.sessionStorage.setItem('user', JSON.stringify(user))
+            navigate('/home', { state: formData.email })
+          }
         })
       }).catch(
         setError((prevState) => {
@@ -93,9 +100,13 @@ function LoginForm () {
         })
 
         if (spotify_connected) {
-          dispatch(setUser(user))
-          window.localStorage.setItem('user', JSON.stringify(user))
-          setRedirect(true)
+          if (formData.rememberMe) {
+            window.localStorage.setItem('user', JSON.stringify(user))
+            navigate('/home', { state: formData.email })
+          } else {
+            window.sessionStorage.setItem('user', JSON.stringify(user))
+            navigate('/home', { state: formData.email })
+          }
         } else {
           const scopes = 'user-top-read playlist-modify-public user-library-modify playlist-modify-private playlist-read-collaborative playlist-read-private'
           const authorizeEndpoint = 'https://accounts.spotify.com/authorize?'
@@ -123,7 +134,6 @@ function LoginForm () {
   return (
     <>
       <div className='authContainer '>
-        {redirect && <Navigate to='/home'/>}
         <form
           className='authForm'
           onSubmit={handleSubmit}
@@ -164,6 +174,16 @@ function LoginForm () {
           </div>
           {error.isError && <div className='errorMessage'>{error.errorText}</div>}
           <motion.button className='btn' whileTap={{ scale: 0.9 }}>Sign In</motion.button>
+          <div className='rememberMeContainer'>
+          <input type='checkbox'
+          id='rememberMe'
+          name='rememberMe'
+          checked={formData.rememberMe}
+          onChange={handleChange}
+          ></input>
+          <label className='rememberMe' htmlFor='rememberMe'>Remember Me</label>
+        </div>
+
           <div className='authFooter'>
             <Link
             className='authLink'

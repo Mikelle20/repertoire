@@ -20,7 +20,7 @@ function Playlists () {
   React.useEffect(() => {
     dispatch(getPlaylists(user))
     dispatch(getFriends(user))
-  }, [isOpen])
+  }, [])
 
   const playlistCards = playlists.map((playlist) => {
     return <Playlist key={playlist.id} playlist={playlist} />

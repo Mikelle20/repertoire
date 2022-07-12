@@ -2,12 +2,19 @@
 import React from 'react'
 import SideItem from '../components/Home/SideItem'
 import SocialItem from '../components/Home/SocialItem'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
+import { getUser } from '../features/userSlice'
+import { useLocation } from 'react-router'
+import SuggestionItem from '../components/Home/SuggestionItem'
+import { getHomeData } from '../features/homeDataSlice'
+import HomeContainer from '../components/Home/HomeContainer'
 
 function Home () {
-  let user = useSelector(store => store.user.user)
-  if (!user.display_name) user = JSON.parse(window.localStorage.getItem('user'))
+  const userRating = useSelector(store => store.user.rating)
+  const { homeData } = useSelector(store => store.homeData)
+  const dispatch = useDispatch()
+  const user = JSON.parse(window.localStorage.getItem('user')) || JSON.parse(window.sessionStorage.getItem('user'))
   const time = new Date()
   const hours = time.getHours()
 
@@ -17,7 +24,8 @@ function Home () {
   if (hours >= 12 && hours < 18) greeting = 'Afternoon'
   if (hours <= 4 || hours >= 18) greeting = 'Evening'
 
-  const [data, setData] = React.useState([])
+  const [data, setData] = React.useState(null)
+  const [socials, setSocials] = React.useState(null)
 
   React.useEffect(() => {
     axios({
@@ -26,55 +34,25 @@ function Home () {
       data: { user },
       withCredentials: true
     }).then(res => {
-      console.log(res.data.items[0].images[0].url)
-      setData(res.data.items)
+      setData(res.data)
     })
-  }, [])
 
-  const artists = data.map((artist) => {
-    return <SideItem
-     artist={artist}
-     key={artist.id}
-     image={artist.images[0].url}
-     name={artist.name}
-     />
-  })
+    axios({
+      method: 'POST',
+      url: 'http://localhost:5000/home/getSocials',
+      data: { user },
+      withCredentials: true
+    }).then(res => {
+      setSocials(res.data)
+    })
+    dispatch(getUser(user.email))
+  }, [])
 
   return (
     <div className='landingContainer'>
       <div className='pageContainer'>
         <div>Home</div>
-        <div className='homeContainer'>
-          <div className='leftHome'>
-            <h1 className='homeTitle'><img src={user.profile_image} className='profilePic'></img>Good {greeting}, {user.display_name}</h1>
-            <h2 className='homeHeader'>Your top artist</h2>
-            <div className='sideScrollDiv'>
-              {artists}
-            </div>
-            <h1 className='homeHeader'>Suggestions from friends</h1>
-            <div className='sideScrollDiv'>
-              {/* {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((box) => {
-                return <SideItem key={box}/>
-              })} */}
-            </div>
-            <h2 className='homeHeader'>Your Playlists</h2>
-            <div className='sideScrollDiv'>
-              {/* {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((box) => {
-                return <SideItem key={box}/>
-              })} */}
-            </div>
-          </div>
-          <div className='rightHome'>
-            <div className='ratingContainer'>
-              <h2 className='homeHeader'>Rating: {user.rating}</h2>
-            </div>
-            <div className='socialDiv'>
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((item) => {
-                return <SocialItem key={item}/>
-              })}
-            </div>
-          </div>
-        </div>
+        {data && <HomeContainer userRating={userRating} user={user} data={data} socials={socials}/>}
       </div>
     </div>
   )

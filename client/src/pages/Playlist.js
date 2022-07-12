@@ -8,29 +8,38 @@ import PlaylistContainer from '../components/Playlists/PlaylistContainer'
 
 function Playlist () {
   const location = useLocation()
-  const image = location.state.images[0].url
+  // const image = location.state.images[0].url
   const user = JSON.parse(window.localStorage.getItem('user'))
   const playlistId = window.location.pathname.split('/').at(-1)
   const { playlist } = useSelector(store => store.playlist)
 
   const dispatch = useDispatch()
 
+  const [data, setData] = React.useState(null)
+
   React.useEffect(() => {
     dispatch(getSuggestions({ user, playlistId }))
     dispatch(getPlaylistFriends({
       user,
       playlistInfo: {
-        playlistId: location.state.id,
-        isPrivate: location.state.isPrivate
+        playlistId,
+        isPrivate: playlist.isPrivate
       }
     }))
-    dispatch(getPlaylist({ user, playlistId }))
+    axios({
+      method: 'POST',
+      url: 'http://localhost:5000/playlist/getPlaylist',
+      withCredentials: true,
+      data: { user, playlistId }
+    }).then(res => {
+      setData(res.data)
+    })
   }, [])
 
   return (
     <div className='pageContainer'>
       <div className='container'>
-        <PlaylistContainer playlist={playlist} image={image}/>
+        {data && <PlaylistContainer playlist={data} playlistId={playlistId} />}
       </div>
     </div>
   )

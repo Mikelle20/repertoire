@@ -1,5 +1,5 @@
 const ratingAvg = (sum, count) => {
-  const avg = (sum / count) * 5
+  const avg = (sum / count) * 4
   return avg
 }
 

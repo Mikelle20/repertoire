@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   Rating.init({
     sender_id: DataTypes.STRING,
     reciever_id: DataTypes.STRING,
+    playlist_id: DataTypes.STRING,
     rating: DataTypes.FLOAT,
     song_id: DataTypes.STRING
   }, {

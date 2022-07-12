@@ -49,6 +49,7 @@ const registerUser = async (req, res) => {
 
 const testPassport = (req, res) => {
   if (req.user) {
+    console.log(req.user)
     return res.json(req.user)
   } else {
     return res.json({
@@ -148,10 +149,21 @@ const getAccessToken = (req, res) => {
   })
 }
 
+const getUser = async (req, res) => {
+  const { email } = req.body
+  const user = await db.User.findOne({
+    attributes: ['display_name', 'profile_image', 'user_id', 'rating', 'email', 'spotify_connected'],
+    where: { email }
+  })
+
+  res.send(user.dataValues)
+}
+
 module.exports = {
   getRefreshToken,
   getAccessToken,
   registerUser,
+  getUser,
   testPassport,
   accountConnected
 }

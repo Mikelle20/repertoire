@@ -1,16 +1,18 @@
+/* eslint-disable import/no-absolute-path */
 /* eslint-disable react/prop-types */
 import React from 'react'
 import { motion } from 'framer-motion'
 import { useSelector } from 'react-redux'
 import PlaylistFriend from './PlaylistFriend'
 import Suggestion from './Suggestion'
+import defaultCover from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/defaults/defaultCover.png'
 
 function PlaylistContainer (props) {
   const { playlistFriends } = useSelector(store => store.playlist)
   const { playlistSuggestions } = useSelector(store => store.playlist)
 
   const suggestions = playlistSuggestions.map(suggestion => {
-    return <Suggestion key={suggestion.songId} suggestion={suggestion} />
+    return <Suggestion key={suggestion.songId} suggestion={suggestion} playlistId={props.playlistId} />
   })
   const friendIcons = playlistFriends.map(friend => {
     return <PlaylistFriend key={friend.user_id} friend={friend} />
@@ -18,16 +20,22 @@ function PlaylistContainer (props) {
   return (
     <motion.div drag dragSnapToOrigin className='playContainer'>
         <div className='leftPlayContainer'>
-          <motion.img whileHover={{ scale: 1.1 }} src={props.image} className='playlistPageCover'></motion.img>
+          <motion.img whileHover={{ scale: 1.1 }} src={props.playlist.images.length === 0 ? defaultCover : props.playlist.images[0].url} className='playlistPageCover'></motion.img>
           <motion.div whileHover={{ scale: 1.1 }} className='playlistTitle'>{props.playlist.name}</motion.div>
           <motion.div whileHover={{ scale: 1.1 }} className='playlistDescription'>{props.playlist.description}</motion.div>
           <div className='playlistFriendsContainer'>
-            {friendIcons}
+            {friendIcons.length !== 0
+              ? friendIcons
+              : <div className='emptyMessage'>No Friends</div>
+            }
           </div>
         </div>
         <div className='rightPlayContainer'>
           <div className='suggestContainer'>
-            {suggestions}
+            {suggestions.length !== 0
+              ? suggestions
+              : <div className='emptyMessage'>No Suggestions</div>
+            }
           </div>
         </div>
     </motion.div>

@@ -3,19 +3,19 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 
 const initialState = {
-  user: {
-
-  },
-  isLoading: true
+  user: {},
+  rating: 0
 }
 
-export const getUser = createAsyncThunk(
-  async () => {
+export const getUser = createAsyncThunk('user/getUser',
+  async (email) => {
     try {
-      const res = await axios({
-        method: 'get',
-        url: 'http://localhost:5000/authorize'
-      }).data.user
+      const res = await (await axios({
+        method: 'POST',
+        url: 'http://localhost:5000/authorize/getUser',
+        withCredentials: true,
+        data: { email }
+      })).data
       return res
     } catch (error) {}
   }
@@ -35,7 +35,7 @@ const userSlice = createSlice({
     },
     [getUser.fulfilled]: (state, { payload }) => {
       state.isLoading = false
-      state.user = payload
+      state.rating = payload.rating
     },
     [getUser.rejected]: (state) => {
       state.loading = false

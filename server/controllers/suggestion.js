@@ -92,39 +92,57 @@ const suggest = async (req, res) => {
 }
 
 const rate = async (req, res) => {
-  const { user, rating, recieverId } = req
-  await db.Rating.create({
-    sender_id: user.user_id,
-    reciever_id: recieverId,
-    rating
-  })
+  const { user, rating, receiverId, songId, playlistId } = req.body
 
-  const ratings = await db.Rating.findAll({
+  const ratingExist = await db.Rating.findOne({
     where: {
-      reciever_id: recieverId
-    },
-    attributes: 'rating'
-  })
-
-  const ratingsCorrected = JSON.stringify(ratings, null, 2)
-
-  let ratingSum = 0
-
-  for (const rating in ratingsCorrected) {
-    ratingSum += rating.rating
-  }
-
-  const { totalRatings, rows } = await db.Rating.findAndCountAll({
-    where: {
-      reciever_id: recieverId
+      sender_id: user.user_id,
+      reciever_id: receiverId,
+      playlist_id: playlistId,
+      song_id: songId
     }
   })
 
-  const newRating = ratingAvg(ratingSum, totalRatings)
+  if (ratingExist) {
+    await db.Rating.update({
+      rating
+    }, {
+      where: {
+        sender_id: user.user_id,
+        reciever_id: receiverId,
+        playlist_id: playlistId,
+        song_id: songId
+      }
+    })
+  } else {
+    await db.Rating.create({
+      sender_id: user.user_id,
+      reciever_id: receiverId,
+      song_id: songId,
+      playlist_id: playlistId,
+      rating
+    })
+  }
+
+  const ratings = await db.Rating.findAll({
+    where: {
+      reciever_id: receiverId
+    },
+    attributes: ['rating']
+  })
+
+  const ratingSum = ratings.reduce((accumulator, object) => {
+    return accumulator + object.rating
+  }, 0)
+
+  const newRating = ratingAvg(ratingSum, ratings.length)
 
   await db.User.update({ rating: newRating }, {
-    where: { user_id: recieverId }
+    where: { user_id: receiverId }
   })
+}
+
+const getRatings = (req, res) => {
 }
 
 const getAccessedPlaylists = async (req, res) => {
@@ -213,13 +231,24 @@ const getSuggestions = async (req, res) => {
       headers
     })).data
 
+    const rating = await db.Rating.findOne({
+      attributes: ['rating'],
+      where: {
+        playlist_id: playlistId,
+        song_id: suggestions[i].dataValues.song_id,
+        sender_id: user.user_id,
+        reciever_id: suggestions[i].dataValues.sender_id
+      }
+    })
+
     arr.push({
       songId: suggestions[i].dataValues.song_id,
       senderId: suggestions[i].dataValues.sender_id,
       senderImage: sender.dataValues.profile_image,
       senderName: sender.dataValues.display_name,
       songName: song.name,
-      songImage: song.album.images[0].url
+      songImage: song.album.images[0].url,
+      rating: rating ? rating.dataValues.rating : 0
     })
   }
 
@@ -230,6 +259,7 @@ module.exports = {
   search,
   suggest,
   rate,
+  getRatings,
   getAccessedPlaylists,
   getSuggestions
 }
