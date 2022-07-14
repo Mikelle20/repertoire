@@ -1,6 +1,7 @@
 const db = require('../models')
 const { default: axios } = require('axios')
 const { getAccess } = require('../helpers/auth')
+const sort = require('sort-array')
 
 const setHome = async (req, res) => {
   const user = req.user
@@ -26,8 +27,6 @@ const setHome = async (req, res) => {
       receiver_id: user.user_id
     }
   })
-
-  console.log(suggestions)
 
   const playlists = await db.Playlist.findAll({
     where: {
@@ -96,6 +95,7 @@ const setHome = async (req, res) => {
 
 const getSocials = async (req, res) => {
   const { user } = req.body
+  console.log(req.user, 'hello david')
   let refreshToken
 
   await db.User.findOne({
@@ -141,7 +141,7 @@ const getSocials = async (req, res) => {
         senderImage: sender.dataValues.profile_image,
         createdAt: ratings[i].dataValues.createdAt,
         songName: song.name,
-        songImage: song.images,
+        songImage: song.album.images,
         songArtist: song.album.artists[0].name
       })
     }
@@ -177,11 +177,12 @@ const getSocials = async (req, res) => {
     }
   }
 
-  socials.sort(function (a, b) {
-    return (a.createdAt < b.createdAt) ? -1 : ((a.createdAt > b.createdAt) ? 1 : 0)
-  })
+  // socials.sort(function (a, b) {
+  //   return (a.createdAt < b.createdAt) ? -1 : ((a.createdAt > b.createdAt) ? 1 : 0)
+  // })
+  const sortedSocials = sort(socials, { order: 'desc', by: 'createdAt' })
 
-  res.send(socials)
+  res.send(sortedSocials)
 }
 
 module.exports = {

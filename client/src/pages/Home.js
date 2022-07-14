@@ -51,8 +51,11 @@ function Home () {
   return (
     <div className='landingContainer'>
       <div className='pageContainer'>
-        <div>Home</div>
-        {data && <HomeContainer userRating={userRating} user={user} data={data} socials={socials}/>}
+        {socials && data !== null
+          ? <HomeContainer userRating={userRating} user={user} data={data} socials={socials}/>
+          : <div className='loadingScreen'>
+            Loading...
+          </div>}
       </div>
     </div>
   )

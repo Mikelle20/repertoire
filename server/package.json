@@ -32,7 +32,8 @@
     "passport-local": "^1.0.0",
     "passport-spotify": "^2.0.0",
     "pg": "^8.7.3",
-    "sequelize": "^6.19.0"
+    "sequelize": "^6.19.0",
+    "sort-array": "^4.1.5"
   },
   "devDependencies": {
     "eslint": "^8.15.0",

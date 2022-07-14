@@ -3,8 +3,62 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto', sans-serif !important;
   overflow-x: hidden;
+}
+
+.navbar{
+  width: 100%;
+  background-color: #2A3564;
+  padding: 15px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.navbarBrand{
+  font-size: x-large;
+  display: flex;
+  align-items: center;
+  font-weight: bolder;
+  width: 7rem;
+  margin-left: 10px;
+  color: #c3cbeb;
+  text-decoration: none;
+}
+
+.navLogo{
+  width: 2rem;
+}
+
+.active{
+  font-weight: bolder;
+  border-bottom: 3px solid #c3cbeb;
+}
+
+.navLink{
+  color: #2A3564;
+  margin: 0px 10px;
+  text-decoration: none;
+}
+
+.navLinkFull{
+  color: #c3cbeb;
+  margin: 0px 10px;
+  text-decoration: none;
+}
+
+.linkContainer{
+  display: flex;
+  margin-left: 20px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navLink:hover{
+  text-decoration: none;
+  color: #2A3564;
+  border-bottom: 3px solid #c3cbeb;
 }
 
 .emptyMessage{
@@ -16,6 +70,17 @@ html, body {
   font-size: x-large;
   font-weight: bolder;
   color: #c3cbeb;
+}
+
+.loadingScreen{
+  width: 100%;
+  height: 97vh;
+  display: flex;
+  justify-content: center;
+  font-size: xx-large;
+  font-weight: bolder;
+  z-index: 10;
+  align-items: center;
 }
 
 .landingContainer{
@@ -296,7 +361,6 @@ html, body {
 
 .inputIcon{
   max-width: 45%;
-  color: red;
 }
 
 .signUpContainer{
@@ -550,41 +614,21 @@ html, body {
   
 }
 
-@media only screen and (max-width: 600px) {
-  .homeContainer{
-    justify-content: center;
-    flex-direction: column;
-  }
-
-  .socialDiv{
-    margin-right: 0%;
-  }
-
-  .socialSong{
-    font-size: small;
-  }
-
-  .socialUserImg{
-    width: 10%;
-  }
-
-  .rateContainer{
-    font-size: large;
-  }
-}
-
 
 .homeTitle{
   display: flex;
   align-items: center;
-  font-size: 2vw;
+  font-size: 1.25rem;
+
+  font-weight: bold;
   width: fit-content;
   height: fit-content;
 }
 
 .homeHeader{
   width: fit-content;
-  font-size: 2.25vw;
+  font-weight: bold;
+  font-size: 1.25rem;
   /* background-color: yellow; */
 }
 
@@ -625,6 +669,35 @@ html, body {
   margin-right: 2%;
   max-width: 15%;
   /* z-index: 10; */
+}
+
+@media only screen and (max-width: 600px) {
+  .homeContainer{
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .socialDiv{
+    margin-right: 0%;
+    margin-bottom: 3%;
+    width: 80vw;
+  }
+
+  .socialSong{
+    font-size: small;
+  }
+
+  .socialUserImg{
+    width: 10%;
+  }
+
+  .rateContainer{
+    font-size: large;
+  }
+
+  .sideScrollDiv{
+    max-width: 90vw;
+  }
 }
 
 /* SUGGESTION PAGE */
@@ -764,7 +837,7 @@ html, body {
 
 .modalFriends{
   display: grid;
-  min-width: 13rem;
+  width: 13rem;
   padding: 2%;
   border: 1px solid black;
   border-radius: 15px;
@@ -966,8 +1039,15 @@ label{
 .buttonModalContainer{
   display: flex;
   width: 12rem;
-  justify-content: space-evenly;
+  justify-content: center;
+  align-items: center;
   padding: 3%;
+}
+
+@media only screen and (max-width: 600px){
+  .buttonModalContainer{
+    width: 80%;
+  }
 }
 
 .modalBtn{
@@ -1028,6 +1108,25 @@ label{
   border-radius: 0px 15px 15px 0px;
 }
 
+@media only screen and (max-width: 600px){
+  .playContainer{
+    flex-direction: column;
+    margin-bottom: 10rem;
+    margin-right: 5%;
+  }
+
+  .leftPlayContainer{
+    padding-top: 1.25rem;
+    width: 100%;
+    border-radius: 15px 15px 0px 0px;
+  }
+
+  .rightPlayContainer{
+    width: 100%;
+    border-radius: 0px 0px 15px 15px;
+  }
+}
+
 .suggestContainer{
   display: flex;
   flex-direction: column;
@@ -1048,7 +1147,7 @@ label{
   font-size: small;
   font-weight: bolder;
   color: #c3cbeb;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #c3cbeb;
   
 }
 

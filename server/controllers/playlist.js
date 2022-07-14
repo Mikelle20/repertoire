@@ -59,6 +59,7 @@ const createPlaylist = async (req, res) => {
 
 const getPlaylists = async (req, res) => {
   const { user } = req.body
+  console.log(req.user)
   let refreshToken
 
   await db.User.findOne({

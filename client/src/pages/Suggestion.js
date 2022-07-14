@@ -24,7 +24,6 @@ function Suggestion () {
   return (
     <div className='landingContainer'>
         <div className='pageContainer'>
-            Suggestion
             {isOpen && <SearchModal/>}
             <SearchBar />
         </div>

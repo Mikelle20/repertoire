@@ -28,7 +28,6 @@ function Playlists () {
   return (
         <div className='landingContainer'>
             <div className='pageContainer'>
-                Playlists
                 {isOpen && <PlaylistModal/>}
                 <div className='playlistContainer'>
                     {playlistCards}
