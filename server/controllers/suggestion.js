@@ -1,38 +1,29 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
 const { default: axios } = require('axios')
-const { getAccess } = require('../helpers/auth')
+const { getAccess, getAccessToken } = require('../helpers/auth')
 const ratingAvg = require('../helpers/rating')
 const { stripPlaylists } = require('../helpers/suggestion')
 const db = require('../models')
 
 const search = async (req, res) => {
-  const { search, user } = req.body
-  let refreshToken
-  const arr = []
+  try {
+    const { search, user } = req.body
+    const arr = []
 
-  await db.User.findOne({
-    attributes: ['refresh_token'],
-    where: { user_id: user.user_id }
-  }).then(data => {
-    refreshToken = data.dataValues.refresh_token
-  })
+    const accessToken = await getAccessToken(user.user_id)
 
-  const accessToken = await getAccess(refreshToken)
-  const endPoint = 'https://api.spotify.com/v1/search?q='
-  const bearer = 'Bearer ' + accessToken
-  const headers = {
-    Accept: 'application/json',
-    Authorization: bearer,
-    'Content-Type': 'application/json'
-  }
+    const endPoint = 'https://api.spotify.com/v1/search?q='
+    const bearer = 'Bearer ' + accessToken
+    const headers = {
+      Accept: 'application/json',
+      Authorization: bearer,
+      'Content-Type': 'application/json'
+    }
 
-  await axios({
-    method: 'GET',
-    url: endPoint + `track%3A${search}&type=track&market=ES&limit=10`,
-    headers
-  }).then((resp) => {
-    const tracks = resp.data.tracks.items
+    const url = endPoint + `track%3A${search}&type=track&market=ES&limit=10`
+
+    const tracks = await (await axios.get(url, { headers })).data.tracks.items
 
     for (const element of tracks) {
       const track = {
@@ -44,69 +35,69 @@ const search = async (req, res) => {
       }
       arr.push(track)
     }
-  })
 
-  res.json(arr)
+    res.status(200).json(arr)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      success: false,
+      error: 'Something went wrong server side.'
+    })
+  }
 }
 
 const suggest = async (req, res) => {
   const { friend_id, song_id, playlist_id } = req.body.formData
   const { user } = req.body
 
-  await db.Suggestion.create({
-    song_id,
-    playlist_id,
-    sender_id: user.user_id,
-    receiver_id: friend_id
-  })
+  try {
+    await db.Suggestion.create({
+      song_id,
+      playlist_id,
+      sender_id: user.user_id,
+      receiver_id: friend_id
+    })
 
-  let refreshToken
+    const accessToken = await getAccessToken(friend_id)
 
-  await db.User.findOne({
-    attributes: ['refresh_token'],
-    where: {
-      user_id: friend_id
+    const bearer = 'Bearer ' + accessToken
+
+    const headers = {
+      Accept: 'application/json',
+      Authorization: bearer,
+      'Content-Type': 'application/json'
     }
-  }).then(resp => {
-    refreshToken = resp.dataValues.refresh_token
-    console.log(refreshToken)
-  })
-  const accessToken = await getAccess(refreshToken)
-  const bearer = 'Bearer ' + accessToken
 
-  const headers = {
-    Accept: 'application/json',
-    Authorization: bearer,
-    'Content-Type': 'application/json'
+    const url = `https://api.spotify.com/v1/playlists/${playlist_id}/tracks?uris=spotify%3Atrack%3A${song_id}`
+
+    await axios.post(url, null, { headers })
+
+    res.status(200).json({
+      success: true
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      success: false,
+      error: 'Something went wrong server side.'
+    })
+
+    db.Suggestion.destroy({
+      where: {
+        song_id,
+        playlist_id,
+        sender_id: user.user_id,
+        receiver_id: friend_id
+      }
+    })
   }
-
-  const endPoint = `https://api.spotify.com/v1/playlists/${playlist_id}/tracks?uris=spotify%3Atrack%3A${song_id}`
-
-  axios({
-    method: 'POST',
-    url: endPoint,
-    headers
-  }).then(resp => {
-    res.send('track added')
-  })
 }
 
 const rate = async (req, res) => {
   const { user, rating, receiverId, songId, playlistId } = req.body
 
-  const ratingExist = await db.Rating.findOne({
-    where: {
-      sender_id: user.user_id,
-      reciever_id: receiverId,
-      playlist_id: playlistId,
-      song_id: songId
-    }
-  })
-
-  if (ratingExist) {
-    await db.Rating.update({
-      rating
-    }, {
+  try {
+    const ratingExist = await db.Rating.findOne({
       where: {
         sender_id: user.user_id,
         reciever_id: receiverId,
@@ -114,152 +105,166 @@ const rate = async (req, res) => {
         song_id: songId
       }
     })
-  } else {
-    await db.Rating.create({
-      sender_id: user.user_id,
-      reciever_id: receiverId,
-      song_id: songId,
-      playlist_id: playlistId,
-      rating
+
+    if (ratingExist) {
+      await db.Rating.update({
+        rating
+      }, {
+        where: {
+          sender_id: user.user_id,
+          reciever_id: receiverId,
+          playlist_id: playlistId,
+          song_id: songId
+        }
+      })
+    } else {
+      await db.Rating.create({
+        sender_id: user.user_id,
+        reciever_id: receiverId,
+        song_id: songId,
+        playlist_id: playlistId,
+        rating
+      })
+    }
+
+    const ratings = await db.Rating.findAll({
+      where: {
+        reciever_id: receiverId
+      },
+      attributes: ['rating']
+    })
+
+    const ratingSum = ratings.reduce((accumulator, object) => {
+      return accumulator + object.rating
+    }, 0)
+
+    const newRating = ratingAvg(ratingSum, ratings.length)
+
+    await db.User.update({ rating: newRating }, {
+      where: { user_id: receiverId }
+    })
+
+    res.status(200).json({
+      success: true
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Something went wrong server side.'
     })
   }
-
-  const ratings = await db.Rating.findAll({
-    where: {
-      reciever_id: receiverId
-    },
-    attributes: ['rating']
-  })
-
-  const ratingSum = ratings.reduce((accumulator, object) => {
-    return accumulator + object.rating
-  }, 0)
-
-  const newRating = ratingAvg(ratingSum, ratings.length)
-
-  await db.User.update({ rating: newRating }, {
-    where: { user_id: receiverId }
-  })
-}
-
-const getRatings = (req, res) => {
 }
 
 const getAccessedPlaylists = async (req, res) => {
   const { user, friend } = req.body
   let playlistsAccessed = []
-  let refreshToken
 
-  await db.User.findOne({
-    attributes: ['refresh_token'],
-    where: { user_id: friend }
-  }).then(data => {
-    refreshToken = data.dataValues.refresh_token
-  })
+  try {
+    const accessToken = await getAccessToken(friend)
 
-  const accessToken = await getAccess(refreshToken)
+    const headers = {
+      Accept: 'application/json',
+      Authorization: `Bearer ${accessToken}`
+    }
 
-  const headers = {
-    Accept: 'application/json',
-    Authorization: `Bearer ${accessToken}`
+    await db.PlaylistAccess.findAll({
+      attributes: ['playlist_id'],
+      where: {
+        user_id: friend,
+        friend_id: user.user_id
+      }
+    }).then(async (resp) => {
+      playlistsAccessed = await stripPlaylists(resp, headers)
+    })
+
+    await db.Playlist.findAll({
+      attributes: ['playlist_id'],
+      where: {
+        author_id: friend,
+        is_private: false
+      }
+    }).then(async (resp) => {
+      const otherPlaylists = await stripPlaylists(resp, headers)
+      playlistsAccessed = [...playlistsAccessed, ...otherPlaylists]
+    })
+
+    res.status(200).send(playlistsAccessed)
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Something went wrong server side.'
+    })
   }
-
-  await db.PlaylistAccess.findAll({
-    attributes: ['playlist_id', 'title'],
-    where: {
-      user_id: friend,
-      friend_id: user.user_id
-    }
-  }).then(async (resp) => {
-    playlistsAccessed = await stripPlaylists(resp, headers)
-  })
-
-  await db.Playlist.findAll({
-    attributes: ['playlist_id', 'title'],
-    where: {
-      author_id: friend,
-      is_private: false
-    }
-  }).then(async (resp) => {
-    const otherPlaylists = await stripPlaylists(resp, headers)
-    playlistsAccessed = [...playlistsAccessed, ...otherPlaylists]
-  })
-
-  res.send(playlistsAccessed)
 }
 
 const getSuggestions = async (req, res) => {
   const { user, playlistId } = req.body
-
-  let refreshToken
-
-  await db.User.findOne({
-    attributes: ['refresh_token'],
-    where: { user_id: user.user_id }
-  }).then(data => {
-    refreshToken = data.dataValues.refresh_token
-  })
-
-  const accessToken = await getAccess(refreshToken)
-
-  const headers = {
-    Accept: 'application/json',
-    Authorization: `Bearer ${accessToken}`
-  }
-
-  const suggestions = await db.Suggestion.findAll({
-    attributes: ['song_id', 'sender_id'],
-    where: {
-      playlist_id: playlistId,
-      receiver_id: user.user_id
-    }
-  })
-
   const arr = []
 
-  for (let i = 0; i < suggestions.length; i++) {
-    const sender = await db.User.findOne({
-      attributes: ['display_name', 'profile_image'],
-      where: {
-        user_id: suggestions[i].dataValues.sender_id
-      }
-    })
+  try {
+    const accessToken = await getAccessToken(user.user_id)
 
-    const song = await (await axios({
-      method: 'GET',
-      url: `https://api.spotify.com/v1/tracks/${suggestions[i].dataValues.song_id}`,
-      headers
-    })).data
+    const headers = {
+      Accept: 'application/json',
+      Authorization: `Bearer ${accessToken}`
+    }
 
-    const rating = await db.Rating.findOne({
-      attributes: ['rating'],
+    const suggestions = await db.Suggestion.findAll({
+      attributes: ['song_id', 'sender_id'],
       where: {
         playlist_id: playlistId,
-        song_id: suggestions[i].dataValues.song_id,
-        sender_id: user.user_id,
-        reciever_id: suggestions[i].dataValues.sender_id
+        receiver_id: user.user_id
       }
     })
 
-    arr.push({
-      songId: suggestions[i].dataValues.song_id,
-      senderId: suggestions[i].dataValues.sender_id,
-      senderImage: sender.dataValues.profile_image,
-      senderName: sender.dataValues.display_name,
-      songName: song.name,
-      songImage: song.album.images[0].url,
-      rating: rating ? rating.dataValues.rating : 0
+    for (let i = 0; i < suggestions.length; i++) {
+      const sender = await db.User.findOne({
+        attributes: ['display_name', 'profile_image'],
+        where: {
+          user_id: suggestions[i].dataValues.sender_id
+        }
+      })
+
+      const song = await (await axios({
+        method: 'GET',
+        url: `https://api.spotify.com/v1/tracks/${suggestions[i].dataValues.song_id}`,
+        headers
+      })).data
+
+      const rating = await db.Rating.findOne({
+        attributes: ['rating'],
+        where: {
+          playlist_id: playlistId,
+          song_id: suggestions[i].dataValues.song_id,
+          sender_id: user.user_id,
+          reciever_id: suggestions[i].dataValues.sender_id
+        }
+      })
+
+      arr.push({
+        songId: suggestions[i].dataValues.song_id,
+        senderId: suggestions[i].dataValues.sender_id,
+        senderImage: sender.dataValues.profile_image,
+        senderName: sender.dataValues.display_name,
+        songName: song.name,
+        songImage: song.album.images[0].url,
+        rating: rating ? rating.dataValues.rating : 0
+      })
+    }
+
+    res.status(200).send(arr)
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Something went wrong server side.'
     })
   }
-
-  res.send(arr)
 }
 
 module.exports = {
   search,
   suggest,
   rate,
-  getRatings,
   getAccessedPlaylists,
   getSuggestions
 }

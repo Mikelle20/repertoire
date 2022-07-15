@@ -60,6 +60,11 @@ module.exports = {
         allowNull: true,
         unique: true
       },
+      server_refresh_token: {
+        type: Sequelize.STRING(500),
+        allowNull: true,
+        unique: true
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

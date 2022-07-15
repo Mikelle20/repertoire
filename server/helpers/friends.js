@@ -1,17 +1,17 @@
 const { Op } = require('sequelize')
 const db = require('../models')
 
-const stripFriends = (arr) => {
-  const strippedfriends = arr.map(friend => {
-    return {
-      user_id: friend.dataValues.user_id,
-      display_name: friend.dataValues.display_name,
-      profile_image: friend.dataValues.profile_image
-    }
-  })
+// const stripFriends = (arr) => {
+//   const strippedfriends = arr.map(friend => {
+//     return {
+//       user_id: friend.dataValues.user_id,
+//       display_name: friend.dataValues.display_name,
+//       profile_image: friend.dataValues.profile_image
+//     }
+//   })
 
-  return strippedfriends
-}
+//   return strippedfriends
+// }
 
 const getStatus = async (searcher, arr) => {
   const statuses = []
@@ -20,16 +20,12 @@ const getStatus = async (searcher, arr) => {
       where: {
         [Op.or]: [
           {
-            [Op.and]: [
-              { user_1: searcher },
-              { user_2: arr[i].user_id }
-            ]
+            user_1: searcher,
+            user_2: arr[i].user_id
           },
           {
-            [Op.and]: [
-              { user_2: searcher },
-              { user_1: arr[i].user_id }
-            ]
+            user_2: searcher,
+            user_1: arr[i].user_id
           }
         ]
       }
@@ -51,6 +47,5 @@ const getStatus = async (searcher, arr) => {
 }
 
 module.exports = {
-  stripFriends,
   getStatus
 }

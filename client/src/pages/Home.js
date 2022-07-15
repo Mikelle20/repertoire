@@ -28,24 +28,30 @@ function Home () {
   const [socials, setSocials] = React.useState(null)
 
   React.useEffect(() => {
-    axios({
-      method: 'POST',
-      url: 'http://localhost:5000/home/setHome',
-      data: { user },
-      withCredentials: true
-    }).then(res => {
-      setData(res.data)
-    })
+    axios.get('http://localhost:5000/authorize/tokenTest', {
+      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${window.sessionStorage.getItem('accessToken')}`
+      }
+    }).then(res => console.log(res.data))
+    //   axios({
+    //     method: 'POST',
+    //     url: 'http://localhost:5000/home/setHome',
+    //     data: { user },
+    //     withCredentials: true
+    //   }).then(res => {
+    //     setData(res.data)
+    //   })
 
-    axios({
-      method: 'POST',
-      url: 'http://localhost:5000/home/getSocials',
-      data: { user },
-      withCredentials: true
-    }).then(res => {
-      setSocials(res.data)
-    })
-    dispatch(getUser(user.email))
+    //   axios({
+    //     method: 'POST',
+    //     url: 'http://localhost:5000/home/getSocials',
+    //     data: { user },
+    //     withCredentials: true
+    //   }).then(res => {
+    //     setSocials(res.data)
+    //   })
+    //   dispatch(getUser(user.email))
   }, [])
 
   return (

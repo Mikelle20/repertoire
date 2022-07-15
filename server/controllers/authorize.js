@@ -3,19 +3,19 @@ const { default: axios } = require('axios')
 const db = require('../models')
 const bcrypt = require('bcrypt')
 const { nanoid } = require('nanoid')
-const { getAccess } = require('../helpers/auth')
+const { getAccess, setAccount, generateAccessToken } = require('../helpers/auth')
+const jwt = require('jsonwebtoken')
 
 require('dotenv').config()
 
 const registerUser = async (req, res) => {
-  const { email, password } = req.body
-  const emailRegex = /^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/
-  const isEmail = emailRegex.test(email)
+  try {
+    const { email, password } = req.body
+    const emailRegex = /^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/
+    const isEmail = emailRegex.test(email)
 
-  db.User.findOne({
-    where: { email }
-  }).then(async (data) => {
-    const userFound = data
+    const userFound = await db.User.findOne({ where: { email } })
+
     if (password.length > 7) {
       if (isEmail) {
         if (!userFound) {
@@ -25,26 +25,157 @@ const registerUser = async (req, res) => {
             email,
             user_id: nanoid()
           })
-          return res.json({ userCreated: true })
+          return res.status(200).json({ success: true, userCreated: true })
         } else {
-          return res.json({
+          return res.status(200).json({
+            success: true,
             userCreated: false,
             errorText: 'User already associated with email.'
           })
         }
       } else {
-        return res.json({
+        return res.status(200).json({
+          success: true,
           userCreated: false,
           errorText: 'Please enter valid email.'
         })
       }
     } else {
-      return res.json({
+      return res.status(200).json({
+        success: true,
         userCreated: false,
         errorText: 'Password must greater than 7 characters.'
       })
     }
+  } catch (error) {
+    res.status(200).json({
+      success: false,
+      error: 'Something went wrong on the server side.status(200).'
+    })
+  }
+}
+
+const loginUser = async (req, res) => {
+  try {
+    const accessCode = req.body.accessCode || null
+    const { email, password } = req.body
+    const user = await (await db.User.findOne({ where: { email } })) || null
+    const hashedPassword = user ? user.dataValues.password : ''
+    const passwordsMatch = bcrypt.compareSync(password, hashedPassword)
+
+    if (accessCode) {
+      if (!user) return res.status(403).json({ success: false, error: 'Incorrect Username or password.' })
+      if (!passwordsMatch) return res.status(403).json({ success: false, error: 'Incorrect Username or password.' })
+
+      await setAccount(accessCode, email)
+      const accessToken = generateAccessToken({
+        display_name: user.dataValues.display_name,
+        profile_image: user.dataValues.profile_image,
+        refresh_token: user.dataValues.refresh_token,
+        spotify_connected: user.dataValues.spotify_connected,
+        email: user.dataValues.email,
+        user_id: user.dataValues.user_id
+      })
+
+      const refreshToken = jwt.sign({
+        email: user.dataValues.email,
+        user_id: user.dataValues.user_id
+      }, process.env.REFRESH_TOKEN_SECRET)
+
+      await db.User.update({ server_refresh_token: refreshToken }, {
+        where: { user_id: user.dataValues.user_id }
+      })
+
+      res.status(200).json({
+        success: true,
+        accessToken
+      })
+    } else {
+      if (!user) return res.status(403).json({ success: false, error: 'Incorrect Username or password.' })
+      if (!passwordsMatch) return res.status(403).json({ success: false, error: 'Incorrect Username or password.' })
+
+      const accessToken = generateAccessToken({
+        display_name: user.dataValues.display_name,
+        profile_image: user.dataValues.profile_image,
+        refresh_token: user.dataValues.refresh_token,
+        spotify_connected: user.dataValues.spotify_connected,
+        email: user.dataValues.email,
+        user_id: user.dataValues.user_id
+      })
+
+      const refreshToken = jwt.sign({
+        email: user.dataValues.email,
+        user_id: user.dataValues.user_id
+      }, process.env.REFRESH_TOKEN_SECRET)
+
+      await db.User.update({ server_refresh_token: refreshToken }, {
+        where: { user_id: user.dataValues.user_id }
+      })
+      res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; HttpOnly`)
+      res.status(200).json({
+        success: true,
+        accessToken
+      })
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      success: false,
+      error: 'Something went wrong on the server side.'
+    })
+  }
+}
+
+const getUserToken = async (req, res) => {
+  const refreshToken = req.body.token
+
+  console.log(req.body)
+
+  if (!refreshToken) return res.sendStatus(401)
+
+  const userData = await db.User.findOne({
+    where: { server_refresh_token: refreshToken }
   })
+
+  if (!userData) return res.sendStatus(403)
+
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403)
+
+    const accessToken = generateAccessToken({
+      display_name: userData.dataValues.display_name,
+      profile_image: userData.dataValues.profile_image,
+      spotify_connected: userData.dataValues.spotify_connected,
+      email: userData.dataValues.email,
+      user_id: userData.dataValues.user_id
+    })
+
+    res.status(200).json({
+      success: true,
+      accessToken
+    })
+  })
+}
+
+const deleteToken = async (req, res) => {
+  try {
+    await db.User.update({ server_refresh_token: null }, {
+      where: { server_refresh_token: req.body.token }
+    })
+
+    res.status(200).json({
+      success: true
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Something went wrong on the server side.'
+    })
+  }
+}
+
+const tokenTest = (req, res) => {
+  res.send(req.user)
 }
 
 const testPassport = (req, res) => {
@@ -162,8 +293,12 @@ const getUser = async (req, res) => {
 module.exports = {
   getRefreshToken,
   getAccessToken,
+  deleteToken,
+  loginUser,
   registerUser,
   getUser,
   testPassport,
+  tokenTest,
+  getUserToken,
   accountConnected
 }

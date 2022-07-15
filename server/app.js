@@ -1,4 +1,5 @@
 const express = require('express')
+const cookieParser = require('cookie-parser')
 const app = express()
 const auth = require('./routes/auth')
 const suggestion = require('./routes/suggestion')
@@ -16,6 +17,7 @@ require('dotenv').config()
 require('./passport/passport.mw.js')
 
 app.use(cors(corsOptions))
+app.use(cookieParser())
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
