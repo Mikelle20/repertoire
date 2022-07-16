@@ -16,37 +16,49 @@ const registerUser = async (req, res) => {
 
     const userFound = await db.User.findOne({ where: { email } })
 
-    if (password.length > 7) {
-      if (isEmail) {
-        if (!userFound) {
-          const hashedPassword = bcrypt.hashSync(password, 10)
-          await db.User.create({
-            password: hashedPassword,
-            email,
-            user_id: nanoid()
-          })
-          return res.status(200).json({ success: true, userCreated: true })
-        } else {
-          return res.status(200).json({
-            success: true,
-            userCreated: false,
-            errorText: 'User already associated with email.'
-          })
-        }
-      } else {
-        return res.status(200).json({
-          success: true,
-          userCreated: false,
-          errorText: 'Please enter valid email.'
-        })
-      }
-    } else {
-      return res.status(200).json({
-        success: true,
-        userCreated: false,
-        errorText: 'Password must greater than 7 characters.'
-      })
-    }
+    if (!password.length > 7) return res.status(400).json({ success: false, error: 'Password must be greater than 7 characters.' })
+    if (!isEmail) return res.status(400).json({ success: false, error: 'Please enter valid email.' })
+    if (userFound) return res.status(400).json({ success: false, error: 'User already associated with email.' })
+
+    const hashedPassword = bcrypt.hashSync(password, 10)
+    await db.User.create({
+      password: hashedPassword,
+      email,
+      user_id: nanoid()
+    })
+    return res.status(200).json({ success: true })
+
+    // if (password.length > 7) {
+    //   if (isEmail) {
+    //     if (!userFound) {
+    //       const hashedPassword = bcrypt.hashSync(password, 10)
+    //       await db.User.create({
+    //         password: hashedPassword,
+    //         email,
+    //         user_id: nanoid()
+    //       })
+    //       return res.status(200).json({ success: true, userCreated: true })
+    //     } else {
+    //       return res.status(200).json({
+    //         success: true,
+    //         userCreated: false,
+    //         errorText: 'User already associated with email.'
+    //       })
+    //     }
+    //   } else {
+    //     return res.status(200).json({
+    //       success: true,
+    //       userCreated: false,
+    //       errorText: 'Please enter valid email.'
+    //     })
+    //   }
+    // } else {
+    //   return res.status(200).json({
+    //     success: true,
+    //     userCreated: false,
+    //     errorText: 'Password must greater than 7 characters.'
+    //   })
+    // }
   } catch (error) {
     res.status(200).json({
       success: false,
@@ -127,34 +139,41 @@ const loginUser = async (req, res) => {
 }
 
 const getUserToken = async (req, res) => {
-  const refreshToken = req.body.token
+  try {
+    const refreshToken = req.body.token
 
-  console.log(req.body)
+    console.log(req.body)
 
-  if (!refreshToken) return res.sendStatus(401)
+    if (!refreshToken) return res.sendStatus(401)
 
-  const userData = await db.User.findOne({
-    where: { server_refresh_token: refreshToken }
-  })
-
-  if (!userData) return res.sendStatus(403)
-
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403)
-
-    const accessToken = generateAccessToken({
-      display_name: userData.dataValues.display_name,
-      profile_image: userData.dataValues.profile_image,
-      spotify_connected: userData.dataValues.spotify_connected,
-      email: userData.dataValues.email,
-      user_id: userData.dataValues.user_id
+    const userData = await db.User.findOne({
+      where: { server_refresh_token: refreshToken }
     })
 
-    res.status(200).json({
-      success: true,
-      accessToken
+    if (!userData) return res.sendStatus(403)
+
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+      if (err) return res.sendStatus(403)
+
+      const accessToken = generateAccessToken({
+        display_name: userData.dataValues.display_name,
+        profile_image: userData.dataValues.profile_image,
+        spotify_connected: userData.dataValues.spotify_connected,
+        email: userData.dataValues.email,
+        user_id: userData.dataValues.user_id
+      })
+
+      res.status(200).json({
+        success: true,
+        accessToken
+      })
     })
-  })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Something went wrong on the server side.'
+    })
+  }
 }
 
 const deleteToken = async (req, res) => {
@@ -162,7 +181,7 @@ const deleteToken = async (req, res) => {
     await db.User.update({ server_refresh_token: null }, {
       where: { server_refresh_token: req.body.token }
     })
-
+    res.clearCookie('refreshToken')
     res.status(200).json({
       success: true
     })
@@ -190,94 +209,130 @@ const testPassport = (req, res) => {
 }
 
 const accountConnected = (req, res) => {
-  const { email } = req.body
-  db.User.update({ spotify_connected: true }, {
-    where: { email }
-  }).then(res.json({ accountConnected: true }))
+  try {
+    const { email } = req.body
+    db.User.update({ spotify_connected: true }, {
+      where: { email }
+    }).then(res.status(200).json({ success: true, accountConnected: true }))
+  } catch (error) {
+    res.sendStatus(500)
+  }
 }
 
 const getRefreshToken = async (req, res) => {
-  const { accessCode, email } = req.body
+  try {
+    const { accessCode, email } = req.body
 
-  const params = `grant_type=authorization_code&code=${accessCode}&redirect_uri=${process.env.REDIRECT_URI}`
+    const params = `grant_type=authorization_code&code=${accessCode}&redirect_uri=${process.env.REDIRECT_URI}`
 
-  const basicAuth = 'Basic ' + new Buffer.from(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`).toString('base64')
+    const basicAuth = 'Basic ' + new Buffer.from(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`).toString('base64')
 
-  const basicAuthHeaders = {
-    Authorization: basicAuth,
-    'Content-Type': 'application/x-www-form-urlencoded'
-  }
+    const basicAuthHeaders = {
+      Authorization: basicAuth,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
 
-  let refreshToken
+    const refreshToken = await (await axios.post('https://accounts.spotify.com/api/token', params, { headers: basicAuthHeaders })).data.refresh_token
 
-  await axios({
-    method: 'post',
-    url: 'https://accounts.spotify.com/api/token',
-    data: params,
-    headers: basicAuthHeaders
-  }).then(async (res) => {
-    await db.User.update({ refresh_token: res.data.refresh_token }, {
-      where: { email },
-      returning: true,
-      plain: true
-    }).then((res) => {
-      refreshToken = res[1].dataValues.refresh_token
+    await db.User.update({ refresh_token: refreshToken }, {
+      where: { email }
     })
-  })
+    // let refreshToken
 
-  const accessToken = await getAccess(refreshToken)
+    // await axios({
+    //   method: 'post',
+    //   url: 'https://accounts.spotify.com/api/token',
+    //   data: params,
+    //   headers: basicAuthHeaders
+    // }).then(async (res) => {
+    //   await db.User.update({ refresh_token: res.data.refresh_token }, {
+    //     where: { email },
+    //     returning: true,
+    //     plain: true
+    //   }).then((res) => {
+    //     refreshToken = res[1].dataValues.refresh_token
+    //   })
+    // })
 
-  const bearerAuth = {
-    Accept: 'accept/json',
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${accessToken}`
-  }
+    const accessToken = await getAccess(refreshToken)
 
-  await axios({
-    method: 'get',
-    url: 'https://api.spotify.com/v1/me',
-    headers: bearerAuth
-  }).then((res) => {
-    if (res.data.images[0]) {
+    const bearerAuth = {
+      Accept: 'accept/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`
+    }
+
+    const userInfo = await (await axios.get('https://api.spotify.com/v1/me', { headers: bearerAuth })).data
+
+    if (userInfo.images[0]) {
       db.User.update({
-        display_name: res.data.display_name,
-        profile_image: res.data.images[0].url,
-        user_id: res.data.id
+        display_name: userInfo.display_name,
+        profile_image: userInfo.images[0].url,
+        user_id: userInfo.id
       }, {
         where: { email }
       })
     } else {
       db.User.update({
-        display_name: res.data.display_name,
-        user_id: res.data.id
+        display_name: userInfo.display_name,
+        user_id: userInfo.id
       }, {
         where: { email }
       })
     }
-  })
 
-  res.json(true)
+    // await axios({
+    //   method: 'get',
+    //   url: 'https://api.spotify.com/v1/me',
+    //   headers: bearerAuth
+    // }).then((res) => {
+    //   if (res.data.images[0]) {
+    //     db.User.update({
+    //       display_name: res.data.display_name,
+    //       profile_image: res.data.images[0].url,
+    //       user_id: res.data.id
+    //     }, {
+    //       where: { email }
+    //     })
+    //   } else {
+    //     db.User.update({
+    //       display_name: res.data.display_name,
+    //       user_id: res.data.id
+    //     }, {
+    //       where: { email }
+    //     })
+    //   }
+    // })
+
+    res.status(200).json({ success: true })
+  } catch (error) {
+    res.sendStatus(500)
+  }
 }
 
 const getAccessToken = (req, res) => {
-  const { refreshToken } = req.body
+  try {
+    const { refreshToken } = req.body
 
-  const params = `grant_type=refresh_token&refresh_token=${refreshToken}`
-  const basicAuth = 'Basic ' + new Buffer.from(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`).toString('base64')
+    const params = `grant_type=refresh_token&refresh_token=${refreshToken}`
+    const basicAuth = 'Basic ' + new Buffer.from(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`).toString('base64')
 
-  const headers = {
-    Authorization: basicAuth,
-    'Content-Type': 'application/x-www-form-urlencoded'
+    const headers = {
+      Authorization: basicAuth,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+
+    axios({
+      method: 'post',
+      url: 'https://accounts.spotify.com/api/token',
+      data: params,
+      headers
+    }).then(resp => {
+      res.json({ success: true, accessToken: resp.data.access_token })
+    })
+  } catch (error) {
+    res.sendStatus(500)
   }
-
-  axios({
-    method: 'post',
-    url: 'https://accounts.spotify.com/api/token',
-    data: params,
-    headers
-  }).then(resp => {
-    res.json({ accessToken: resp.data.access_token })
-  })
 }
 
 const getUser = async (req, res) => {

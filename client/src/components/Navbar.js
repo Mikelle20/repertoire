@@ -14,10 +14,12 @@ import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import { NavLink } from 'react-router-dom'
 import logo from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/logos/listening-music-light.png'
+import axios from 'axios'
 
 const ResponsiveAppBar = () => {
-  const user = JSON.parse(window.localStorage.getItem('user')) || JSON.parse(window.sessionStorage.getItem('user')) || null
-  const pages = [['Home', '/home'], ['Friends', '/friends'], ['Suggestion', '/suggestion'], ['Playlists', '/playlists'], [user ? 'Logout' : 'Login', '/login']]
+  const accessToken = window.sessionStorage.getItem('accessToken') || null
+  const user = JSON.parse(window.sessionStorage.getItem('user') || window.localStorage.getItem('user')) || null
+  const pages = [['Home', '/home'], ['Friends', '/friends'], ['Suggestion', '/suggestion'], ['Playlists', '/playlists']]
 
   const [anchorElNav, setAnchorElNav] = React.useState(null)
 
@@ -25,8 +27,15 @@ const ResponsiveAppBar = () => {
     setAnchorElNav(event.currentTarget)
   }
 
-  const handleCloseNavMenu = () => {
+  const handleCloseNavMenu = async (id) => {
     setAnchorElNav(null)
+  }
+
+  const handleClick = async (id) => {
+    if (id === 'logout') {
+      window.sessionStorage.clear()
+      await axios.get('http://localhost:5000/authorize/logout', { withCredentials: true })
+    }
   }
 
   return (
@@ -87,6 +96,9 @@ const ResponsiveAppBar = () => {
                   <NavLink className='navLink' to={page[1]}>{page[0]}</NavLink>
                 </MenuItem>
               ))}
+              <MenuItem onClick={handleCloseNavMenu}>
+                <NavLink className='navLink' to='/login' onClick={handleClick(accessToken ? 'logout' : 'login')}>{accessToken ? 'Logout' : 'Login'}</NavLink>
+              </MenuItem>
             </Menu>
           </Box>
           <img src={logo} className='navLogo'></img>
@@ -121,6 +133,13 @@ const ResponsiveAppBar = () => {
                 {page[0]}
               </NavLink>
             ))}
+                <NavLink
+                className='navLinkFull'
+                to='/login'
+                sx={{ my: 2, color: 'white', display: 'block' }}
+                onClick={handleClick(accessToken ? 'logout' : 'login')}>
+                  {accessToken ? 'Logout' : 'Login'}
+                </NavLink>
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>

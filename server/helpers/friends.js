@@ -14,36 +14,40 @@ const db = require('../models')
 // }
 
 const getStatus = async (searcher, arr) => {
-  const statuses = []
-  for (let i = 0; i < arr.length; i++) {
-    await db.Friend.findOne({
-      where: {
-        [Op.or]: [
-          {
-            user_1: searcher,
-            user_2: arr[i].user_id
-          },
-          {
-            user_2: searcher,
-            user_1: arr[i].user_id
-          }
-        ]
-      }
-    }).then(res => {
-      if (res) {
-        statuses.push({
-          ...res.dataValues
-        })
-      } else {
-        statuses.push({
-          user_1: arr[i].user_id,
-          status: 'no association'
-        })
-      }
-    })
-  }
+  try {
+    const statuses = []
+    for (let i = 0; i < arr.length; i++) {
+      await db.Friend.findOne({
+        where: {
+          [Op.or]: [
+            {
+              user_1: searcher,
+              user_2: arr[i].user_id
+            },
+            {
+              user_2: searcher,
+              user_1: arr[i].user_id
+            }
+          ]
+        }
+      }).then(res => {
+        if (res) {
+          statuses.push({
+            ...res.dataValues
+          })
+        } else {
+          statuses.push({
+            user_1: arr[i].user_id,
+            status: 'no association'
+          })
+        }
+      })
+    }
 
-  return statuses
+    return statuses
+  } catch (error) {
+    return error
+  }
 }
 
 module.exports = {
