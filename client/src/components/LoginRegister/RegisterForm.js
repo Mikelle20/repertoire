@@ -55,45 +55,29 @@ function RegisterForm () {
     }
   }, [formData])
 
-  const handleSubmit = (Event) => {
-    Event.preventDefault()
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    const res = await (await axios.post('/authorize/register/', formData, { withCredentials: true })).data
 
-    axios({
-      method: 'post',
-      url: '/authorize/register/',
-      withCredentials: true,
-      data: {
-        email: formData.email,
-        password: formData.password
-      },
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: '*/*'
+    if (res.success === false) {
+      setError({
+        isError: true,
+        errorText: res.error
+      })
+    } else {
+      const scopes = 'user-top-read user-read-currently-playing playlist-modify-public user-library-modify playlist-modify-private playlist-read-collaborative playlist-read-private'
+      const authorizeEndpoint = 'https://accounts.spotify.com/authorize?'
+
+      const authObject = {
+        response_type: 'code',
+        client_id: process.env.REACT_APP_CLIENT_ID,
+        scope: scopes,
+        redirect_uri: process.env.REACT_APP_REDIRECT_URI,
+        show_dialog: true
       }
-
-    }).then((res) => {
-      const { userCreated, errorText } = res.data
-      console.log(userCreated)
-      if (!userCreated) {
-        setError({
-          isError: true,
-          errorText
-        })
-      } else {
-        const scopes = 'user-top-read user-read-currently-playing playlist-modify-public user-library-modify playlist-modify-private playlist-read-collaborative playlist-read-private'
-        const authorizeEndpoint = 'https://accounts.spotify.com/authorize?'
-
-        const authObject = {
-          response_type: 'code',
-          client_id: process.env.REACT_APP_CLIENT_ID,
-          scope: scopes,
-          redirect_uri: process.env.REACT_APP_REDIRECT_URI,
-          show_dialog: true
-        }
-        const authQueryString = new URLSearchParams(authObject).toString()
-        window.location.href = authorizeEndpoint + authQueryString
-      }
-    })
+      const authQueryString = new URLSearchParams(authObject).toString()
+      window.location.href = authorizeEndpoint + authQueryString
+    }
   }
   return (
     <>

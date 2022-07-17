@@ -45,13 +45,6 @@ app.use('/home', home)
 app.use('/friends', friends)
 app.use('/playlist', playlist)
 
-app.get('/logout', function (req, res, next) {
-  req.logout(function (err) {
-    if (err) { return next(err) }
-    res.redirect('/')
-  })
-})
-
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
   console.log(`listening on port: ${PORT}`)

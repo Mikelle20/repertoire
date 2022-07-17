@@ -40,7 +40,7 @@ function HomeContainer (props) {
   return (
     <div className='homeContainer'>
     <div className='leftHome'>
-      <h1 className='homeTitle'><img src={props.user.profile_image} className='profilePic'></img>Good {greeting}, {props.user.display_name}</h1>
+      <h1 className='homeTitle'><img src={props.data.user.profile_image} className='profilePic'></img>Good {greeting}, {props.data.user.display_name}</h1>
       <h2 className='homeHeader'>Your top artist</h2>
       <div className='sideScrollDiv'>
         {artists}

@@ -4,7 +4,8 @@ const db = require('../models')
 
 const addFriend = async (req, res) => {
   try {
-    const { user, friend } = req.body
+    const { friend } = req.body
+    const user = req.user
     const friendshipExists = await db.Friend.findOne({
       attributes: ['user_1', 'user_2', 'status'],
       where: {
@@ -100,7 +101,8 @@ const getFriends = async (req, res) => {
 }
 
 const searchFriends = async (req, res) => {
-  const { user, search } = req.body
+  const { search } = req.body
+  const user = req.user
   try {
     const users = await db.User.findAll({
       attributes: ['profile_image', 'display_name', 'user_id'],
@@ -158,7 +160,8 @@ const searchFriends = async (req, res) => {
 
 const deleteFriend = async (req, res) => {
   try {
-    const { friend, user } = req.body
+    const { friend } = req.body
+    const user = req.user
 
     await db.Friend.destroy({
       where: {

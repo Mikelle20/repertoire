@@ -12,6 +12,9 @@ import { getPlaylists } from '../features/playlistSlice'
 import { getFriends } from '../features/friendsSlice'
 
 function Playlists () {
+  const accessToken = window.sessionStorage.getItem('accessToken') || null
+  if (!accessToken) window.location.href = '/login'
+
   const { isOpen } = useSelector(state => state.playlistModal)
   const { playlists } = useSelector(store => store.playlist)
   const user = JSON.parse(window.localStorage.getItem('user'))
@@ -27,21 +30,21 @@ function Playlists () {
   })
   return (
         <div className='landingContainer'>
-            <div className='pageContainer'>
-                {isOpen && <PlaylistModal/>}
-                <div className='playlistContainer'>
-                    {playlistCards}
-                    <motion.button
-                    className='newPlaylistBtn'
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => dispatch(openModal())}
-                    >
-                    <img src={addPng}></img>
-                    </motion.button>
-                </div>
+        <div className='pageContainer'>
+            {isOpen && <PlaylistModal/>}
+            <div className='playlistContainer'>
+                {playlistCards}
+                {accessToken && <motion.button
+                className='newPlaylistBtn'
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => dispatch(openModal())}
+                >
+                <img src={addPng}></img>
+                </motion.button>}
             </div>
         </div>
+      </div>
   )
 }
 

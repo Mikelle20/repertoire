@@ -7,8 +7,9 @@ import { useLocation } from 'react-router'
 import PlaylistContainer from '../components/Playlists/PlaylistContainer'
 
 function Playlist () {
-  const location = useLocation()
-  // const image = location.state.images[0].url
+  const accessToken = window.sessionStorage.getItem('accessToken') || null
+  if (!accessToken) window.location.href = '/login'
+
   const user = JSON.parse(window.localStorage.getItem('user'))
   const playlistId = window.location.pathname.split('/').at(-1)
   const { playlist } = useSelector(store => store.playlist)
@@ -38,9 +39,9 @@ function Playlist () {
 
   return (
     <div className='pageContainer'>
-      <div className='container'>
+      {accessToken && <div className='container'>
         {data && <PlaylistContainer playlist={data} playlistId={playlistId} />}
-      </div>
+      </div>}
     </div>
   )
 }

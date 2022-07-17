@@ -14,13 +14,11 @@ const authenticateToken = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization
 
-    console.log(req.cookies)
-
     const { refreshToken } = req.cookies
 
     const token = authHeader && authHeader.split(' ')[1]
 
-    if (token == null) return res.sendStatus(401)
+    if (token == null) return res.status(401).json({ success: false, error: 'User Not Logged In.' })
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, user) => {
       if (err) {
@@ -29,23 +27,32 @@ const authenticateToken = (req, res, next) => {
         } else {
           try {
             const url = 'http://localhost:5000/authorize/userToken'
-            const updatedToken = await (await axios.post(url, { token: refreshToken })).data
-            req.updatedToken = updatedToken
-            req.user = user
+            const res = await (await axios.post(url, { token: refreshToken })).data
+            req.updatedToken = res.accessToken
+            req.user = res.user
+            next()
           } catch (error) {
-            return res.sendStatus(403)
+            console.log(error, 'STEVVEEEEEEEEE')
+            return res.sendStatus(400)
           }
         }
+      } else {
+        req.user = user
+        next()
       }
-      req.user = user
-      next()
     })
   } catch (error) {
     res.sendStatus(500)
   }
 }
 
+const deleteRefreshToken = (req, res, next) => {
+  req.refreshToken = req.cookies.refreshToken
+  next()
+}
+
 module.exports = {
   isLoggedIn,
-  authenticateToken
+  authenticateToken,
+  deleteRefreshToken
 }

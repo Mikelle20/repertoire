@@ -6,27 +6,26 @@ import searchpng from '/Users/ambarreinoso/Desktop/projects/repertoire/client/sr
 import FriendResult from './FriendResult'
 
 function FriendSearchBar () {
-  const user = JSON.parse(window.localStorage.getItem('user'))
   const [formData, setFormData] = React.useState({
-    user,
     search: ''
   })
 
+  const accessToken = window.sessionStorage.getItem('accessToken')
+
+  const headers = {
+    Authorization: `Bearer ${accessToken}`
+  }
+
   const [friendsResults, setFriendsResults] = React.useState([])
+  const [updateStatus, setUpdateStatus] = React.useState(false)
 
   const handleSubmit = (id) => {
-    // setFriendsResults((prevState) => {
-    //   prevState.map(friend => {
-    //     return friend.user_id === id ? { ...friend, status: friend.status + 1 } : { ...friend }
-    //   })
-    // })
-    // console.log(friendsResults)
-    axios({
-      method: 'POST',
-      url: 'http://localhost:5000/friends/addFriend',
-      withCredentials: true,
-      data: { friend: id, user }
-    }).then(res => console.log(res.data))
+    axios.post('http://localhost:5000/friends/addFriend',
+      { friend: id }, { withCredentials: true, headers }).then(res => {
+      setUpdateStatus(prev => {
+        return !prev
+      })
+    })
   }
 
   const handleDelete = (id) => {
@@ -34,22 +33,21 @@ function FriendSearchBar () {
       method: 'DELETE',
       url: 'http://localhost:5000/friends/deleteFriend',
       withCredentials: true,
-      data: { friend: id, user }
+      data: { friend: id }
+    }).then(res => {
+      setUpdateStatus(prev => {
+        return !prev
+      })
     })
   }
 
   React.useEffect(() => {
     if (formData.search.length) {
-      axios({
-        method: 'POST',
-        url: 'http://localhost:5000/friends/searchFriends',
-        data: formData,
-        withCredentials: true
-      }).then((res) => {
+      axios.post('http://localhost:5000/friends/searchFriends', formData, { withCredentials: true, headers }).then(res => {
         setFriendsResults(res.data)
       })
     }
-  }, [formData.search, friendsResults])
+  }, [formData.search, updateStatus])
 
   const handleChange = (Event) => {
     setFormData(prevState => {

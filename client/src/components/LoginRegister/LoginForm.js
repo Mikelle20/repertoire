@@ -19,7 +19,6 @@ function LoginForm () {
     rememberMe: false
   })
 
-  const dispatch = useDispatch()
   const navigate = useNavigate()
 
   const [togglePassword, setTogglePassword] = React.useState(false)
@@ -40,103 +39,54 @@ function LoginForm () {
     })
   }
 
-  let user
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const url = 'http://localhost:5000/authorize/login'
-    const res = await (await axios.post(url, formData, {
-      withCredentials: true
-    })).data
+    if (queryParams) {
+      const accessCode = queryParams.match('=(.*)')[1]
+      const url = 'http://localhost:5000/authorize/login'
+      const res = await (await axios.post(url, { ...formData, accessCode }, {
+        withCredentials: true
+      })).data
 
-    console.log(res)
-    window.sessionStorage.setItem('accessToken', res.accessToken)
-    navigate('/home', { state: formData.email })
-    // if (queryParams) {
-    //   const accessCode = queryParams.match('=(.*)')[1]
+      if (res.success === true) {
+        const accountConnected = await (await axios.post('http://localhost:5000/authorize/accountConnected',
+          { email: formData.email }, { withCredentials: true })).data
 
-    //   axios({
-    //     method: 'POST',
-    //     url: 'http://localhost:5000/authorize/login',
-    //     withCredentials: true,
-    //     data: { ...formData, accessCode }
-    //   }).then(async (res) => {
-    //     console.log(res.data)
-    //     user = res.data
-    //     setError(prevState => {
-    //       return {
-    //         ...prevState,
-    //         isError: false
-    //       }
-    //     })
+        if (accountConnected.success) {
+          window.sessionStorage.setItem('accessToken', res.accessToken)
+          navigate('/home')
+        } else {
+          console.log(res.error)
+        }
+      }
+    } else {
+      const url = 'http://localhost:5000/authorize/login'
+      const res = await (await axios.post(url, { ...formData }, {
+        withCredentials: true
+      })).data
 
-    //     axios({
-    //       method: 'POST',
-    //       url: 'http://localhost:5000/authorize/accountConnected',
-    //       data: { email: formData.email }
-    //     }).then(async () => {
-    //       if (formData.rememberMe) {
-    //         window.localStorage.setItem('user', JSON.stringify(user))
-    //         navigate('/home', { state: formData.email })
-    //       } else {
-    //         window.sessionStorage.setItem('user', JSON.stringify(user))
-    //         navigate('/home', { state: formData.email })
-    //       }
-    //     })
-    //   }).catch(
-    //     setError((prevState) => {
-    //       return {
-    //         ...prevState,
-    //         isError: true
-    //       }
-    //     })
-    //   )
-    // } else {
-    //   axios({
-    //     method: 'POST',
-    //     url: 'http://localhost:5000/authorize/login',
-    //     withCredentials: true,
-    //     data: formData
-    //   }).then((res) => {
-    //     const { spotify_connected } = res.data
-    //     user = res.data
-    //     setError(prevState => {
-    //       return {
-    //         ...prevState,
-    //         isError: false
-    //       }
-    //     })
+      if (res.success) {
+        const { success } = await (await axios.post('http://localhost:5000/authorize/accountConnected', { check: true, email: formData.email }, { withCredentials: true })).data
 
-    //     if (spotify_connected) {
-    //       if (formData.rememberMe) {
-    //         window.localStorage.setItem('user', JSON.stringify(user))
-    //         navigate('/home', { state: formData.email })
-    //       } else {
-    //         window.sessionStorage.setItem('user', JSON.stringify(user))
-    //         navigate('/home', { state: formData.email })
-    //       }
-    //     } else {
-    //       const scopes = 'user-top-read playlist-modify-public user-library-modify playlist-modify-private playlist-read-collaborative playlist-read-private'
-    //       const authorizeEndpoint = 'https://accounts.spotify.com/authorize?'
+        if (success) {
+          window.sessionStorage.setItem('accessToken', res.accessToken)
+          navigate('/home')
+        } else {
+          const scopes = 'user-top-read playlist-modify-public user-library-modify playlist-modify-private playlist-read-collaborative playlist-read-private'
+          const authorizeEndpoint = 'https://accounts.spotify.com/authorize?'
 
-    //       const authObject = {
-    //         response_type: 'code',
-    //         client_id: process.env.REACT_APP_CLIENT_ID,
-    //         scope: scopes,
-    //         redirect_uri: process.env.REACT_APP_REDIRECT_URI,
-    //         show_dialog: true
-    //       }
-    //       const authQueryString = new URLSearchParams(authObject).toString()
-    //       window.location.href = authorizeEndpoint + authQueryString
-    //     }
-    //   }).catch(
-    //     setError((prevState) => {
-    //       return {
-    //         ...prevState,
-    //         isError: true
-    //       }
-    //     })
-    //   )
-    // }
+          const authObject = {
+            response_type: 'code',
+            client_id: process.env.REACT_APP_CLIENT_ID,
+            scope: scopes,
+            redirect_uri: process.env.REACT_APP_REDIRECT_URI,
+            show_dialog: true
+          }
+          const authQueryString = new URLSearchParams(authObject).toString()
+          window.location.href = authorizeEndpoint + authQueryString
+        }
+      }
+    }
   }
   return (
     <>

@@ -5,64 +5,45 @@ import SocialItem from '../components/Home/SocialItem'
 import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
 import { getUser } from '../features/userSlice'
-import { useLocation } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import SuggestionItem from '../components/Home/SuggestionItem'
 import { getHomeData } from '../features/homeDataSlice'
 import HomeContainer from '../components/Home/HomeContainer'
 
 function Home () {
+  const accessToken = window.sessionStorage.getItem('accessToken') || null
+  if (!accessToken) window.location.href = '/login'
   const userRating = useSelector(store => store.user.rating)
   const { homeData } = useSelector(store => store.homeData)
   const dispatch = useDispatch()
   const user = JSON.parse(window.localStorage.getItem('user')) || JSON.parse(window.sessionStorage.getItem('user'))
-  const time = new Date()
-  const hours = time.getHours()
-
-  let greeting
-
-  if (hours > 4 && hours < 12) greeting = 'Morning'
-  if (hours >= 12 && hours < 18) greeting = 'Afternoon'
-  if (hours <= 4 || hours >= 18) greeting = 'Evening'
 
   const [data, setData] = React.useState(null)
   const [socials, setSocials] = React.useState(null)
 
-  React.useEffect(() => {
-    axios.get('http://localhost:5000/authorize/tokenTest', {
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${window.sessionStorage.getItem('accessToken')}`
-      }
-    }).then(res => console.log(res.data))
-    //   axios({
-    //     method: 'POST',
-    //     url: 'http://localhost:5000/home/setHome',
-    //     data: { user },
-    //     withCredentials: true
-    //   }).then(res => {
-    //     setData(res.data)
-    //   })
+  const headers = {
+    Authorization: `Bearer ${window.sessionStorage.getItem('accessToken')}`
+  }
 
-    //   axios({
-    //     method: 'POST',
-    //     url: 'http://localhost:5000/home/getSocials',
-    //     data: { user },
-    //     withCredentials: true
-    //   }).then(res => {
-    //     setSocials(res.data)
-    //   })
-    //   dispatch(getUser(user.email))
+  React.useEffect(() => {
+    axios.get('http://localhost:5000/home/setHome', { withCredentials: true, headers }).then(res => {
+      setData(res.data)
+    })
+
+    axios.get('http://localhost:5000/home/getSocials', { withCredentials: true, headers }).then(res => {
+      setSocials(res.data)
+    })
   }, [])
 
   return (
     <div className='landingContainer'>
-      <div className='pageContainer'>
+      {accessToken && <div className='pageContainer'>
         {socials && data !== null
-          ? <HomeContainer userRating={userRating} user={user} data={data} socials={socials}/>
+          ? <HomeContainer userRating={userRating} data={data} socials={socials}/>
           : <div className='loadingScreen'>
             Loading...
           </div>}
-      </div>
+      </div>}
     </div>
   )
 }

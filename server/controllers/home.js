@@ -4,7 +4,7 @@ const { getAccessToken } = require('../helpers/auth')
 const sort = require('sort-array')
 
 const setHome = async (req, res) => {
-  const { user } = req.body
+  const user = req.user
 
   try {
     const accessToken = await getAccessToken(user.user_id)
@@ -83,10 +83,11 @@ const setHome = async (req, res) => {
       success: true,
       homePlaylists,
       homeSuggestions,
-      items: items.items
+      items: items.items,
+      user
     })
   } catch (error) {
-    console.log(error)
+    console.log(error.response)
     res.status(500).json({
       success: false,
       error: 'Something went wrong on the server side.'
@@ -95,7 +96,7 @@ const setHome = async (req, res) => {
 }
 
 const getSocials = async (req, res) => {
-  const { user } = req.body
+  const user = req.user
 
   try {
     const accessToken = await getAccessToken(user.user_id)
@@ -173,6 +174,7 @@ const getSocials = async (req, res) => {
 
     res.status(200).send(sortedSocials)
   } catch (error) {
+    console.log(error)
     res.status(500).json({
       success: false,
       error: 'Something went wrong on the server side.'

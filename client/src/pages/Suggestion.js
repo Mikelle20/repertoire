@@ -5,6 +5,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setFriends } from '../features/friendsSlice'
 import SearchModal from '../components/Suggestion/SearchModal'
 function Suggestion () {
+  const accessToken = window.sessionStorage.getItem('accessToken') || null
+  if (!accessToken) window.location.href = '/login'
+
   const { isOpen } = useSelector(store => store.searchModal)
   const dispatch = useDispatch()
 
@@ -23,10 +26,10 @@ function Suggestion () {
   }, [])
   return (
     <div className='landingContainer'>
-        <div className='pageContainer'>
+        {accessToken && <div className='pageContainer'>
             {isOpen && <SearchModal/>}
             <SearchBar />
-        </div>
+        </div>}
     </div>
   )
 }

@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable new-cap */
 const { default: axios } = require('axios')
 const db = require('../models')
@@ -27,40 +28,8 @@ const registerUser = async (req, res) => {
       user_id: nanoid()
     })
     return res.status(200).json({ success: true })
-
-    // if (password.length > 7) {
-    //   if (isEmail) {
-    //     if (!userFound) {
-    //       const hashedPassword = bcrypt.hashSync(password, 10)
-    //       await db.User.create({
-    //         password: hashedPassword,
-    //         email,
-    //         user_id: nanoid()
-    //       })
-    //       return res.status(200).json({ success: true, userCreated: true })
-    //     } else {
-    //       return res.status(200).json({
-    //         success: true,
-    //         userCreated: false,
-    //         errorText: 'User already associated with email.'
-    //       })
-    //     }
-    //   } else {
-    //     return res.status(200).json({
-    //       success: true,
-    //       userCreated: false,
-    //       errorText: 'Please enter valid email.'
-    //     })
-    //   }
-    // } else {
-    //   return res.status(200).json({
-    //     success: true,
-    //     userCreated: false,
-    //     errorText: 'Password must greater than 7 characters.'
-    //   })
-    // }
   } catch (error) {
-    res.status(200).json({
+    res.status(500).json({
       success: false,
       error: 'Something went wrong on the server side.status(200).'
     })
@@ -123,7 +92,11 @@ const loginUser = async (req, res) => {
       await db.User.update({ server_refresh_token: refreshToken }, {
         where: { user_id: user.dataValues.user_id }
       })
-      res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; HttpOnly`)
+      // res.setHeader('Cookie', `refreshToken=${refreshToken}; HttpOnly`)
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        sameSite: 'strict'
+      })
       res.status(200).json({
         success: true,
         accessToken
@@ -142,11 +115,10 @@ const getUserToken = async (req, res) => {
   try {
     const refreshToken = req.body.token
 
-    console.log(req.body)
-
     if (!refreshToken) return res.sendStatus(401)
 
     const userData = await db.User.findOne({
+      attributes: ['display_name', 'user_id', 'profile_image', 'email', 'spotify_connected'],
       where: { server_refresh_token: refreshToken }
     })
 
@@ -165,6 +137,7 @@ const getUserToken = async (req, res) => {
 
       res.status(200).json({
         success: true,
+        user: { ...userData.dataValues },
         accessToken
       })
     })
@@ -179,7 +152,7 @@ const getUserToken = async (req, res) => {
 const deleteToken = async (req, res) => {
   try {
     await db.User.update({ server_refresh_token: null }, {
-      where: { server_refresh_token: req.body.token }
+      where: { server_refresh_token: req.refreshToken }
     })
     res.clearCookie('refreshToken')
     res.status(200).json({
@@ -208,14 +181,27 @@ const testPassport = (req, res) => {
   }
 }
 
-const accountConnected = (req, res) => {
+const accountConnected = async (req, res) => {
   try {
+    const { check } = req.body || null
+    console.log(check)
     const { email } = req.body
+    if (check) {
+      const user = await (await db.User.findOne({ attributes: ['spotify_connected'], where: { email } })).dataValues
+
+      if (user.spotify_connected) return res.status(200).json({ success: true })
+
+      if (user.spotify_connected === false) return res.status(200).json({ success: false })
+    }
+
     db.User.update({ spotify_connected: true }, {
       where: { email }
     }).then(res.status(200).json({ success: true, accountConnected: true }))
   } catch (error) {
-    res.sendStatus(500)
+    res.status(500).json({
+      success: false,
+      error: 'Something went wrong on the server side.'
+    })
   }
 }
 
@@ -336,13 +322,21 @@ const getAccessToken = (req, res) => {
 }
 
 const getUser = async (req, res) => {
-  const { email } = req.body
-  const user = await db.User.findOne({
-    attributes: ['display_name', 'profile_image', 'user_id', 'rating', 'email', 'spotify_connected'],
-    where: { email }
-  })
+  const server_refresh_token = req.cookies.refreshToken
 
-  res.send(user.dataValues)
+  const decodedToken = jwt.decode(server_refresh_token)
+
+  const user = await (await db.User.findOne({
+    attributes: ['user_id', 'profile_image'],
+    where: { user_id: decodedToken.user_id }
+  }))
+
+  console.log(user, false)
+
+  res.status(200).json({
+    success: true,
+    user: { ...user.dataValues }
+  })
 }
 
 module.exports = {

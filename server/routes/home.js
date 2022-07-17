@@ -1,8 +1,9 @@
 const express = require('express')
 const { setHome, getSocials } = require('../controllers/home')
+const { authenticateToken } = require('../middleware/auth')
 const router = express.Router()
 
-router.post('/sethome', setHome)
-router.post('/getSocials', getSocials)
+router.get('/sethome', authenticateToken, setHome)
+router.get('/getSocials', authenticateToken, getSocials)
 
 module.exports = router
