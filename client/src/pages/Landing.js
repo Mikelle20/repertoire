@@ -4,9 +4,10 @@
 import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import logo from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/logos/listening-music.png'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 
 function Landing () {
+  const navigate = useNavigate()
   const variants = {
     visibleY: {
       y: 0,
@@ -73,13 +74,12 @@ function Landing () {
         <div className='breakerRight'>
           <h2 className='landingHeader'>Music Recommendation Made Easy.</h2>
           <h3 className='landingText'>Recommend, rate, and discuss the music you and your friends are currently listening to.</h3>
-          <Link to='/login'>
             <motion.button className='signIn'
               whileTap={{ scale: 0.9 }}
+              onClick={() => { window.location.href = '/login' }}
             >
               <p>Sign In</p>
             </motion.button>
-          </Link>
         </div>
       </motion.div>
     </motion.div>

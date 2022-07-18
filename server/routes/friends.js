@@ -4,7 +4,7 @@ const { authenticateToken } = require('../middleware/auth')
 const router = express.Router()
 
 router.post('/addFriend', authenticateToken, addFriend)
-router.post('/getFriends', getFriends)
+router.get('/getFriends', authenticateToken, getFriends)
 router.post('/searchFriends', authenticateToken, searchFriends)
 router.delete('/deleteFriend', authenticateToken, deleteFriend)
 

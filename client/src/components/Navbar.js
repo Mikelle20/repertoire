@@ -18,8 +18,11 @@ import logo from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/ass
 import axios from 'axios'
 
 const ResponsiveAppBar = () => {
-  const accessToken = window.sessionStorage.getItem('accessToken') || null
+  const accessToken = window.sessionStorage.getItem('accessToken')
   const pages = [['Home', '/home'], ['Friends', '/friends'], ['Suggestion', '/suggestion'], ['Playlists', '/playlists']]
+  const headers = {
+    Authorization: `Bearer ${accessToken}`
+  }
 
   const [anchorElNav, setAnchorElNav] = React.useState(null)
 
@@ -33,9 +36,8 @@ const ResponsiveAppBar = () => {
 
   const handleClick = async () => {
     accessToken && axios.delete('http://localhost:5000/authorize/logout', { withCredentials: true })
-    window.sessionStorage.removeItem('accessToken')
-    console.log('logout button ran')
     setData({})
+    window.sessionStorage.removeItem('accessToken')
   }
 
   const [data, setData] = React.useState({})
@@ -102,7 +104,7 @@ const ResponsiveAppBar = () => {
               {pages.map((page) => (
                 <MenuItem key={page[0]} onClick={handleCloseNavMenu}>
                   {/* <Typography textAlign="center">{page}</Typography> */}
-                  <NavLink className='navLink' to={page[1]}>{page[0]}</NavLink>
+                  <NavLink className='navLink' to={page[1]}><span>{page[0]}</span></NavLink>
                 </MenuItem>
               ))}
               {accessToken
@@ -142,7 +144,7 @@ const ResponsiveAppBar = () => {
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                {page[0]}
+                <span>{page[0]}</span>
               </NavLink>
             ))}
               {accessToken ? <NavLink className='navLinkFull' sx={{ my: 2, color: 'white', display: 'block' }} to='/login'><span onClick={handleClick}>Logout</span></NavLink> : <NavLink className='navLinkFull' sx={{ my: 2, color: 'white', display: 'block' }} to='/login'>Login</NavLink>}

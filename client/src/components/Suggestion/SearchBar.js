@@ -6,11 +6,14 @@ import SearchResult from './SearchResult'
 import searchpng from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/search.png'
 
 function SearchBar () {
-  const user = JSON.parse(window.localStorage.getItem('user'))
   const [formData, setFormData] = React.useState({
-    user,
     search: ''
   })
+  const accessToken = window.sessionStorage.getItem('accessToken')
+
+  const headers = {
+    Authorization: `Bearer ${accessToken}`
+  }
 
   const [tracks, setTracks] = React.useState([])
 
@@ -19,7 +22,8 @@ function SearchBar () {
       method: 'POST',
       url: 'http://localhost:5000/suggestion/search',
       data: formData,
-      withCredentials: true
+      withCredentials: true,
+      headers
     }).then((res) => {
       setTracks(res.data)
     })

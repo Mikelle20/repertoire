@@ -8,21 +8,30 @@ import PlaylistModal from '../components/Playlists/PlaylistModal'
 import { useDispatch, useSelector } from 'react-redux'
 import { openModal } from '../features/PlaylistModalSlice'
 import axios from 'axios'
-import { getPlaylists } from '../features/playlistSlice'
-import { getFriends } from '../features/friendsSlice'
 
 function Playlists () {
   const accessToken = window.sessionStorage.getItem('accessToken') || null
   if (!accessToken) window.location.href = '/login'
 
   const { isOpen } = useSelector(state => state.playlistModal)
-  const { playlists } = useSelector(store => store.playlist)
-  const user = JSON.parse(window.localStorage.getItem('user'))
+
+  const headers = {
+    Authorization: `Bearer ${accessToken}`
+  }
+
+  const [playlists, setPlaylists] = React.useState([])
+  const [friends, setFriends] = React.useState([])
+
   const dispatch = useDispatch()
 
   React.useEffect(() => {
-    dispatch(getPlaylists(user))
-    dispatch(getFriends(user))
+    axios.get('/friends/getFriends', { withCredentials: true, headers }).then(res => {
+      setFriends(res.data)
+    })
+
+    axios.get('/playlist/getPlaylists', { withCredentials: true, headers }).then(res => {
+      setPlaylists(res.data)
+    })
   }, [])
 
   const playlistCards = playlists.map((playlist) => {
@@ -31,9 +40,9 @@ function Playlists () {
   return (
         <div className='landingContainer'>
         <div className='pageContainer'>
-            {isOpen && <PlaylistModal/>}
+            {isOpen && <PlaylistModal friends={friends}/>}
             <div className='playlistContainer'>
-                {playlistCards}
+                {playlists && playlistCards}
                 {accessToken && <motion.button
                 className='newPlaylistBtn'
                 whileHover={{ scale: 1.1 }}

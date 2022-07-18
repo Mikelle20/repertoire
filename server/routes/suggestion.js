@@ -1,11 +1,12 @@
 const express = require('express')
 const { search, suggest, getAccessedPlaylists, getSuggestions, rate } = require('../controllers/suggestion')
+const { authenticateToken } = require('../middleware/auth')
 const router = express.Router()
 
-router.post('/search', search)
-router.post('/suggest', suggest)
-router.post('/accessedPlaylists', getAccessedPlaylists)
-router.post('/getSuggestions', getSuggestions)
-router.post('/rate', rate)
+router.post('/search', authenticateToken, search)
+router.post('/suggest', authenticateToken, suggest)
+router.post('/accessedPlaylists', authenticateToken, getAccessedPlaylists)
+router.post('/getSuggestions', authenticateToken, getSuggestions)
+router.post('/rate', authenticateToken, rate)
 
 module.exports = router

@@ -12,8 +12,23 @@ import Playlists from './pages/Playlists'
 import Playlist from './pages/Playlist'
 import Friends from './pages/Friends'
 import Navbar from './components/Navbar'
+import { axiosAuth } from './utils'
 
 function App () {
+  const accessToken = window.sessionStorage.getItem('accessToken')
+  const headers = {
+    Authorization: `Bearer ${accessToken}`
+  }
+  axios.interceptors.request.use(async (config) => {
+    if (accessToken) {
+      const res = await (await axiosAuth.get('/checkToken', { withCredentials: true, headers })).data
+      console.log('ran interceptor')
+      window.sessionStorage.setItem('accessToken', res.accessToken)
+    }
+    return config
+  }, (error) => {
+    return Promise.reject(error)
+  })
   return (
 
     <>

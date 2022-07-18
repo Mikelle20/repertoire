@@ -632,7 +632,6 @@ html, body {
   width: fit-content;
   font-weight: bold;
   font-size: 1.25rem;
-  /* background-color: yellow; */
 }
 
 .sideScrollDiv{
@@ -654,7 +653,6 @@ html, body {
   justify-content: center;
   align-items: center;
   position: relative;
-  /* background-color: orange; */
   margin: 2%;
   min-width: fit-content;
   height: fit-content;
@@ -671,7 +669,6 @@ html, body {
   border-radius: 50%;
   margin-right: 2%;
   max-width: 15%;
-  /* z-index: 10; */
 }
 
 @media only screen and (max-width: 600px) {
@@ -708,7 +705,6 @@ html, body {
   display: flex;
   height: 100vh;
   flex-direction: column;
-  /* justify-content: center; */
   align-items: center;
 }
 
@@ -807,7 +803,6 @@ html, body {
   justify-content: center;
   align-items: center;
   width: fit-content;
-  /* background-color: red; */
 }
 
 .searchModalImg{
@@ -855,6 +850,7 @@ html, body {
 .modalFriendsPlaylists{
   display: flex;
   flex-direction: column;
+  align-items: center;
   margin: 3%;
   min-width: 13rem;
   margin-top: 5%;
@@ -885,7 +881,7 @@ html, body {
   display: flex;
   width: 4rem;
   height: fit-content;
-  padding-top: 1%;
+  padding: 1% 0%;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -928,7 +924,6 @@ html, body {
   grid-auto-rows: 16rem;
   overflow-y: scroll;
   margin-top: 10%;
-  /* margin-left: 2%; */
 }
 
 .playlistCard{
@@ -1003,7 +998,6 @@ html, body {
 }
 
 label{
-  /* color: #c3cbeb; */
   font-size: large;
   font-weight: bolder;
   margin-left: 2%;
@@ -1041,10 +1035,8 @@ label{
 
 .buttonModalContainer{
   display: flex;
-  width: 12rem;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
-  padding: 3%;
 }
 
 @media only screen and (max-width: 600px){
@@ -1060,6 +1052,7 @@ label{
   font-size: 1rem;
   font-weight: 700;
   line-height: 0;
+  padding: 5px;
 
   border: none;
   background-color:     #7d8eda;

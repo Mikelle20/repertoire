@@ -115,17 +115,19 @@ const getUserToken = async (req, res) => {
   try {
     const refreshToken = req.body.token
 
-    if (!refreshToken) return res.sendStatus(401)
+    if (!refreshToken) return res.status(401).send('no refresh token')
 
-    const userData = await db.User.findOne({
+    const decodedToken = jwt.decode(refreshToken)
+
+    const userData = await (await db.User.findOne({
       attributes: ['display_name', 'user_id', 'profile_image', 'email', 'spotify_connected'],
-      where: { server_refresh_token: refreshToken }
-    })
+      where: { user_id: decodedToken.user_id }
+    }))
 
-    if (!userData) return res.sendStatus(403)
+    if (!userData) return res.status(403).send('no user error')
 
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-      if (err) return res.sendStatus(403)
+      if (err) return res.status(403).send('verify refresh error')
 
       const accessToken = generateAccessToken({
         display_name: userData.dataValues.display_name,
@@ -170,21 +172,9 @@ const tokenTest = (req, res) => {
   res.send(req.user)
 }
 
-const testPassport = (req, res) => {
-  if (req.user) {
-    console.log(req.user)
-    return res.json(req.user)
-  } else {
-    return res.json({
-      errorText: 'Incorrect'
-    })
-  }
-}
-
 const accountConnected = async (req, res) => {
   try {
     const { check } = req.body || null
-    console.log(check)
     const { email } = req.body
     if (check) {
       const user = await (await db.User.findOne({ attributes: ['spotify_connected'], where: { email } })).dataValues
@@ -223,22 +213,6 @@ const getRefreshToken = async (req, res) => {
     await db.User.update({ refresh_token: refreshToken }, {
       where: { email }
     })
-    // let refreshToken
-
-    // await axios({
-    //   method: 'post',
-    //   url: 'https://accounts.spotify.com/api/token',
-    //   data: params,
-    //   headers: basicAuthHeaders
-    // }).then(async (res) => {
-    //   await db.User.update({ refresh_token: res.data.refresh_token }, {
-    //     where: { email },
-    //     returning: true,
-    //     plain: true
-    //   }).then((res) => {
-    //     refreshToken = res[1].dataValues.refresh_token
-    //   })
-    // })
 
     const accessToken = await getAccess(refreshToken)
 
@@ -266,29 +240,6 @@ const getRefreshToken = async (req, res) => {
         where: { email }
       })
     }
-
-    // await axios({
-    //   method: 'get',
-    //   url: 'https://api.spotify.com/v1/me',
-    //   headers: bearerAuth
-    // }).then((res) => {
-    //   if (res.data.images[0]) {
-    //     db.User.update({
-    //       display_name: res.data.display_name,
-    //       profile_image: res.data.images[0].url,
-    //       user_id: res.data.id
-    //     }, {
-    //       where: { email }
-    //     })
-    //   } else {
-    //     db.User.update({
-    //       display_name: res.data.display_name,
-    //       user_id: res.data.id
-    //     }, {
-    //       where: { email }
-    //     })
-    //   }
-    // })
 
     res.status(200).json({ success: true })
   } catch (error) {
@@ -331,11 +282,15 @@ const getUser = async (req, res) => {
     where: { user_id: decodedToken.user_id }
   }))
 
-  console.log(user, false)
-
   res.status(200).json({
     success: true,
     user: { ...user.dataValues }
+  })
+}
+
+const checkToken = (req, res) => {
+  res.status(200).json({
+    accessToken: req.updatedToken
   })
 }
 
@@ -346,8 +301,8 @@ module.exports = {
   loginUser,
   registerUser,
   getUser,
-  testPassport,
   tokenTest,
   getUserToken,
-  accountConnected
+  accountConnected,
+  checkToken
 }

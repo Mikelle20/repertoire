@@ -8,7 +8,10 @@ import axios from 'axios'
 import { initialState } from '../../ratingStates/initStates'
 
 function Suggestion (props) {
-  const user = JSON.parse(window.localStorage.getItem('user'))
+  const accessToken = window.sessionStorage.getItem('accessToken')
+  const headers = {
+    Authorization: `Bearer ${accessToken}`
+  }
 
   React.useEffect(() => {
     setFillHeart(initialState[props.suggestion.rating])
@@ -36,8 +39,8 @@ function Suggestion (props) {
           method: 'POST',
           url: 'http://localhost:5000/suggestion/rate',
           withCredentials: true,
+          headers,
           data: {
-            user,
             receiverId: props.suggestion.senderId,
             rating: (id / 4) + 0.25,
             songId: props.suggestion.songId,

@@ -9,6 +9,11 @@ const setHome = async (req, res) => {
   try {
     const accessToken = await getAccessToken(user.user_id)
 
+    const userData = await (await db.User.findOne({
+      attributes: ['rating', 'display_name', 'profile_image', 'user_id', 'email'],
+      where: { user_id: user.user_id }
+    })).dataValues
+
     const headers = {
       Accept: 'application/json',
       Authorization: `Bearer ${accessToken}`
@@ -84,10 +89,12 @@ const setHome = async (req, res) => {
       homePlaylists,
       homeSuggestions,
       items: items.items,
-      user
+      user: {
+        ...userData
+      }
     })
   } catch (error) {
-    console.log(error.response)
+    console.log(error)
     res.status(500).json({
       success: false,
       error: 'Something went wrong on the server side.'
@@ -174,7 +181,6 @@ const getSocials = async (req, res) => {
 
     res.status(200).send(sortedSocials)
   } catch (error) {
-    console.log(error)
     res.status(500).json({
       success: false,
       error: 'Something went wrong on the server side.'

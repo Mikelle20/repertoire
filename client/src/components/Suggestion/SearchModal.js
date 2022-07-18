@@ -12,8 +12,12 @@ import explicitPng from '/Users/ambarreinoso/Desktop/projects/repertoire/client/
 function SearchModal () {
   const { search } = useSelector(store => store.searchModal)
   const { friends } = useSelector(store => store.friends)
-  const user = JSON.parse(window.localStorage.getItem('user'))
   const dispatch = useDispatch()
+
+  const accessToken = window.sessionStorage.getItem('accessToken')
+  const headers = {
+    Authorization: `Bearer ${accessToken}`
+  }
 
   const [formData, setFormData] = React.useState({
     song_id: search.songId,
@@ -31,9 +35,10 @@ function SearchModal () {
         method: 'POST',
         url: 'http://localhost:5000/suggestion/accessedPlaylists',
         withCredentials: true,
-        data: { user, friend: formData.friend_id }
+        headers,
+        data: { friend: formData.friend_id }
       }).then(res => {
-        setFriendPlaylists(res.data)
+        dispatch(setFriendPlaylists(res.data))
       })
     }
   }, [formData.friend_id])
@@ -66,8 +71,6 @@ function SearchModal () {
         return playlist.playlistId === id ? { ...playlist, checked: !playlist.checked } : { ...playlist, checked: false }
       })
     })
-
-    console.log(formData)
   }
 
   const handleSubmit = (e) => {
@@ -76,10 +79,10 @@ function SearchModal () {
       method: 'POST',
       url: 'http://localhost:5000/suggestion/suggest',
       withCredentials: true,
-      data: { formData, user }
+      headers,
+      data: { ...formData }
     }).then(res => {
       dispatch(closeModal())
-      console.log(res.data)
     })
   }
 
@@ -115,22 +118,22 @@ function SearchModal () {
         </div>
         {formData.friend_id &&
           <div className='modalFriendsPlaylists'>
-            {friendPlaylistIcons}
+            {friendPlaylistIcons.length === 0 ? <span className='empty'>No Playlists Yet</span> : friendPlaylistIcons}
           </div>
         }
         <div className='buttonModalContainer'>
           <motion.button
           style={{ marginRight: '20%' }}
           whileTap={{ scale: 0.9 }}
-          onClick={() => dispatch(closeModal())} className='btn'>
+          onClick={() => dispatch(closeModal())} className='modalBtn'>
             Close
           </motion.button>
-          <motion.button
+          {formData.playlist_id && <motion.button
           whileTap={{ scale: 0.9 }}
-          onClick={handleSubmit} className='btn'>
+          onClick={handleSubmit} className='modalBtn'>
             Create
-          </motion.button>
-        </div>
+          </motion.button>}
+         </div>
     </motion.div>
   )
 }

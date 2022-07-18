@@ -6,7 +6,7 @@ const { setPlaylists } = require('../helpers/playlists')
 const { Op } = require('sequelize')
 
 const createPlaylist = async (req, res) => {
-  const { user } = req.body
+  const user = req.user
   const { title, isPrivate, accessList, description } = req.body.formData
   const data = {
     name: title,
@@ -55,7 +55,7 @@ const createPlaylist = async (req, res) => {
 }
 
 const getPlaylists = async (req, res) => {
-  const { user } = req.body
+  const user = req.user
   try {
     const accessToken = await getAccessToken(user.user_id)
 
@@ -70,10 +70,10 @@ const getPlaylists = async (req, res) => {
     })
 
     const playlists = await setPlaylists(dataPlaylists, headers)
-    console.log('hey jit')
 
     res.status(200).send(playlists)
   } catch (error) {
+    console.log(error)
     res.status(500).json({
       success: false,
       error: 'Something went wrong server side.'
@@ -82,7 +82,8 @@ const getPlaylists = async (req, res) => {
 }
 
 const getPlaylist = async (req, res) => {
-  const { playlistId, user } = req.body
+  const { playlistId } = req.body
+  const user = req.user
 
   try {
     const accessToken = await getAccessToken(user.user_id)
@@ -111,7 +112,8 @@ const getPlaylist = async (req, res) => {
 }
 
 const friendsAccess = async (req, res) => {
-  const { user, playlistInfo } = req.body
+  const { playlistInfo } = req.body
+  const user = req.user
 
   try {
     const isPrivate = await (await db.Playlist.findOne({
@@ -182,6 +184,7 @@ const friendsAccess = async (req, res) => {
       })
     }
   } catch (error) {
+    console.log(error)
     res.status(500).json({
       success: false,
       error: 'Something went wrong on the server side.'

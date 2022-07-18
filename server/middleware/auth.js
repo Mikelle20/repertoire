@@ -30,14 +30,15 @@ const authenticateToken = (req, res, next) => {
             const res = await (await axios.post(url, { token: refreshToken })).data
             req.updatedToken = res.accessToken
             req.user = res.user
+            console.log('sent new token', true)
             next()
           } catch (error) {
-            console.log(error, 'STEVVEEEEEEEEE')
             return res.sendStatus(400)
           }
         }
       } else {
         req.user = user
+        console.log('good access token')
         next()
       }
     })

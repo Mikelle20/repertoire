@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React from 'react'
 import axios from 'axios'
@@ -6,9 +7,9 @@ import { closeModal } from '../../features/PlaylistModalSlice'
 import { motion } from 'framer-motion'
 import SearchFriends from '../Suggestion/SearchFriends'
 
-function PlaylistModal () {
+function PlaylistModal (props) {
   const dispatch = useDispatch()
-  const user = JSON.parse(window.localStorage.getItem('user'))
+  const accessToken = window.sessionStorage.getItem('accessToken')
   const { friends } = useSelector(store => store.friends)
   const [formData, setFormData] = React.useState({
     title: '',
@@ -17,7 +18,13 @@ function PlaylistModal () {
     accessList: []
   })
 
-  const [searchFriends, setSearchFriends] = React.useState(friends)
+  console.log(friends)
+
+  const headers = {
+    Authorization: `Bearer ${accessToken}`
+  }
+
+  const [searchFriends, setSearchFriends] = React.useState(props.friends)
 
   React.useEffect(() => {
     if (!formData.isPrivate) {
@@ -47,7 +54,8 @@ function PlaylistModal () {
       method: 'POST',
       url: 'http://localhost:5000/playlist/createPlaylist',
       withCredentials: true,
-      data: { formData, user }
+      headers,
+      data: { formData }
     })
   }
 
@@ -76,8 +84,6 @@ function PlaylistModal () {
         return friend.user_id === id ? { ...friend, checked: !friend.checked } : friend
       })
     })
-
-    console.log(formData)
   }
 
   const friendIcons = searchFriends.map((friend) => {
@@ -133,12 +139,12 @@ function PlaylistModal () {
           className='modalBtn'
           onClick={() => dispatch(closeModal())}
           >Close</motion.button>
-          <motion.button
+          {formData.title && <motion.button
           whileTap={{ scale: 0.9 }}
           onSubmit={handleSubmit}
           id='modalClose'
           className='modalBtn'
-          >Create</motion.button>
+          >Create</motion.button>}
         </div>
       </form>
     </motion.div>

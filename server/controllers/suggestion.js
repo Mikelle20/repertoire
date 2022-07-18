@@ -8,7 +8,8 @@ const db = require('../models')
 
 const search = async (req, res) => {
   try {
-    const { search, user } = req.body
+    const { search } = req.body
+    const user = req.user
     const arr = []
 
     const accessToken = await getAccessToken(user.user_id)
@@ -47,8 +48,8 @@ const search = async (req, res) => {
 }
 
 const suggest = async (req, res) => {
-  const { friend_id, song_id, playlist_id } = req.body.formData
-  const { user } = req.body
+  const { friend_id, song_id, playlist_id } = req.body
+  const user = req.user
 
   try {
     await db.Suggestion.create({
@@ -76,7 +77,7 @@ const suggest = async (req, res) => {
       success: true
     })
   } catch (error) {
-    console.log(error)
+    console.log(error.response)
     res.status(500).json({
       success: false,
       error: 'Something went wrong server side.'
@@ -94,7 +95,8 @@ const suggest = async (req, res) => {
 }
 
 const rate = async (req, res) => {
-  const { user, rating, receiverId, songId, playlistId } = req.body
+  const { rating, receiverId, songId, playlistId } = req.body
+  const user = req.user
 
   try {
     const ratingExist = await db.Rating.findOne({
@@ -156,7 +158,8 @@ const rate = async (req, res) => {
 }
 
 const getAccessedPlaylists = async (req, res) => {
-  const { user, friend } = req.body
+  const { friend } = req.body
+  const user = req.user
   let playlistsAccessed = []
 
   try {
@@ -198,7 +201,8 @@ const getAccessedPlaylists = async (req, res) => {
 }
 
 const getSuggestions = async (req, res) => {
-  const { user, playlistId } = req.body
+  const { playlistId } = req.body
+  const user = req.user
   const arr = []
 
   try {

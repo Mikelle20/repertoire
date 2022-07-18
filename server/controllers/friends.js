@@ -62,7 +62,7 @@ const addFriend = async (req, res) => {
 
 const getFriends = async (req, res) => {
   try {
-    const { user } = req.body
+    const user = req.user
     const userFriends = await db.Friend.findAll({
       attributes: ['user_2', 'user_1'],
       where: {
@@ -93,6 +93,7 @@ const getFriends = async (req, res) => {
       res.status(200).send(resp)
     })
   } catch (error) {
+    console.log(error)
     res.status(500).json({
       success: false,
       error: 'Something went wrong on the server side.'

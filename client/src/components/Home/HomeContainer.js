@@ -56,7 +56,7 @@ function HomeContainer (props) {
     </div>
     <div className='rightHome'>
       <div className='ratingContainer'>
-        <h2 className='homeHeader'>Rating: {props.userRating}</h2>
+        <h2 className='homeHeader'>Rating: {props.data.user.rating}</h2>
       </div>
       <div className='socialDiv'>
         {socials.length !== 0 ? socials : <div className='emptySocials'>No Socials</div>}

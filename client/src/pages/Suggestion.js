@@ -11,17 +11,16 @@ function Suggestion () {
   const { isOpen } = useSelector(store => store.searchModal)
   const dispatch = useDispatch()
 
-  const user = JSON.parse(window.localStorage.getItem('user'))
+  const headers = {
+    Authorization: `Bearer ${accessToken}`
+  }
 
   React.useEffect(() => {
-    axios({
-      method: 'POST',
-      url: 'http://localhost:5000/friends/getFriends',
-      withCredentials: true,
-      data: { user }
-    }).then(res => {
+    axios.get(
+      'http://localhost:5000/friends/getFriends',
+      { withCredentials: true, headers }
+    ).then(res => {
       dispatch(setFriends(res.data))
-      console.log(res.data)
     })
   }, [])
   return (

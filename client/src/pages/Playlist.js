@@ -2,38 +2,43 @@
 import axios from 'axios'
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { getPlaylist, getPlaylistFriends, getSuggestions } from '../features/playlistSlice'
-import { useLocation } from 'react-router'
+import { getPlaylist, getPlaylistFriends, getSuggestions, setFriends, setSuggestions } from '../features/playlistSlice'
 import PlaylistContainer from '../components/Playlists/PlaylistContainer'
 
 function Playlist () {
   const accessToken = window.sessionStorage.getItem('accessToken') || null
   if (!accessToken) window.location.href = '/login'
 
-  const user = JSON.parse(window.localStorage.getItem('user'))
   const playlistId = window.location.pathname.split('/').at(-1)
   const { playlist } = useSelector(store => store.playlist)
 
+  const headers = {
+    Authorization: `Bearer ${accessToken}`
+  }
+  const [error, SetError] = React.useState({
+    isError: false,
+    error: ''
+  })
   const dispatch = useDispatch()
 
   const [data, setData] = React.useState(null)
 
   React.useEffect(() => {
-    dispatch(getSuggestions({ user, playlistId }))
-    dispatch(getPlaylistFriends({
-      user,
-      playlistInfo: {
-        playlistId,
-        isPrivate: playlist.isPrivate
-      }
-    }))
+    axios.post('/suggestion/getSuggestions', { playlistId }, { withCredentials: true, headers }).then(res => {
+      dispatch(setSuggestions(res.data))
+    })
+
+    axios.post('/playlist/friendsAccess', { playlistInfo: { playlistId, isPrivate: playlist.isPrivate } }, { withCredentials: true, headers }).then(res => {
+      dispatch(setFriends(res.data))
+    })
     axios({
       method: 'POST',
       url: 'http://localhost:5000/playlist/getPlaylist',
       withCredentials: true,
-      data: { user, playlistId }
+      headers,
+      data: { playlistId }
     }).then(res => {
-      setData(res.data)
+      dispatch(setData(res.data))
     })
   }, [])
 
