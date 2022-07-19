@@ -6,12 +6,34 @@ import { motion } from 'framer-motion'
 import privatePng from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/lock.png'
 import publicPng from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/public.png'
 import defaultCover from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/defaults/defaultCover.png'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { setError } from '../../features/playlistSlice'
+import { useDispatch, useSelector } from 'react-redux'
 function Playlist (props) {
   const navigate = useNavigate()
+  const accessToken = window.sessionStorage?.getItem('accessToken')
+  const headers = {
+    Authorization: `Bearer ${accessToken}`
+  }
+
+  const dispatch = useDispatch()
   const handleClick = (e) => {
     e.preventDefault()
-    navigate(`/playlist/${props.playlist.id}`, { state: props.playlist })
+    navigate(`/playlist/${props.playlist.id}`)
+  }
+  const handleDelete = async (id) => {
+    axios({
+      method: 'DELETE',
+      url: '/playlist/deletePlaylist',
+      headers,
+      data: {
+        playlistId: props.playlist.id
+      }
+    }).catch(res => {
+      dispatch(setError(true))
+    })
+    props.removePlaylist(id)
   }
   return (
     <motion.div
@@ -22,12 +44,20 @@ function Playlist (props) {
         </>
         <div className='cardTitle'>{props.playlist.title.length >= 15 ? `${props.playlist.title.split(' ').slice(0, 2).join(' ')}...` : props.playlist.title}
          {props.playlist.isPrivate ? <img src={privatePng} className='cardPng'></img> : <img src={publicPng} className='cardPng'></img>}</div>
+         <div className='cardButtonContainer'>
           <motion.button
-          whileTap={{ scale: 0.9 }}
-          onClick={handleClick}
-          className='cardBtn'>
-            Manage
-          </motion.button>
+            whileTap={{ scale: 0.9 }}
+            onClick={handleClick}
+            className='cardBtn'>
+              Manage
+            </motion.button>
+            <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={() => handleDelete(props.playlist.id)}
+            className='cardDeleteBtn'>
+              Delete
+            </motion.button>
+         </div>
     </motion.div>
   )
 }

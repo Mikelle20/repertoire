@@ -19,8 +19,10 @@ function Playlists () {
     Authorization: `Bearer ${accessToken}`
   }
 
+  const { error } = useSelector(store => store.error)
   const [playlists, setPlaylists] = React.useState([])
   const [friends, setFriends] = React.useState([])
+  const [newPlaylist, setNewPlaylist] = React.useState(false)
 
   const dispatch = useDispatch()
 
@@ -32,15 +34,29 @@ function Playlists () {
     axios.get('/playlist/getPlaylists', { withCredentials: true, headers }).then(res => {
       setPlaylists(res.data)
     })
-  }, [])
+  }, [newPlaylist])
+
+  const removePlaylist = (id) => {
+    setPlaylists(prev => {
+      return prev.filter(playlist => playlist.id !== id)
+    })
+  }
+
+  const renderPlaylists = () => {
+    setNewPlaylist(prev => {
+      return !prev
+    })
+  }
 
   const playlistCards = playlists.map((playlist) => {
-    return <Playlist key={playlist.id} playlist={playlist} />
+    return <Playlist key={playlist.id} removePlaylist={removePlaylist} playlist={playlist} />
   })
   return (
         <div className='landingContainer'>
-        <div className='pageContainer'>
-            {isOpen && <PlaylistModal friends={friends}/>}
+        {error.isError
+          ? <div className='loadingScreen'>{error.error}</div>
+          : <div className='pageContainer'>
+            {isOpen && <PlaylistModal renderPlaylists={renderPlaylists} friends={friends}/>}
             <div className='playlistContainer'>
                 {playlists && playlistCards}
                 {accessToken && <motion.button
@@ -52,7 +68,7 @@ function Playlists () {
                 <img src={addPng}></img>
                 </motion.button>}
             </div>
-        </div>
+        </div>}
       </div>
   )
 }

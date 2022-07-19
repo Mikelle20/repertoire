@@ -111,6 +111,44 @@ const getPlaylist = async (req, res) => {
   }
 }
 
+const deletePlaylist = async (req, res) => {
+  try {
+    const user = req.user
+    const { playlistId } = req.body
+
+    await db.Playlist.destroy({
+      where: {
+        author_id: user.user_id,
+        playlist_id: playlistId
+      }
+    })
+
+    await db.PlaylistAccess.destroy({
+      where: {
+        user_id: user.user_id,
+        playlist_id: playlistId
+      }
+    })
+
+    await db.Suggestion.destroy({
+      where: {
+        receiver_id: user.user_id,
+        playlist_id: playlistId
+      }
+    })
+
+    res.status(200).json({
+      success: true
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      success: false,
+      error: 'Internal Server Error.'
+    })
+  }
+}
+
 const friendsAccess = async (req, res) => {
   const { playlistInfo } = req.body
   const user = req.user
@@ -196,5 +234,6 @@ module.exports = {
   createPlaylist,
   getPlaylists,
   getPlaylist,
-  friendsAccess
+  friendsAccess,
+  deletePlaylist
 }

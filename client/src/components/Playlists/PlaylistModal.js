@@ -6,19 +6,17 @@ import { useDispatch, useSelector } from 'react-redux'
 import { closeModal } from '../../features/PlaylistModalSlice'
 import { motion } from 'framer-motion'
 import SearchFriends from '../Suggestion/SearchFriends'
+import { setError } from '../../features/errorSlice'
 
 function PlaylistModal (props) {
   const dispatch = useDispatch()
   const accessToken = window.sessionStorage.getItem('accessToken')
-  const { friends } = useSelector(store => store.friends)
   const [formData, setFormData] = React.useState({
     title: '',
     description: '',
     isPrivate: false,
     accessList: []
   })
-
-  console.log(friends)
 
   const headers = {
     Authorization: `Bearer ${accessToken}`
@@ -47,16 +45,19 @@ function PlaylistModal (props) {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     dispatch(closeModal())
-    axios({
+    await axios({
       method: 'POST',
       url: 'http://localhost:5000/playlist/createPlaylist',
       withCredentials: true,
       headers,
       data: { formData }
+    }).catch(res => {
+      dispatch(setError(true))
     })
+    props.renderPlaylists()
   }
 
   const handleClick = (id) => {

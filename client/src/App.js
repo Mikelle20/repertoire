@@ -23,7 +23,7 @@ function App () {
     if (accessToken) {
       const res = await (await axiosAuth.get('/checkToken', { withCredentials: true, headers })).data
       console.log('ran interceptor')
-      window.sessionStorage.setItem('accessToken', res.accessToken)
+      res.accessToken && window.sessionStorage.setItem('accessToken', res.accessToken)
     }
     return config
   }, (error) => {

@@ -131,7 +131,7 @@ function SearchModal () {
           {formData.playlist_id && <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={handleSubmit} className='modalBtn'>
-            Create
+            Add
           </motion.button>}
          </div>
     </motion.div>

@@ -954,6 +954,10 @@ html, body {
   width: fit-content;
 }
 
+.cardButtonContainer{
+  display: flex;
+}
+
 .cardPng{
   max-width: 10%;
   margin-left: 3%;
@@ -961,7 +965,7 @@ html, body {
 
 .cardBtn{
   min-height: 1.5rem;
-  width: 7rem;
+  width: 5rem;
   font-family: 'Roboto', sans-serif;
   font-size: 1rem;
   font-weight: 700;
@@ -969,6 +973,20 @@ html, body {
 
   border: none;
   background-color:     #7d8eda;
+  border-radius: 25px;
+}
+
+.cardDeleteBtn{
+  min-height: 1.5rem;
+  width: 5rem;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 0;
+  margin-left: 10px;
+
+  border: none;
+  background-color: #E75C4A;
   border-radius: 25px;
 }
 

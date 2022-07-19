@@ -4,7 +4,11 @@ const initialState = {
   playlists: [],
   playlist: {},
   playlistFriends: [],
-  playlistSuggestions: []
+  playlistSuggestions: [],
+  error: {
+    isError: false,
+    error: 'Internal Server Error.'
+  }
 }
 
 const playlistSlice = createSlice({
@@ -16,10 +20,13 @@ const playlistSlice = createSlice({
     },
     setFriends: (state, { payload }) => {
       state.playlistFriends = payload
+    },
+    setError: (state, { payload }) => {
+      state.error.isError = payload
     }
   }
 })
 
-export const { setSuggestions, setFriends } = playlistSlice.actions
+export const { setSuggestions, setFriends, setError } = playlistSlice.actions
 
 export default playlistSlice.reducer
