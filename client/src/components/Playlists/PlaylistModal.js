@@ -54,10 +54,12 @@ function PlaylistModal (props) {
       withCredentials: true,
       headers,
       data: { formData }
-    }).catch(res => {
-      dispatch(setError(true))
+    }).then(res => {
+      props.renderPlaylists()
     })
-    props.renderPlaylists()
+      .catch(res => {
+        dispatch(setError(true))
+      })
   }
 
   const handleClick = (id) => {

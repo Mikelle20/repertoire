@@ -6,15 +6,15 @@ const { setPlaylists } = require('../helpers/playlists')
 const { Op } = require('sequelize')
 
 const createPlaylist = async (req, res) => {
-  const user = req.user
-  const { title, isPrivate, accessList, description } = req.body.formData
-  const data = {
-    name: title,
-    description,
-    public: !isPrivate
-  }
-
   try {
+    const user = req.user
+    const { title, isPrivate, accessList, description } = req.body.formData
+    const data = {
+      name: title,
+      description,
+      public: !isPrivate
+    }
+
     const accessToken = await getAccessToken(user.user_id)
     const url = `https://api.spotify.com/v1/users/${user.user_id}/playlists`
 
@@ -47,10 +47,7 @@ const createPlaylist = async (req, res) => {
       success: true
     })
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: 'Something went wrong server side.'
-    })
+    res.sendStatus(500)
   }
 }
 

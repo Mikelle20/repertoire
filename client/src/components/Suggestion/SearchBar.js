@@ -2,6 +2,8 @@
 /* eslint-disable no-unused-vars */
 import axios from 'axios'
 import React from 'react'
+import { useDispatch } from 'react-redux'
+import { setError } from '../../features/errorSlice'
 import SearchResult from './SearchResult'
 import searchpng from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/search.png'
 
@@ -9,6 +11,7 @@ function SearchBar () {
   const [formData, setFormData] = React.useState({
     search: ''
   })
+  const dispatch = useDispatch()
   const accessToken = window.sessionStorage.getItem('accessToken')
 
   const headers = {
@@ -24,8 +27,10 @@ function SearchBar () {
       data: formData,
       withCredentials: true,
       headers
-    }).then((res) => {
+    }).then(res => {
       setTracks(res.data)
+    }).catch(res => {
+      dispatch(setError(true))
     })
   }, [formData.search])
 

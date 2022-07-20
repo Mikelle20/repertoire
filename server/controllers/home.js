@@ -2,6 +2,7 @@ const db = require('../models')
 const { default: axios } = require('axios')
 const { getAccessToken } = require('../helpers/auth')
 const sort = require('sort-array')
+const { Op } = require('sequelize')
 
 const setHome = async (req, res) => {
   const user = req.user
@@ -20,7 +21,6 @@ const setHome = async (req, res) => {
     }
 
     const suggestions = await db.Suggestion.findAll({
-      exclude: ['createdAt'],
       where: {
         receiver_id: user.user_id
       }
@@ -31,6 +31,51 @@ const setHome = async (req, res) => {
         author_id: user.user_id
       }
     })
+
+    const friendships = await db.Friend.findAll({
+      where: {
+        status: 'friend',
+        [Op.or]: [
+          { user_1: user.user_id },
+          { user_2: user.user_id }
+        ]
+      }
+    })
+
+    const friends = []
+    for (let i = 0; i < friendships.length; i++) {
+      if (friendships[i].dataValues.user_1 === user.user_id) {
+        friends.push({ friendId: friendships[i].dataValues.user_2 })
+      } else {
+        friends.push({ friendId: friendships[i].dataValues.user_1 })
+      }
+    }
+
+    const friendsListens = []
+
+    if (friends.length !== 0) {
+      for (let i = 0; i < friends.length; i++) {
+        const friendToken = await getAccessToken(friends[i].friendId)
+
+        const friend = await (await db.User.findOne({
+          where: { user_id: friends[i].friendId }
+        })).dataValues
+
+        const friendHeaders = {
+          Authorization: `Bearer ${friendToken}`
+        }
+        console.log(friend)
+
+        const recentListen = await (await axios.get('https://api.spotify.com/v1/me/player/recently-played?limit=1', { headers: friendHeaders })).data
+        friendsListens.push({
+          friendName: friend.display_name,
+          friendImage: friend.profile_image,
+          songName: recentListen.items[0].track.name,
+          songImage: recentListen.items[0].track.album.images[0].url,
+          playedAt: recentListen.items[0].played_at
+        })
+      }
+    }
 
     const homeSuggestions = []
     const homePlaylists = []
@@ -54,7 +99,8 @@ const setHome = async (req, res) => {
           playlistId: suggestions[i].dataValues.playlist_id,
           senderId: sender.user_id,
           senderImage: sender.profile_image,
-          senderName: sender.display_name
+          senderName: sender.display_name,
+          createdAt: suggestions[i].dataValues.createdAt
         })
       }
     }
@@ -84,11 +130,16 @@ const setHome = async (req, res) => {
       headers
     })).data
 
+    const sortedPlaylists = sort(homePlaylists, { order: 'desc', by: 'createdAt' })
+    const sortedSuggestions = sort(homeSuggestions, { order: 'desc', by: 'createdAt' })
+    const sortedListens = sort(friendsListens, { order: 'desc', by: 'playedAt' })
+
     res.status(200).json({
       success: true,
-      homePlaylists,
-      homeSuggestions,
+      homePlaylists: sortedPlaylists,
+      homeSuggestions: sortedSuggestions,
       items: items.items,
+      friendListens: sortedListens,
       user: {
         ...userData
       }

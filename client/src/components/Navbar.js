@@ -101,19 +101,29 @@ const ResponsiveAppBar = () => {
                 display: { xs: 'block', md: 'none' }
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page[0]} onClick={handleCloseNavMenu}>
-                  {/* <Typography textAlign="center">{page}</Typography> */}
-                  <NavLink className='navLink' to={page[1]}><span>{page[0]}</span></NavLink>
-                </MenuItem>
-              ))}
-              {accessToken
-                ? <MenuItem onClick={handleCloseNavMenu}>
-                <NavLink className='navLink' to='/login'><span onClick={handleClick}>Logout</span></NavLink>
-              </MenuItem>
-                : <MenuItem onClick={handleCloseNavMenu}>
-              <NavLink className='navLink' to='/login'>Login</NavLink>
-            </MenuItem>}
+              {!accessToken
+                ? <>
+                  <MenuItem>
+                   <NavLink className='navLink' to='/register'>Register</NavLink>
+                  </MenuItem>
+                  <MenuItem>
+                   <NavLink className='navLink' to='/login'>Login</NavLink>
+                  </MenuItem>
+                </>
+                : <>
+                  {pages.map((page) => (
+                  <MenuItem key={page[0]} onClick={handleCloseNavMenu}>
+                    <NavLink className='navLink' to={page[1]}><span>{page[0]}</span></NavLink>
+                  </MenuItem>
+                  ))}
+                  {accessToken
+                    ? <MenuItem onClick={handleCloseNavMenu}>
+                      <NavLink className='navLink' to='/login'><span onClick={handleClick}>Logout</span></NavLink>
+                    </MenuItem>
+                    : <MenuItem onClick={handleCloseNavMenu}>
+                     <NavLink className='navLink' to='/login'>Login</NavLink>
+                    </MenuItem>}
+                </>}
             </Menu>
           </Box>
           <img src={logo} className='navLogo'></img>
@@ -136,7 +146,13 @@ const ResponsiveAppBar = () => {
             Repertoire
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+            {!accessToken
+              ? <>
+                <NavLink className='navLinkFull' to='/register'>Register</NavLink>
+                <NavLink className='navLinkFull' to='/Login'>Login</NavLink>
+              </>
+              : <>
+                {pages.map((page) => (
               <NavLink
                 to={page[1]}
                 className='navLinkFull'
@@ -146,8 +162,9 @@ const ResponsiveAppBar = () => {
               >
                 <span>{page[0]}</span>
               </NavLink>
-            ))}
+                ))}
               {accessToken ? <NavLink className='navLinkFull' sx={{ my: 2, color: 'white', display: 'block' }} to='/login'><span onClick={handleClick}>Logout</span></NavLink> : <NavLink className='navLinkFull' sx={{ my: 2, color: 'white', display: 'block' }} to='/login'>Login</NavLink>}
+              </>}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>

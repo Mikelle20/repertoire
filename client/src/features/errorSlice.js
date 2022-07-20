@@ -1,15 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  isError: false,
-  error: '(500) Internal Server Error.'
+  error: {
+    isError: false,
+    error: '(500) Internal Server Error.'
+  }
 }
 const errorSlice = createSlice({
   name: 'error',
   initialState,
   reducers: {
     setError: (state, { payload }) => {
-      state.isError = payload
+      state.error.isError = payload
     }
   }
 })

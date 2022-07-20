@@ -65,7 +65,7 @@ function RegisterForm () {
         errorText: res.error
       })
     } else {
-      const scopes = 'user-top-read user-read-currently-playing playlist-modify-public user-library-modify playlist-modify-private playlist-read-collaborative playlist-read-private'
+      const scopes = 'user-top-read user-read-recently-played user-read-currently-playing playlist-modify-public user-library-modify playlist-modify-private playlist-read-collaborative playlist-read-private'
       const authorizeEndpoint = 'https://accounts.spotify.com/authorize?'
 
       const authObject = {

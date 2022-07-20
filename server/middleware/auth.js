@@ -2,14 +2,6 @@ require('dotenv').config()
 const { default: axios } = require('axios')
 const jwt = require('jsonwebtoken')
 
-const isLoggedIn = (req, res, next) => {
-  if (req.user) {
-    next()
-  } else {
-    res.status(401).send('Not Logged In')
-  }
-}
-
 const authenticateToken = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization
@@ -53,7 +45,6 @@ const deleteRefreshToken = (req, res, next) => {
 }
 
 module.exports = {
-  isLoggedIn,
   authenticateToken,
   deleteRefreshToken
 }

@@ -6,12 +6,15 @@ import heart from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/as
 import filledHeart from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/heart_filled.png'
 import axios from 'axios'
 import { initialState } from '../../ratingStates/initStates'
+import { useDispatch } from 'react-redux'
+import { setError } from '../../features/errorSlice'
 
 function Suggestion (props) {
   const accessToken = window.sessionStorage.getItem('accessToken')
   const headers = {
     Authorization: `Bearer ${accessToken}`
   }
+  const dispatch = useDispatch()
 
   React.useEffect(() => {
     setFillHeart(initialState[props.suggestion.rating])
@@ -46,6 +49,8 @@ function Suggestion (props) {
             songId: props.suggestion.songId,
             playlistId: props.playlistId
           }
+        }).catch(res => {
+          dispatch(setError(true))
         })
       }
 

@@ -29,10 +29,7 @@ const registerUser = async (req, res) => {
     })
     return res.status(200).json({ success: true })
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: 'Something went wrong on the server side.status(200).'
-    })
+    res.sendStatus(500)
   }
 }
 
@@ -104,10 +101,7 @@ const loginUser = async (req, res) => {
     }
   } catch (error) {
     console.log(error)
-    res.status(500).json({
-      success: false,
-      error: 'Something went wrong on the server side.'
-    })
+    res.sendStatus(500)
   }
 }
 
@@ -144,27 +138,22 @@ const getUserToken = async (req, res) => {
       })
     })
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: 'Something went wrong on the server side.'
-    })
+    res.sendStatus(500)
   }
 }
 
 const deleteToken = async (req, res) => {
+  const decodedToken = jwt.decode(req.refreshToken)
   try {
     await db.User.update({ server_refresh_token: null }, {
-      where: { server_refresh_token: req.refreshToken }
+      where: { user_id: decodedToken.user_id }
     })
     res.clearCookie('refreshToken')
     res.status(200).json({
       success: true
     })
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: 'Something went wrong on the server side.'
-    })
+    res.sendStatus(500)
   }
 }
 

@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
 const { default: axios } = require('axios')
-const { getAccess, getAccessToken } = require('../helpers/auth')
+const { getAccessToken } = require('../helpers/auth')
 const ratingAvg = require('../helpers/rating')
 const { stripPlaylists } = require('../helpers/suggestion')
 const db = require('../models')
@@ -40,10 +40,7 @@ const search = async (req, res) => {
     res.status(200).json(arr)
   } catch (error) {
     console.log(error)
-    res.status(500).json({
-      success: false,
-      error: 'Something went wrong server side.'
-    })
+    res.sendStatus(500)
   }
 }
 

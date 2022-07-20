@@ -4,11 +4,14 @@ import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { setFriends } from '../features/friendsSlice'
 import SearchModal from '../components/Suggestion/SearchModal'
+import { setError } from '../features/errorSlice'
+
 function Suggestion () {
   const accessToken = window.sessionStorage.getItem('accessToken') || null
   if (!accessToken) window.location.href = '/login'
 
   const { isOpen } = useSelector(store => store.searchModal)
+  const { error } = useSelector(store => store.error)
   const dispatch = useDispatch()
 
   const headers = {
@@ -21,11 +24,13 @@ function Suggestion () {
       { withCredentials: true, headers }
     ).then(res => {
       dispatch(setFriends(res.data))
-    })
+    }).catch(res => dispatch(setError(true)))
   }, [])
   return (
     <div className='landingContainer'>
-        {accessToken && <div className='pageContainer'>
+        {error.isError
+          ? <div className='loadingScreen'>{error.error}</div>
+          : <div className='pageContainer'>
             {isOpen && <SearchModal/>}
             <SearchBar />
         </div>}

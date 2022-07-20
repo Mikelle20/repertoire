@@ -4,11 +4,11 @@ import axios from 'axios'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
-import { setFriends } from '../../features/friendsSlice'
 import { closeModal } from '../../features/searchModalSlice'
 import SearchFriends from './SearchFriends'
 import FriendPlaylist from './FriendPlaylist'
 import explicitPng from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/explicit.png'
+import { setError } from '../../features/errorSlice'
 function SearchModal () {
   const { search } = useSelector(store => store.searchModal)
   const { friends } = useSelector(store => store.friends)
@@ -38,7 +38,9 @@ function SearchModal () {
         headers,
         data: { friend: formData.friend_id }
       }).then(res => {
-        dispatch(setFriendPlaylists(res.data))
+        setFriendPlaylists(res.data)
+      }).catch(res => {
+        dispatch(setError(true))
       })
     }
   }, [formData.friend_id])
@@ -83,6 +85,8 @@ function SearchModal () {
       data: { ...formData }
     }).then(res => {
       dispatch(closeModal())
+    }).catch(res => {
+      dispatch(setError(true))
     })
   }
 

@@ -8,6 +8,7 @@ import SideItem from './SideItem'
 import SuggestionItem from './SuggestionItem'
 import PlaylistItem from './PlaylistItem'
 import { nanoid } from '@reduxjs/toolkit'
+import RecentItem from './RecentItem'
 
 function HomeContainer (props) {
   const time = new Date()
@@ -27,7 +28,11 @@ function HomeContainer (props) {
   })
 
   const suggestions = props.data.homeSuggestions.map(suggestion => {
-    return <SuggestionItem key={suggestion.songId} suggestion={suggestion} />
+    return <SuggestionItem key={nanoid()} suggestion={suggestion} />
+  })
+
+  const listens = props.data.friendListens.map(listen => {
+    return <RecentItem key={nanoid()} listen={listen} />
   })
 
   const playlists = props.data.homePlaylists.map(playlist => {
@@ -52,6 +57,10 @@ function HomeContainer (props) {
       <h2 className='homeHeader'>Your Playlists</h2>
       <div className='sideScrollDiv'>
         {playlists.length !== 0 ? playlists : <div className='empty'>No Playlists!</div>}
+      </div>
+      <h2 className='homeHeader'>What friends are listening to</h2>
+      <div className='sideScrollDiv'>
+        {listens.length !== 0 ? listens : <div className='empty'>No Friends!</div>}
       </div>
     </div>
     <div className='rightHome'>
