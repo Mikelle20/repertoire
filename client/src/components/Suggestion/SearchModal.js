@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable import/no-absolute-path */
 import axios from 'axios'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -7,7 +6,6 @@ import { motion } from 'framer-motion'
 import { closeModal } from '../../features/searchModalSlice'
 import SearchFriends from './SearchFriends'
 import FriendPlaylist from './FriendPlaylist'
-import explicitPng from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/explicit.png'
 import { setError } from '../../features/errorSlice'
 function SearchModal () {
   const { search } = useSelector(store => store.searchModal)
@@ -112,7 +110,7 @@ function SearchModal () {
     className='searchModal'>
         <div className='searchModalTop'>
             <img src={search.cover} className='searchModalImg'></img>
-            <div className='searchModalText'>{search.title.length >= 15 ? `${search.title.split(' ').slice(0, 3).join(' ')}...` : search.title} {search.explicit && <img src={explicitPng} className='modalPng'></img>}</div>
+            <div className='searchModalText'>{search.title.length >= 15 ? `${search.title.split(' ').slice(0, 3).join(' ')}...` : search.title} {search.explicit && <img src={require('../../assets/icons/explicit.png')} className='modalPng'></img>}</div>
             <div className='searchModalText'>{search.artist}</div>
         </div>
         <div className='searchModalBottom'>

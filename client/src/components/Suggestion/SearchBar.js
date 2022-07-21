@@ -1,11 +1,9 @@
-/* eslint-disable import/no-absolute-path */
 /* eslint-disable no-unused-vars */
 import axios from 'axios'
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { setError } from '../../features/errorSlice'
 import SearchResult from './SearchResult'
-import searchpng from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/search.png'
 
 function SearchBar () {
   const [formData, setFormData] = React.useState({
@@ -61,7 +59,7 @@ function SearchBar () {
             >
             </input>
             <span>
-              <img src={searchpng} className='searchIcon'></img>
+              <img src={require('../../assets/icons/search.png')} className='searchIcon'></img>
             </span>
           </div>
           {formData.search.length !== 0 &&

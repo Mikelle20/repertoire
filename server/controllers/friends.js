@@ -152,10 +152,7 @@ const searchFriends = async (req, res) => {
     }
     res.status(200).send(userFriends)
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: 'Something went wrong on the server side.'
-    })
+    res.sendStatus(500)
   }
 }
 

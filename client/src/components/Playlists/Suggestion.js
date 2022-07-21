@@ -1,9 +1,6 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable import/no-absolute-path */
 /* eslint-disable react/prop-types */
 import React from 'react'
-import heart from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/heart.png'
-import filledHeart from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/heart_filled.png'
 import axios from 'axios'
 import { initialState } from '../../ratingStates/initStates'
 import { useDispatch } from 'react-redux'
@@ -63,10 +60,10 @@ function Suggestion (props) {
         <img src={props.suggestion.senderImage} className='suggestionImage' />
         <span>{props.suggestion.songName.length >= 25 ? `${props.suggestion.songName.split(' ').slice(0, 3).join(' ')}...` : props.suggestion.songName}</span>
         <span className='rateContainer'>
-          <img src={fillHeart[0].filled ? filledHeart : heart} className='ratingHeart' onClick={() => handleClick(fillHeart[0].id)}></img>
-          <img src={fillHeart[1].filled ? filledHeart : heart} className='ratingHeart' onClick={() => handleClick(fillHeart[1].id)}></img>
-          <img src={fillHeart[2].filled ? filledHeart : heart} className='ratingHeart' onClick={() => handleClick(fillHeart[2].id)}></img>
-          <img src={fillHeart[3].filled ? filledHeart : heart} className='ratingHeart' onClick={() => handleClick(fillHeart[3].id)}></img>
+          <img src={fillHeart[0].filled ? require('../../assets/icons/heart_filled.png') : require('../../assets/icons/heart.png')} className='ratingHeart' onClick={() => handleClick(fillHeart[0].id)}></img>
+          <img src={fillHeart[1].filled ? require('../../assets/icons/heart_filled.png') : require('../../assets/icons/heart.png')} className='ratingHeart' onClick={() => handleClick(fillHeart[1].id)}></img>
+          <img src={fillHeart[2].filled ? require('../../assets/icons/heart_filled.png') : require('../../assets/icons/heart.png')} className='ratingHeart' onClick={() => handleClick(fillHeart[2].id)}></img>
+          <img src={fillHeart[3].filled ? require('../../assets/icons/heart_filled.png') : require('../../assets/icons/heart.png')} className='ratingHeart' onClick={() => handleClick(fillHeart[3].id)}></img>
         </span>
     </div>
   )

@@ -1,9 +1,7 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable import/no-absolute-path */
 import React from 'react'
 import Playlist from '../components/Playlists/Playlist'
 import { motion } from 'framer-motion'
-import addPng from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/newPlaylist.png'
 import PlaylistModal from '../components/Playlists/PlaylistModal'
 import { useDispatch, useSelector } from 'react-redux'
 import { openModal } from '../features/PlaylistModalSlice'
@@ -65,7 +63,7 @@ function Playlists () {
                 whileTap={{ scale: 0.9 }}
                 onClick={() => dispatch(openModal())}
                 >
-                <img src={addPng}></img>
+                <img src={require('../assets/icons/newPlaylist.png')}></img>
                 </motion.button>}
             </div>
         </div>}

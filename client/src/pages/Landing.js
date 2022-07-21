@@ -3,11 +3,8 @@
 /* eslint-disable no-unused-vars */
 import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import logo from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/logos/listening-music.png'
-import { useNavigate } from 'react-router'
 
 function Landing () {
-  const navigate = useNavigate()
   const variants = {
     visibleY: {
       y: 0,
@@ -43,7 +40,7 @@ function Landing () {
     <motion.div className='landerContainer'
     >
       <div>
-        <h1 className='landingTitle'><img className='logo' src={logo}></img>Repertoire</h1>
+        <h1 className='landingTitle'><img className='logo' src={require('../assets/logos/listening-music.png')}></img>Repertoire</h1>
       </div>
       <motion.div className='contentContainer'
         initial={{ y: -1000 }}

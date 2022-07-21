@@ -1,16 +1,9 @@
 /* eslint-disable no-unused-expressions */
-/* eslint-disable import/no-absolute-path */
 /* eslint-disable no-unused-vars */
 import React from 'react'
 import axios from 'axios'
 import { motion } from 'framer-motion'
-import logo from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/logos/listening-music.png'
 import { Link } from 'react-router-dom'
-
-import locked from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/lock_closed.png'
-import unlocked from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/lock_open.png'
-import passwordIcon from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/password.png'
-import emailIcon from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/email.png'
 
 function RegisterForm () {
   const [formData, setFormData] = React.useState({
@@ -86,11 +79,11 @@ function RegisterForm () {
         className='authForm'
         onSubmit={handleSubmit}
         >
-          <div className='authHeader'><img className='logoAuth' src={logo}/>Repertoire</div>
+          <div className='authHeader'><img className='logoAuth' src={require('../../assets/logos/listening-music.png')}/>Repertoire</div>
           <div className='signUpContainer'>Sign Up</div>
           <div className='inputContainer'>
             <span>
-                <img src={emailIcon} className='inputIcon'></img>
+                <img src={require('../../assets/icons/email.png')} className='inputIcon'></img>
               </span>
               <input
               className='authInput'
@@ -103,7 +96,7 @@ function RegisterForm () {
             </div>
           <div className='inputContainer'>
             <span>
-              <img src={passwordIcon} className='inputIcon'></img>
+              <img src={require('../../assets/icons/password.png')} className='inputIcon'></img>
             </span>
             <input
             className='authInput'
@@ -117,12 +110,12 @@ function RegisterForm () {
             <span onClick={() => {
               setTogglePassword(!togglePassword)
             }}>
-              <img src={togglePassword ? unlocked : locked} className='inputIcon'></img>
+              <img src={togglePassword ? require('../../assets/icons/lock_open.png') : require('../../assets/icons/lock_closed.png') } className='inputIcon'></img>
             </span>
           </div>
           <div className='inputContainer'>
             <span>
-              <img src={passwordIcon} className='inputIcon'></img>
+              <img src={require('../../assets/icons/password.png')} className='inputIcon'></img>
             </span>
             <input
             className='authInput'

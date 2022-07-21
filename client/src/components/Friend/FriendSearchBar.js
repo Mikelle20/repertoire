@@ -1,8 +1,6 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable import/no-absolute-path */
 import React from 'react'
 import axios from 'axios'
-import searchpng from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/search.png'
 import FriendResult from './FriendResult'
 import { setError } from '../../features/errorSlice'
 import { useDispatch, useSelector } from 'react-redux'
@@ -91,7 +89,7 @@ function FriendSearchBar () {
               >
               </input>
               <span>
-              <img src={searchpng} className='searchIcon'></img>
+              <img src={require('../../assets/icons/search.png')} className='searchIcon'></img>
               </span>
           </div>
           {formData.search.length !== 0 &&

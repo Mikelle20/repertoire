@@ -17,9 +17,9 @@ const registerUser = async (req, res) => {
 
     const userFound = await db.User.findOne({ where: { email } })
 
-    if (!password.length > 7) return res.status(400).json({ success: false, error: 'Password must be greater than 7 characters.' })
-    if (!isEmail) return res.status(400).json({ success: false, error: 'Please enter valid email.' })
-    if (userFound) return res.status(400).json({ success: false, error: 'User already associated with email.' })
+    if (password.length <= 7) return res.status(200).json({ success: false, error: 'Password must be greater than 7 characters.' })
+    if (!isEmail) return res.status(200).json({ success: false, error: 'Please enter valid email.' })
+    if (userFound) return res.status(200).json({ success: false, error: 'User already associated with email.' })
 
     const hashedPassword = bcrypt.hashSync(password, 10)
     await db.User.create({
@@ -42,8 +42,8 @@ const loginUser = async (req, res) => {
     const passwordsMatch = bcrypt.compareSync(password, hashedPassword)
 
     if (accessCode) {
-      if (!user) return res.status(403).json({ success: false, error: 'Incorrect Username or password.' })
-      if (!passwordsMatch) return res.status(403).json({ success: false, error: 'Incorrect Username or password.' })
+      if (!user) return res.status(200).json({ success: false, error: 'Incorrect Username or password.' })
+      if (!passwordsMatch) return res.status(200).json({ success: false, error: 'Incorrect Username or password.' })
 
       await setAccount(accessCode, email)
       const accessToken = generateAccessToken({
@@ -69,8 +69,8 @@ const loginUser = async (req, res) => {
         accessToken
       })
     } else {
-      if (!user) return res.status(403).json({ success: false, error: 'Incorrect Username or password.' })
-      if (!passwordsMatch) return res.status(403).json({ success: false, error: 'Incorrect Username or password.' })
+      if (!user) return res.status(200).json({ success: false, error: 'Incorrect Username or password.' })
+      if (!passwordsMatch) return res.status(200).json({ success: false, error: 'Incorrect Username or password.' })
 
       const accessToken = generateAccessToken({
         display_name: user.dataValues.display_name,
@@ -89,7 +89,6 @@ const loginUser = async (req, res) => {
       await db.User.update({ server_refresh_token: refreshToken }, {
         where: { user_id: user.dataValues.user_id }
       })
-      // res.setHeader('Cookie', `refreshToken=${refreshToken}; HttpOnly`)
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         sameSite: 'strict'
@@ -100,7 +99,6 @@ const loginUser = async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error)
     res.sendStatus(500)
   }
 }
@@ -109,7 +107,7 @@ const getUserToken = async (req, res) => {
   try {
     const refreshToken = req.body.token
 
-    if (!refreshToken) return res.status(401).send('no refresh token')
+    if (!refreshToken) return res.sendStatus(401)
 
     const decodedToken = jwt.decode(refreshToken)
 
@@ -118,10 +116,10 @@ const getUserToken = async (req, res) => {
       where: { user_id: decodedToken.user_id }
     }))
 
-    if (!userData) return res.status(403).send('no user error')
+    if (!userData) return res.sendStatus(403)
 
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-      if (err) return res.status(403).send('verify refresh error')
+      if (err) return res.sendStatus(403)
 
       const accessToken = generateAccessToken({
         display_name: userData.dataValues.display_name,

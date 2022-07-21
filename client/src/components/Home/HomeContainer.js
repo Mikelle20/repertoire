@@ -1,9 +1,7 @@
 /* eslint-disable indent */
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React from 'react'
 import SocialItem from './SocialItem'
-import { useSelector } from 'react-redux'
 import SideItem from './SideItem'
 import SuggestionItem from './SuggestionItem'
 import PlaylistItem from './PlaylistItem'
@@ -36,11 +34,11 @@ function HomeContainer (props) {
   })
 
   const playlists = props.data.homePlaylists.map(playlist => {
-    return <PlaylistItem key={nanoid(10)} playlist={playlist} />
+    return <PlaylistItem key={nanoid()} playlist={playlist} />
   })
 
   const socials = props.socials.map(social => {
-    return <SocialItem key={nanoid(10)} social={social} />
+    return <SocialItem key={nanoid()} social={social} />
   })
   return (
     <div className='homeContainer'>
@@ -65,7 +63,7 @@ function HomeContainer (props) {
     </div>
     <div className='rightHome'>
       <div className='ratingContainer'>
-        <h2 className='homeHeader'>Rating: {props.data.user.rating}</h2>
+        <h2 className='homeHeader'>Your Rating: {props.data.user.rating}</h2>
       </div>
       <div className='socialDiv'>
         {socials.length !== 0 ? socials : <div className='emptySocials'>No Socials</div>}

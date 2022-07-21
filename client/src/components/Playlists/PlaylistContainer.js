@@ -1,11 +1,9 @@
-/* eslint-disable import/no-absolute-path */
 /* eslint-disable react/prop-types */
 import React from 'react'
 import { motion } from 'framer-motion'
 import { useSelector } from 'react-redux'
 import PlaylistFriend from './PlaylistFriend'
 import Suggestion from './Suggestion'
-import defaultCover from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/defaults/defaultCover.png'
 
 function PlaylistContainer (props) {
   const { playlistFriends } = useSelector(store => store.playlist)
@@ -20,7 +18,7 @@ function PlaylistContainer (props) {
   return (
     <motion.div drag dragSnapToOrigin className='playContainer'>
         <div className='leftPlayContainer'>
-          <motion.img whileHover={{ scale: 1.1 }} src={props.playlist.images.length === 0 ? defaultCover : props.playlist.images[0].url} className='playlistPageCover'></motion.img>
+          <motion.img whileHover={{ scale: 1.1 }} src={props.playlist.images.length === 0 ? require('../../assets/defaults/defaultCover.png') : props.playlist.images[0].url} className='playlistPageCover'></motion.img>
           <motion.div whileHover={{ scale: 1.1 }} className='playlistTitle'>{props.playlist.name}</motion.div>
           <motion.div whileHover={{ scale: 1.1 }} className='playlistDescription'>{props.playlist.description}</motion.div>
           <div className='playlistFriendsContainer'>

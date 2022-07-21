@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable import/no-absolute-path */
 
 import * as React from 'react'
 import AppBar from '@mui/material/AppBar'
@@ -14,7 +13,6 @@ import Avatar from '@mui/material/Avatar'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import { NavLink } from 'react-router-dom'
-import logo from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/logos/listening-music-light.png'
 import axios from 'axios'
 
 const ResponsiveAppBar = () => {
@@ -35,9 +33,10 @@ const ResponsiveAppBar = () => {
   }
 
   const handleClick = async () => {
-    accessToken && axios.delete('http://localhost:5000/authorize/logout', { withCredentials: true })
+    accessToken && (await axios.delete('http://localhost:5000/authorize/logout', { withCredentials: true }))
     setData({})
     window.sessionStorage.removeItem('accessToken')
+    window.location.href = '/login'
   }
 
   const [data, setData] = React.useState({})
@@ -45,8 +44,7 @@ const ResponsiveAppBar = () => {
   React.useEffect(() => {
     if (accessToken) {
       axios.get('http://localhost:5000/authorize/getUser',
-        { headers: { Authorization: `Bearer ${accessToken}` }, withCredentials: true }).then(res => {
-        console.log(res.data)
+        { headers, withCredentials: true }).then(res => {
         setData(res.data)
       })
     }
@@ -118,7 +116,7 @@ const ResponsiveAppBar = () => {
                   ))}
                   {accessToken
                     ? <MenuItem onClick={handleCloseNavMenu}>
-                      <NavLink className='navLink' to='/login'><span onClick={handleClick}>Logout</span></NavLink>
+                      <NavLink className='navLink' to=''><span onClick={handleClick}>Logout</span></NavLink>
                     </MenuItem>
                     : <MenuItem onClick={handleCloseNavMenu}>
                      <NavLink className='navLink' to='/login'>Login</NavLink>
@@ -126,7 +124,7 @@ const ResponsiveAppBar = () => {
                 </>}
             </Menu>
           </Box>
-          <img src={logo} className='navLogo'></img>
+          <img src={require('../assets/logos/listening-music-light.png')} className='navLogo'></img>
           <Typography
             variant="h5"
             noWrap
@@ -163,7 +161,7 @@ const ResponsiveAppBar = () => {
                 <span>{page[0]}</span>
               </NavLink>
                 ))}
-              {accessToken ? <NavLink className='navLinkFull' sx={{ my: 2, color: 'white', display: 'block' }} to='/login'><span onClick={handleClick}>Logout</span></NavLink> : <NavLink className='navLinkFull' sx={{ my: 2, color: 'white', display: 'block' }} to='/login'>Login</NavLink>}
+              {accessToken ? <NavLink className='navLinkFull' sx={{ my: 2, color: 'white', display: 'block' }} to=''><span onClick={handleClick}>Logout</span></NavLink> : <NavLink className='navLinkFull' sx={{ my: 2, color: 'white', display: 'block' }} to='/login'>Login</NavLink>}
               </>}
           </Box>
 

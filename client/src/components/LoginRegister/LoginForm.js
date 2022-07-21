@@ -1,15 +1,9 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
-/* eslint-disable import/no-absolute-path */
 import React from 'react'
 import axios from 'axios'
 import { motion } from 'framer-motion'
-import logo from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/logos/listening-music.png'
 import { Link, useNavigate } from 'react-router-dom'
-import locked from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/lock_closed.png'
-import unlocked from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/lock_open.png'
-import passwordIcon from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/password.png'
-import emailIcon from '/Users/ambarreinoso/Desktop/projects/repertoire/client/src/assets/icons/email.png'
 function LoginForm () {
   const [formData, setFormData] = React.useState({
     email: '',
@@ -52,10 +46,11 @@ function LoginForm () {
 
         if (accountConnected.success) {
           window.sessionStorage.setItem('accessToken', res.accessToken)
-          navigate('/home')
-        } else {
-          console.log(res.error)
+          // navigate('/home')
+          window.location.href = '/home'
         }
+      } else {
+        setError({ isError: true, errorText: 'Incorrect email or password.' })
       }
     } else {
       const url = 'http://localhost:5000/authorize/login'
@@ -68,7 +63,8 @@ function LoginForm () {
 
         if (success) {
           window.sessionStorage.setItem('accessToken', res.accessToken)
-          navigate('/home')
+          // navigate('/home')
+          window.location.href = '/home'
         } else {
           const scopes = 'user-top-read playlist-modify-public user-library-modify playlist-modify-private playlist-read-collaborative playlist-read-private'
           const authorizeEndpoint = 'https://accounts.spotify.com/authorize?'
@@ -83,6 +79,8 @@ function LoginForm () {
           const authQueryString = new URLSearchParams(authObject).toString()
           window.location.href = authorizeEndpoint + authQueryString
         }
+      } else {
+        setError({ isError: true, errorText: 'Incorrect email or password.' })
       }
     }
   }
@@ -93,11 +91,11 @@ function LoginForm () {
           className='authForm'
           onSubmit={handleSubmit}
         >
-          <div className='authHeader'><img className='logoAuth' src={logo}/>Repertoire</div>
+          <div className='authHeader'><img className='logoAuth' src={require('../../assets/logos/listening-music.png')}/>Repertoire</div>
           <div className='signUpContainer'>Sign In</div>
           <div className='inputContainer'>
            <span>
-              <img src={emailIcon} className='inputIcon'></img>
+              <img src={require('../../assets/icons/email.png')} className='inputIcon'></img>
             </span>
             <input
             className='authInput'
@@ -110,7 +108,7 @@ function LoginForm () {
           </div>
           <div className='inputContainer'>
             <span>
-              <img src={passwordIcon} className='inputIcon'></img>
+              <img src={require('../../assets/icons/password.png')} className='inputIcon'></img>
             </span>
             <input
             className='authInput'
@@ -124,7 +122,7 @@ function LoginForm () {
             <span onClick={() => {
               setTogglePassword(!togglePassword)
             }}>
-              <img src={togglePassword ? unlocked : locked} className='inputIcon'></img>
+              <img src={togglePassword ? require('../../assets/icons/lock_open.png') : require('../../assets/icons/lock_closed.png')} className='inputIcon'></img>
             </span>
           </div>
           {error.isError && <div className='errorMessage'>{error.errorText}</div>}
