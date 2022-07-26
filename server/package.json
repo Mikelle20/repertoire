@@ -30,10 +30,6 @@
     "jsonwebtoken": "^8.5.1",
     "nanoid": "^3.3.2",
     "nodemon": "^2.0.15",
-    "passport": "^0.6.0",
-    "passport-custom": "^1.1.1",
-    "passport-local": "^1.0.0",
-    "passport-spotify": "^2.0.0",
     "pg": "^8.7.3",
     "sequelize": "^6.19.0",
     "sort-array": "^4.1.5"

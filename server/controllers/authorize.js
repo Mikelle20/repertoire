@@ -175,10 +175,6 @@ const deleteToken = async (req, res) => {
   }
 }
 
-const tokenTest = (req, res) => {
-  res.send(req.user)
-}
-
 const accountConnected = async (req, res) => {
   try {
     const { check } = req.body || null
@@ -369,7 +365,6 @@ module.exports = {
   registerUser,
   getUser,
   sendResetLink,
-  tokenTest,
   getUserToken,
   accountConnected,
   checkToken

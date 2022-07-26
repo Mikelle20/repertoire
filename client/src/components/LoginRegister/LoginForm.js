@@ -127,16 +127,6 @@ function LoginForm () {
           </div>
           {error.isError && <div className='errorMessage'>{error.errorText}</div>}
           <motion.button className='btn' whileTap={{ scale: 0.9 }}>Sign In</motion.button>
-          <div className='rememberMeContainer'>
-          <input type='checkbox'
-          id='rememberMe'
-          name='rememberMe'
-          checked={formData.rememberMe}
-          onChange={handleChange}
-          ></input>
-          <label className='rememberMe' htmlFor='rememberMe'>Remember Me</label>
-        </div>
-
           <div className='authFooter'>
             <Link
             className='authLink'
