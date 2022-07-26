@@ -23,7 +23,8 @@ module.exports = (sequelize, DataTypes) => {
     user_id: DataTypes.STRING,
     password: DataTypes.STRING,
     spotify_connected: DataTypes.BOOLEAN,
-    server_refresh_token: DataTypes.STRING
+    server_refresh_token: DataTypes.STRING,
+    reset_token: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'User',

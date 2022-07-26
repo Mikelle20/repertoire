@@ -65,6 +65,11 @@ module.exports = {
         allowNull: true,
         unique: true
       },
+      reset_token: {
+        type: Sequelize.STRING(500),
+        allowNull: true,
+        unique: true
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

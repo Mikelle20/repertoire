@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt')
 const { nanoid } = require('nanoid')
 const { getAccess, setAccount, generateAccessToken } = require('../helpers/auth')
 const jwt = require('jsonwebtoken')
+const sgMail = require('@sendgrid/mail')
 
 require('dotenv').config()
 
@@ -55,6 +56,8 @@ const loginUser = async (req, res) => {
         user_id: user.dataValues.user_id
       })
 
+      const decode = jwt.decode(accessToken)
+
       const refreshToken = jwt.sign({
         email: user.dataValues.email,
         user_id: user.dataValues.user_id
@@ -66,7 +69,10 @@ const loginUser = async (req, res) => {
 
       res.status(200).json({
         success: true,
-        accessToken
+        accessToken: {
+          token: accessToken,
+          exp: decode.exp
+        }
       })
     } else {
       if (!user) return res.status(200).json({ success: false, error: 'Incorrect Username or password.' })
@@ -80,6 +86,8 @@ const loginUser = async (req, res) => {
         email: user.dataValues.email,
         user_id: user.dataValues.user_id
       })
+
+      const decode = jwt.decode(accessToken)
 
       const refreshToken = jwt.sign({
         email: user.dataValues.email,
@@ -95,7 +103,10 @@ const loginUser = async (req, res) => {
       })
       res.status(200).json({
         success: true,
-        accessToken
+        accessToken: {
+          token: accessToken,
+          exp: decode.exp
+        }
       })
     }
   } catch (error) {
@@ -129,10 +140,15 @@ const getUserToken = async (req, res) => {
         user_id: userData.dataValues.user_id
       })
 
+      const decode = jwt.decode(accessToken)
+
       res.status(200).json({
         success: true,
         user: { ...userData.dataValues },
-        accessToken
+        accessToken: {
+          token: accessToken,
+          exp: decode.exp
+        }
       })
     })
   } catch (error) {
@@ -175,10 +191,7 @@ const accountConnected = async (req, res) => {
       where: { email }
     }).then(res.status(200).json({ success: true, accountConnected: true }))
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: 'Something went wrong on the server side.'
-    })
+    res.sendStatus(500)
   }
 }
 
@@ -281,13 +294,69 @@ const checkToken = (req, res) => {
   })
 }
 
+const sendResetLink = async (req, res) => {
+  try {
+    const { email } = req.body
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
+    const user = await db.User.findOne({ where: email })
+
+    if (user) {
+      const token = jwt.sign({ email }, process.env.RESET_TOKEN, { expiresIn: '1h' })
+
+      await db.User.update({ reset_token: token }, { where: { email } })
+
+      const msg = {
+        to: email,
+        from: 'repertoire.manager@gmail.com',
+        subject: 'Password Reset Link',
+        text: `click here to reset password: http://localhost:3000/reset_password/?token=${token}`,
+        html: `<strong>click here to reset password: http://localhost:3000/reset_password/?${token}</strong>`
+      }
+      sgMail.send(msg)
+        .then(() => {
+          console.log('Email sent')
+        })
+        .catch((error) => {
+          console.log(error.response.body)
+        })
+    }
+
+    res.status(200).json({
+      success: true
+    })
+  } catch (error) {
+    res.sendStatus(500)
+  }
+}
+
+const resetPassword = async (req, res) => {
+  try {
+    const { password, token } = req.body
+
+    if (password.length <= 7) return res.status(200).json({ success: false, error: 'Password must be greater than 7 characters.' })
+
+    jwt.verify(token, process.env.RESET_TOKEN, async (err, user) => {
+      if (err) return res.sendStatus(403)
+
+      await db.User.update({ password }, { where: { reset_token: token } })
+      await db.User.update({ reset_token: null }, { where: { email: user.email } })
+      res.status(200).json({ success: true })
+    })
+  } catch (error) {
+    res.sendStatus(500)
+  }
+}
+
 module.exports = {
   getRefreshToken,
   getAccessToken,
   deleteToken,
   loginUser,
+  resetPassword,
   registerUser,
   getUser,
+  sendResetLink,
   tokenTest,
   getUserToken,
   accountConnected,
