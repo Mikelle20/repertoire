@@ -5,6 +5,8 @@ import axios from 'axios'
 import { setError } from '../../features/errorSlice'
 
 function ResetForm () {
+  const queryParams = window.location.search || null
+  if (queryParams === null) window.location.href = '/login'
   const [formData, setFormData] = React.useState({
     password: '',
     confirmPassword: '',
@@ -12,8 +14,12 @@ function ResetForm () {
   })
 
   const [toggle, setToggle] = React.useState(false)
+  const [error, setError] = React.useState({
+    isError: false,
+    msg: ''
+  })
 
-  const token = window.location.search
+  const token = queryParams.match('=(.*)')[1]
   console.log(token)
   React.useEffect(() => {
     if (formData.password === formData.confirmPassword) {
@@ -44,8 +50,12 @@ function ResetForm () {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    axios.post('/authorize/resetLink', { email: formData.password }).then(() => {
-
+    axios.post('/authorize/resetPassword', { password: formData.password, token }).then((res) => {
+      if (!res.data.success) setError({ isError: true, error: res.data.error })
+      setToggle(true)
+      setFormData(prev => {
+        return { ...prev, match: false }
+      })
     }).catch(() => setError(true))
   }
   return (
@@ -71,8 +81,8 @@ function ResetForm () {
                 >
                 </input>
             </div>
-            {toggle && <div style={{ marginTop: '10px' }} className='error'>An email was sent to the entered account.</div>}
-            {(formData.match && formData.confirmPassword.length !== 0) && <motion.button className='btn' whileTap={{ scale: 0.9 }}>Send Email</motion.button>}
+            {toggle && <div style={{ marginTop: '10px' }} className='error'>{error.isError ? error.msg : 'Your password has been changed. Please login.'}</div>}
+            {(formData.match && formData.confirmPassword.length !== 0) && <motion.button className='btn' whileTap={{ scale: 0.9 }}>Submit</motion.button>}
         </form>
     </motion.div>
   )

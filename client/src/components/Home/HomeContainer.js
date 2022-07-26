@@ -7,6 +7,7 @@ import SuggestionItem from './SuggestionItem'
 import PlaylistItem from './PlaylistItem'
 import { nanoid } from '@reduxjs/toolkit'
 import RecentItem from './RecentItem'
+import TrackItems from './TrackItems'
 
 function HomeContainer (props) {
   const time = new Date()
@@ -40,6 +41,10 @@ function HomeContainer (props) {
   const socials = props.socials.map(social => {
     return <SocialItem key={nanoid()} social={social} />
   })
+
+  const tracks = props.data.tracks.map(track => {
+    return <TrackItems key={nanoid()} track={track} />
+  })
   return (
     <div className='homeContainer'>
     <div className='leftHome'>
@@ -47,6 +52,10 @@ function HomeContainer (props) {
       <h2 className='homeHeader'>Your top artist</h2>
       <div className='sideScrollDiv'>
         {artists}
+      </div>
+      <h2 className='homeHeader'>Your top tracks</h2>
+      <div className='sideScrollDiv'>
+        {tracks}
       </div>
       <h1 className='homeHeader'>Suggestions from friends</h1>
       <div className='sideScrollDiv'>
