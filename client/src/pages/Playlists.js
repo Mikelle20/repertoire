@@ -8,13 +8,13 @@ import { openModal } from '../features/PlaylistModalSlice'
 import axios from 'axios'
 
 function Playlists () {
-  const accessToken = window.sessionStorage.getItem('accessToken') || null
+  const accessToken = JSON.parse(window.sessionStorage.getItem('accessToken')) || null
   if (!accessToken) window.location.href = '/login'
 
   const { isOpen } = useSelector(state => state.playlistModal)
 
   const headers = {
-    Authorization: `Bearer ${accessToken}`
+    Authorization: `Bearer ${accessToken.token}`
   }
 
   const { error } = useSelector(store => store.error)
@@ -58,6 +58,7 @@ function Playlists () {
             <div className='playlistContainer'>
                 {playlists && playlistCards}
                 {accessToken && <motion.button
+                tabIndex={0}
                 className='newPlaylistBtn'
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}

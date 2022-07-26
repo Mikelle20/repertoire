@@ -571,7 +571,7 @@ html, body {
   height: fit-content;
   background-color: #6D80CF;
   font-size: small;
-  color: #c3cbeb;
+  color: black;
   border-bottom: 1px solid black;
   padding: 5%;
   display: flex;
@@ -771,7 +771,7 @@ html, body {
 .searchTitle{
   font-size: small;
   font-weight: bolder;
-  color: #c3cbeb;
+  color: black;
   margin-right: 3%;
 }
 
@@ -1160,7 +1160,7 @@ label{
   padding: 3% 0% 3% 3%;
   font-size: small;
   font-weight: bolder;
-  color: #c3cbeb;
+  color: black;
   border-bottom: 1px solid #c3cbeb;
   
 }
@@ -1188,7 +1188,13 @@ label{
   width: 1.75rem;
   border-radius: 50%;
   margin: 0% 3%;
-  border: 1px solid #c3cbeb;
+  border: 1px solid black;
+}
+
+.songImage{
+  width: 1.75rem;
+  border-radius: 5px;
+  border: 1px solid black;
 }
 
 .playlistPageCover{

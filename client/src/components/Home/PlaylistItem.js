@@ -14,6 +14,7 @@ function PlaylistItem (props) {
     <Tooltip title={props.playlist.playlistName}>
       <motion.div
       onClick={handleClick}
+      tabIndex={0}
       whileHover={{ scale: 1.2 }}
       className='sideItem'>
         <img className='topArtist' src={props.playlist.playlistImage.length === 0 ? require('../../assets/defaults/defaultCover.png') : props.playlist.playlistImage[0].url} alt={props.playlist.playlistName}></img>

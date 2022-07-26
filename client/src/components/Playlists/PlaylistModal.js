@@ -10,7 +10,7 @@ import { setError } from '../../features/errorSlice'
 
 function PlaylistModal (props) {
   const dispatch = useDispatch()
-  const accessToken = window.sessionStorage.getItem('accessToken')
+  const accessToken = JSON.parse(window.sessionStorage.getItem('accessToken')).token || null
   const [formData, setFormData] = React.useState({
     title: '',
     description: '',
@@ -138,12 +138,14 @@ function PlaylistModal (props) {
         }
         <div className='modalButtonContainer'>
           <motion.button
+          tabIndex={0}
           whileTap={{ scale: 0.9 }}
           className='modalBtn'
           onClick={() => dispatch(closeModal())}
           >Close</motion.button>
           {formData.title && <motion.button
           whileTap={{ scale: 0.9 }}
+          tabIndex={0}
           onSubmit={handleSubmit}
           id='modalClose'
           className='modalBtn'

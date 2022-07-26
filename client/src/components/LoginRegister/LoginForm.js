@@ -45,7 +45,7 @@ function LoginForm () {
           { email: formData.email }, { withCredentials: true })).data
 
         if (accountConnected.success) {
-          window.sessionStorage.setItem('accessToken', res.accessToken)
+          window.sessionStorage.setItem('accessToken', JSON.stringify(res.accessToken))
           // navigate('/home')
           window.location.href = '/home'
         }
@@ -62,7 +62,7 @@ function LoginForm () {
         const { success } = await (await axios.post('http://localhost:5000/authorize/accountConnected', { check: true, email: formData.email }, { withCredentials: true })).data
 
         if (success) {
-          window.sessionStorage.setItem('accessToken', res.accessToken)
+          window.sessionStorage.setItem('accessToken', JSON.stringify(res.accessToken))
           // navigate('/home')
           window.location.href = '/home'
         } else {
@@ -140,7 +140,7 @@ function LoginForm () {
           <div className='authFooter'>
             <Link
             className='authLink'
-            to={''}>
+            to={'/reset'}>
               Reset Password
             </Link>
             <Link

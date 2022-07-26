@@ -12,7 +12,7 @@ function SearchModal () {
   const { friends } = useSelector(store => store.friends)
   const dispatch = useDispatch()
 
-  const accessToken = window.sessionStorage.getItem('accessToken')
+  const accessToken = JSON.parse(window.sessionStorage.getItem('accessToken')).token || null
   const headers = {
     Authorization: `Bearer ${accessToken}`
   }
@@ -125,12 +125,14 @@ function SearchModal () {
         }
         <div className='buttonModalContainer'>
           <motion.button
+          tabIndex={0}
           style={{ marginRight: '20%' }}
           whileTap={{ scale: 0.9 }}
           onClick={() => dispatch(closeModal())} className='modalBtn'>
             Close
           </motion.button>
           {formData.playlist_id && <motion.button
+          tabIndex={0}
           whileTap={{ scale: 0.9 }}
           onClick={handleSubmit} className='modalBtn'>
             Add

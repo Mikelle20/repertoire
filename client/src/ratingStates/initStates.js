@@ -15,9 +15,13 @@ export const initialState = {
     {
       id: 3,
       filled: false
+    },
+    {
+      id: 4,
+      filled: false
     }
   ],
-  0.25: [
+  0.2: [
     {
       id: 0,
       filled: true
@@ -33,9 +37,13 @@ export const initialState = {
     {
       id: 3,
       filled: false
+    },
+    {
+      id: 4,
+      filled: false
     }
   ],
-  0.5: [
+  0.4: [
     {
       id: 0,
       filled: true
@@ -51,9 +59,13 @@ export const initialState = {
     {
       id: 3,
       filled: false
+    },
+    {
+      id: 4,
+      filled: false
     }
   ],
-  0.75: [
+  0.6: [
     {
       id: 0,
       filled: true
@@ -68,6 +80,32 @@ export const initialState = {
     },
     {
       id: 3,
+      filled: false
+    },
+    {
+      id: 4,
+      filled: false
+    }
+  ],
+  0.8: [
+    {
+      id: 0,
+      filled: true
+    },
+    {
+      id: 1,
+      filled: true
+    },
+    {
+      id: 2,
+      filled: true
+    },
+    {
+      id: 3,
+      filled: true
+    },
+    {
+      id: 4,
       filled: false
     }
   ],
@@ -86,6 +124,10 @@ export const initialState = {
     },
     {
       id: 3,
+      filled: true
+    },
+    {
+      id: 4,
       filled: true
     }
   ]

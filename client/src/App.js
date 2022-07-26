@@ -13,17 +13,24 @@ import Playlist from './pages/Playlist'
 import Friends from './pages/Friends'
 import Navbar from './components/Navbar'
 import { axiosAuth } from './utils'
+import PasswordReset from './pages/PasswordReset'
+import ResetPassword from './pages/ResetPassword'
 
 function App () {
-  const accessToken = window.sessionStorage.getItem('accessToken')
-  const headers = {
-    Authorization: `Bearer ${accessToken}`
-  }
+  const accessToken = JSON.parse(window.sessionStorage.getItem('accessToken')) || null
   axios.interceptors.request.use(async (config) => {
     if (accessToken) {
-      const res = await (await axiosAuth.get('/checkToken', { withCredentials: true, headers })).data
-      console.log('ran interceptor')
-      res.accessToken && window.sessionStorage.setItem('accessToken', res.accessToken)
+      const exp = JSON.parse(window.sessionStorage.getItem('accessToken')).exp
+      const expiry = new Date(exp * 1000).toUTCString()
+      const currentTime = new Date().toUTCString()
+      const headers = {
+        Authorization: `Bearer ${accessToken.token}`
+      }
+      if (expiry < currentTime) {
+        const res = await (await axiosAuth.get('/checkToken', { withCredentials: true, headers })).data
+        console.log('ran interceptor')
+        res.accessToken && window.sessionStorage.setItem('accessToken', JSON.stringify(res.accessToken))
+      }
     }
     return config
   }, (error) => {
@@ -48,6 +55,8 @@ function App () {
         <Route path='/playlists' element={<Playlists/>} />
         <Route path='/playlist/:id' element={<Playlist/>} />
         <Route path='/friends' element={<Friends/>} />
+        <Route path='/reset' element={<PasswordReset/>} />
+        <Route path='/reset_password' element={<ResetPassword/>} />
       </Routes>
     </>
 

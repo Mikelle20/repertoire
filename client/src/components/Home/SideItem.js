@@ -9,6 +9,7 @@ function SideItem (props) {
     <Tooltip title={props.artist.name}>
       <motion.div
       // title={props.artist.name}
+      tabIndex={0}
       whileHover={{ scale: 1.2 }}
       className='sideItem'>
         <img className='topArtist' src={props.artist.images[0].url} alt={props.artist.name}></img>

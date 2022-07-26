@@ -7,7 +7,7 @@ import SearchModal from '../components/Suggestion/SearchModal'
 import { setError } from '../features/errorSlice'
 
 function Suggestion () {
-  const accessToken = window.sessionStorage.getItem('accessToken') || null
+  const accessToken = JSON.parse(window.sessionStorage.getItem('accessToken')).token || null
   if (!accessToken) window.location.href = '/login'
 
   const { isOpen } = useSelector(store => store.searchModal)

@@ -27,7 +27,6 @@ function RegisterForm () {
         [Event.target.name]: Event.target.value
       }
     })
-    console.log(formData)
   }
 
   React.useEffect(() => {
@@ -132,7 +131,7 @@ function RegisterForm () {
           <div className='authFooter'>
             <Link
             className='authLink'
-            to={''}>
+            to={'/reset'}>
               Reset Password
             </Link>
             <Link

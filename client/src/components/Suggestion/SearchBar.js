@@ -10,7 +10,7 @@ function SearchBar () {
     search: ''
   })
   const dispatch = useDispatch()
-  const accessToken = window.sessionStorage.getItem('accessToken')
+  const accessToken = JSON.parse(window.sessionStorage.getItem('accessToken')).token || null
 
   const headers = {
     Authorization: `Bearer ${accessToken}`
@@ -51,6 +51,7 @@ function SearchBar () {
     <div className='searchContainer'>
         <div className='searchInputContainer'>
             <input
+            tabIndex={0}
             className='searchInput'
             name='search'
             placeholder='Song + Artist...'

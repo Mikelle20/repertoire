@@ -10,7 +10,7 @@ function FriendSearchBar () {
     search: ''
   })
 
-  const accessToken = window.sessionStorage.getItem('accessToken')
+  const accessToken = JSON.parse(window.sessionStorage.getItem('accessToken')).token || null
   const { error } = useSelector(store => store.error)
   const dispatch = useDispatch()
 

@@ -5,9 +5,10 @@ import axios from 'axios'
 import { initialState } from '../../ratingStates/initStates'
 import { useDispatch } from 'react-redux'
 import { setError } from '../../features/errorSlice'
+import { Tooltip } from '@mui/material'
 
 function Suggestion (props) {
-  const accessToken = window.sessionStorage.getItem('accessToken')
+  const accessToken = JSON.parse(window.sessionStorage.getItem('accessToken')).token || null
   const headers = {
     Authorization: `Bearer ${accessToken}`
   }
@@ -42,7 +43,7 @@ function Suggestion (props) {
           headers,
           data: {
             receiverId: props.suggestion.senderId,
-            rating: (id / 4) + 0.25,
+            rating: (id / 5) + 0.20,
             songId: props.suggestion.songId,
             playlistId: props.playlistId
           }
@@ -56,14 +57,21 @@ function Suggestion (props) {
   }
 
   return (
-    <div className='suggestion'>
+    <div tabIndex={0} className='suggestion'>
         <img src={props.suggestion.senderImage} className='suggestionImage' />
-        <span>{props.suggestion.songName.length >= 25 ? `${props.suggestion.songName.split(' ').slice(0, 3).join(' ')}...` : props.suggestion.songName}</span>
+        <Tooltip title={
+          <>
+            <img className='songImage' src={props.suggestion.songImage}></img>
+          </>
+        }>
+          <span>{props.suggestion.songName.length >= 25 ? `${props.suggestion.songName.split(' ').slice(0, 3).join(' ')}...` : props.suggestion.songName}</span>
+        </Tooltip>
         <span className='rateContainer'>
           <img src={fillHeart[0].filled ? require('../../assets/icons/heart_filled.png') : require('../../assets/icons/heart.png')} className='ratingHeart' onClick={() => handleClick(fillHeart[0].id)}></img>
           <img src={fillHeart[1].filled ? require('../../assets/icons/heart_filled.png') : require('../../assets/icons/heart.png')} className='ratingHeart' onClick={() => handleClick(fillHeart[1].id)}></img>
           <img src={fillHeart[2].filled ? require('../../assets/icons/heart_filled.png') : require('../../assets/icons/heart.png')} className='ratingHeart' onClick={() => handleClick(fillHeart[2].id)}></img>
           <img src={fillHeart[3].filled ? require('../../assets/icons/heart_filled.png') : require('../../assets/icons/heart.png')} className='ratingHeart' onClick={() => handleClick(fillHeart[3].id)}></img>
+          <img src={fillHeart[4].filled ? require('../../assets/icons/heart_filled.png') : require('../../assets/icons/heart.png')} className='ratingHeart' onClick={() => handleClick(fillHeart[4].id)}></img>
         </span>
     </div>
   )

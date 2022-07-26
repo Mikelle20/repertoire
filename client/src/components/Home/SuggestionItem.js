@@ -14,6 +14,7 @@ function SuggestionItem (props) {
     <Tooltip title={`${props.suggestion.songName} from ${props.suggestion.senderName}`}>
       <motion.div
       onClick={handleClick}
+      tabIndex={0}
       whileHover={{ scale: 1.2 }}
       className='sideItem'>
         <img className='topArtist' src={props.suggestion.songImage[0].url} alt={props.suggestion.songName}></img>

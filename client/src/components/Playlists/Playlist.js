@@ -8,7 +8,7 @@ import { setError } from '../../features/playlistSlice'
 import { useDispatch, useSelector } from 'react-redux'
 function Playlist (props) {
   const navigate = useNavigate()
-  const accessToken = window.sessionStorage?.getItem('accessToken')
+  const accessToken = JSON.parse(window.sessionStorage.getItem('accessToken')).token || null
   const headers = {
     Authorization: `Bearer ${accessToken}`
   }
@@ -33,6 +33,8 @@ function Playlist (props) {
   }
   return (
     <motion.div
+    tabIndex={0}
+    title={props.playlist.title}
     whileHover={{ scale: 1.1 }}
     className='playlistCard'>
         <>
@@ -42,12 +44,14 @@ function Playlist (props) {
          {<img src={props.playlist.isPrivate ? require('../../assets/icons/lock.png') : require('../../assets/icons/public.png')} className='cardPng'></img>}</div>
          <div className='cardButtonContainer'>
           <motion.button
+          tabIndex={0}
             whileTap={{ scale: 0.9 }}
             onClick={handleClick}
             className='cardBtn'>
               Manage
             </motion.button>
             <motion.button
+            tabIndex={0}
             whileTap={{ scale: 0.9 }}
             onClick={() => handleDelete(props.playlist.id)}
             className='cardDeleteBtn'>

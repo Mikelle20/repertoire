@@ -7,11 +7,11 @@ function SocialItem (props) {
   return (
     <>
     {props.social.type
-      ? <div className='socialItem'>
+      ? <div tabIndex={0} className='socialItem'>
         <img className ='socialUserImg' src={props.social.senderImage}></img>
-        <span className='socialSong'>{props.social.senderName + ' gave ' + (props.social.songName.length >= 1500 ? ` ${props.social.songName.split(' ').slice(0, 3).join(' ')}... ` : props.social.songName) + ' a ' + props.social.rating * 4}</span>
+        <span className='socialSong'>{props.social.senderName + ' gave ' + (props.social.songName.length >= 1500 ? ` ${props.social.songName.split(' ').slice(0, 3).join(' ')}... ` : props.social.songName) + ' a ' + props.social.rating * 5}</span>
     </div>
-      : <div className='socialItem'>
+      : <div tabIndex={0} className='socialItem'>
            <img className ='socialUserImg' src={props.social.ownerImage}></img>
            <span className='socialSong'>{props.social.ownerName + ' added you to ' + (props.social.playlistName.length >= 15 ? ` ${props.social.playlistName.split(' ').slice(0, 3).join(' ')}... ` : props.social.playlistName)}</span>
         </div>}

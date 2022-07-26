@@ -7,7 +7,7 @@ import PlaylistContainer from '../components/Playlists/PlaylistContainer'
 import { setError } from '../features/errorSlice'
 
 function Playlist () {
-  const accessToken = window.sessionStorage.getItem('accessToken') || null
+  const accessToken = JSON.parse(window.sessionStorage.getItem('accessToken')) || null
   if (!accessToken) window.location.href = '/login'
 
   const playlistId = window.location.pathname.split('/').at(-1)
@@ -15,7 +15,7 @@ function Playlist () {
   const { error } = useSelector(store => store.error)
 
   const headers = {
-    Authorization: `Bearer ${accessToken}`
+    Authorization: `Bearer ${accessToken.token}`
   }
   const dispatch = useDispatch()
 

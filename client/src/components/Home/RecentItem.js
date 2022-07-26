@@ -7,10 +7,11 @@ function RecentItem (props) {
   return (
     <Tooltip title={`${props.listen.friendName} was listening to ${props.listen.songName}`}>
       <motion.div
-    whileHover={{ scale: 1.2 }}
-    className='sideItem'>
-      <img className='topArtist' src={props.listen.songImage} alt={props.listen.songName}></img>
-      <img className='homeSuggestionImage' src={props.listen.friendImage} />
+      tabIndex={0}
+      whileHover={{ scale: 1.2 }}
+      className='sideItem'>
+        <img className='topArtist' src={props.listen.songImage} alt={props.listen.songName}></img>
+        <img className='homeSuggestionImage' src={props.listen.friendImage} />
     </motion.div>
     </Tooltip>
   )

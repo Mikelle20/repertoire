@@ -5,7 +5,7 @@ import axios from 'axios'
 import HomeContainer from '../components/Home/HomeContainer'
 
 function Home () {
-  const accessToken = window.sessionStorage.getItem('accessToken') || null
+  const accessToken = JSON.parse(window.sessionStorage.getItem('accessToken')) || null
   if (!accessToken) window.location.href = '/login'
 
   const [data, setData] = React.useState(null)
@@ -16,7 +16,7 @@ function Home () {
   })
 
   const headers = {
-    Authorization: `Bearer ${window.sessionStorage.getItem('accessToken')}`
+    Authorization: `Bearer ${accessToken.token}`
   }
 
   React.useEffect(() => {
