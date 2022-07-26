@@ -8,12 +8,14 @@ const setHome = async (req, res) => {
   const user = req.user
 
   try {
-    const accessToken = await getAccessToken(user.user_id)
+    // const accessToken = await getAccessToken(user.email)
 
     const userData = await (await db.User.findOne({
       attributes: ['rating', 'display_name', 'profile_image', 'user_id', 'email'],
-      where: { user_id: user.user_id }
+      where: { email: user.email }
     })).dataValues
+
+    const accessToken = await getAccessToken(userData.user_id)
 
     const headers = {
       Accept: 'application/json',
@@ -130,6 +132,8 @@ const setHome = async (req, res) => {
       headers
     })).data
 
+    const tracks = await (await axios.get('https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=10&offset=0', { headers })).data
+
     const sortedPlaylists = sort(homePlaylists, { order: 'desc', by: 'createdAt' })
     const sortedSuggestions = sort(homeSuggestions, { order: 'desc', by: 'createdAt' })
     const sortedListens = sort(friendsListens, { order: 'desc', by: 'playedAt' })
@@ -139,17 +143,15 @@ const setHome = async (req, res) => {
       homePlaylists: sortedPlaylists,
       homeSuggestions: sortedSuggestions,
       items: items.items,
+      tracks: tracks.items,
       friendListens: sortedListens,
       user: {
         ...userData
       }
     })
   } catch (error) {
-    console.log(error)
-    res.status(500).json({
-      success: false,
-      error: 'Something went wrong on the server side.'
-    })
+    console.log(error.response)
+    res.sendStatus(500)
   }
 }
 

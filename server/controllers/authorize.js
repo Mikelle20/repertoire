@@ -64,7 +64,11 @@ const loginUser = async (req, res) => {
       }, process.env.REFRESH_TOKEN_SECRET)
 
       await db.User.update({ server_refresh_token: refreshToken }, {
-        where: { user_id: user.dataValues.user_id }
+        where: { email }
+      })
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        sameSite: 'strict'
       })
 
       res.status(200).json({
@@ -160,7 +164,7 @@ const deleteToken = async (req, res) => {
   const decodedToken = jwt.decode(req.refreshToken)
   try {
     await db.User.update({ server_refresh_token: null }, {
-      where: { user_id: decodedToken.user_id }
+      where: { email: decodedToken.email }
     })
     res.clearCookie('refreshToken')
     res.status(200).json({
@@ -273,19 +277,24 @@ const getAccessToken = (req, res) => {
 }
 
 const getUser = async (req, res) => {
-  const server_refresh_token = req.cookies.refreshToken
+  try {
+    const server_refresh_token = req.cookies.refreshToken
 
-  const decodedToken = jwt.decode(server_refresh_token)
+    const decodedToken = jwt.decode(server_refresh_token)
 
-  const user = await (await db.User.findOne({
-    attributes: ['user_id', 'profile_image'],
-    where: { user_id: decodedToken.user_id }
-  }))
+    const user = await db.User.findOne({
+      attributes: ['user_id', 'profile_image'],
+      where: { email: decodedToken.email }
+    })
 
-  res.status(200).json({
-    success: true,
-    user: { ...user.dataValues }
-  })
+    res.status(200).json({
+      success: true,
+      user: { ...user.dataValues }
+    })
+  } catch (error) {
+    console.log(error)
+    res.sendStatus(500)
+  }
 }
 
 const checkToken = (req, res) => {
@@ -299,7 +308,7 @@ const sendResetLink = async (req, res) => {
     const { email } = req.body
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
-    const user = await db.User.findOne({ where: email })
+    const user = await db.User.findOne({ where: { email } })
 
     if (user) {
       const token = jwt.sign({ email }, process.env.RESET_TOKEN, { expiresIn: '1h' })
@@ -311,14 +320,14 @@ const sendResetLink = async (req, res) => {
         from: 'repertoire.manager@gmail.com',
         subject: 'Password Reset Link',
         text: `click here to reset password: http://localhost:3000/reset_password/?token=${token}`,
-        html: `<strong>click here to reset password: http://localhost:3000/reset_password/?${token}</strong>`
+        html: `<strong>click here to reset password: http://localhost:3000/reset_password/?token=${token}</strong>`
       }
       sgMail.send(msg)
         .then(() => {
           console.log('Email sent')
         })
         .catch((error) => {
-          console.log(error.response.body)
+          console.log(error)
         })
     }
 
@@ -326,6 +335,7 @@ const sendResetLink = async (req, res) => {
       success: true
     })
   } catch (error) {
+    console.log(error)
     res.sendStatus(500)
   }
 }
@@ -335,15 +345,17 @@ const resetPassword = async (req, res) => {
     const { password, token } = req.body
 
     if (password.length <= 7) return res.status(200).json({ success: false, error: 'Password must be greater than 7 characters.' })
+    const hashedPassword = bcrypt.hashSync(password, 10)
 
     jwt.verify(token, process.env.RESET_TOKEN, async (err, user) => {
-      if (err) return res.sendStatus(403)
+      if (err) return res.status(200).json({ sucess: false, error: 'Token has expired, please send another email.' })
 
-      await db.User.update({ password }, { where: { reset_token: token } })
+      await db.User.update({ password: hashedPassword }, { where: { reset_token: token } })
       await db.User.update({ reset_token: null }, { where: { email: user.email } })
       res.status(200).json({ success: true })
     })
   } catch (error) {
+    console.log(error)
     res.sendStatus(500)
   }
 }
