@@ -9,6 +9,7 @@ const playlist = require('./server/routes/playlist')
 const cors = require('cors')
 const { corsOptions } = require('./server/corsOptions/config')
 const session = require('express-session')
+const path = require('path')
 
 require('dotenv').config()
 
