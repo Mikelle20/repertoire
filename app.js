@@ -18,7 +18,7 @@ app.use(cookieParser())
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-// app.use('/static', express.static(path.join(__dirname, 'client/build')))
+app.use(express.static(path.join(__dirname, 'client/build')))
 
 app.use(session({
   secret: 'secret',
@@ -35,15 +35,19 @@ app.use('/home', home)
 app.use('/friends', friends)
 app.use('/playlist', playlist)
 
-if (process.env.NODE_ENV === 'production') {
-  // Exprees will serve up production assets
-  app.use('/static', express.static(path.join(__dirname, 'client/public')))
+// if (process.env.NODE_ENV === 'production') {
+//   // Exprees will serve up production assets
+//   app.use('/static', express.static(path.join(__dirname, 'client/public')))
 
-  // Express serve up index.html file if it doesn't recognize route
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve('client', 'public', 'index.html'));
-  });
-}
+//   // Express serve up index.html file if it doesn't recognize route
+//   app.get('*', (req, res) => {
+//     res.sendFile(path.resolve('client', 'public', 'index.html'));
+//   });
+// }
+
+app.get('*', (req,res)=> {
+  res.sendFile(path.join(__dirname, 'client/build/index.html'))
+})
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
