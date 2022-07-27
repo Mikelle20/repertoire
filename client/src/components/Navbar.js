@@ -33,7 +33,7 @@ const ResponsiveAppBar = () => {
   }
 
   const handleClick = async () => {
-    accessToken && (await axios.delete('http://localhost:5000/authorize/logout', { withCredentials: true }))
+    accessToken && (await axios.delete('/authorize/logout', { withCredentials: true }))
     setData({})
     window.sessionStorage.removeItem('accessToken')
     window.location.href = '/login'
@@ -43,7 +43,7 @@ const ResponsiveAppBar = () => {
 
   React.useEffect(() => {
     if (accessToken) {
-      axios.get('http://localhost:5000/authorize/getUser',
+      axios.get('/authorize/getUser',
         { headers, withCredentials: true }).then(res => {
         setData(res.data)
       })

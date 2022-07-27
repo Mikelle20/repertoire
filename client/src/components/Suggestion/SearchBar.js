@@ -21,7 +21,7 @@ function SearchBar () {
   React.useEffect(() => {
     axios({
       method: 'POST',
-      url: 'http://localhost:5000/suggestion/search',
+      url: '/suggestion/search',
       data: formData,
       withCredentials: true,
       headers

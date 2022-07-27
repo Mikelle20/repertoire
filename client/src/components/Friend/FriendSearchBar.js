@@ -22,7 +22,7 @@ function FriendSearchBar () {
   const [updateStatus, setUpdateStatus] = React.useState(false)
 
   const handleSubmit = (id) => {
-    axios.post('http://localhost:5000/friends/addFriend',
+    axios.post('/friends/addFriend',
       { friend: id }, { withCredentials: true, headers }).then(res => {
       setUpdateStatus(prev => {
         return !prev
@@ -35,7 +35,7 @@ function FriendSearchBar () {
   const handleDelete = (id) => {
     axios({
       method: 'DELETE',
-      url: 'http://localhost:5000/friends/deleteFriend',
+      url: '/friends/deleteFriend',
       withCredentials: true,
       headers,
       data: { friend: id }
@@ -50,7 +50,7 @@ function FriendSearchBar () {
 
   React.useEffect(() => {
     if (formData.search.length) {
-      axios.post('http://localhost:5000/friends/searchFriends', formData, { withCredentials: true, headers }).then(res => {
+      axios.post('/friends/searchFriends', formData, { withCredentials: true, headers }).then(res => {
         setFriendsResults(res.data)
       }).catch(res => {
         dispatch(setError(true))

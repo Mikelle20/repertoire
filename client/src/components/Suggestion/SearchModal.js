@@ -31,7 +31,7 @@ function SearchModal () {
     if (formData.friend_id) {
       axios({
         method: 'POST',
-        url: 'http://localhost:5000/suggestion/accessedPlaylists',
+        url: '/suggestion/accessedPlaylists',
         withCredentials: true,
         headers,
         data: { friend: formData.friend_id }
@@ -77,7 +77,7 @@ function SearchModal () {
     e.preventDefault()
     axios({
       method: 'POST',
-      url: 'http://localhost:5000/suggestion/suggest',
+      url: '/suggestion/suggest',
       withCredentials: true,
       headers,
       data: { ...formData }

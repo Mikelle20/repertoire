@@ -20,7 +20,7 @@ function Home () {
   }
 
   React.useEffect(() => {
-    axios.get('http://localhost:5000/home/setHome', { withCredentials: true, headers }).then(res => {
+    axios.get('/home/setHome', { withCredentials: true, headers }).then(res => {
       console.log(res.data)
       setData(res.data)
     }).catch(res => {
@@ -30,7 +30,7 @@ function Home () {
       })
     })
 
-    axios.get('http://localhost:5000/home/getSocials', { withCredentials: true, headers }).then(res => {
+    axios.get('/home/getSocials', { withCredentials: true, headers }).then(res => {
       setSocials(res.data)
     }).catch(res => {
       setError({

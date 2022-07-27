@@ -50,7 +50,7 @@ function PlaylistModal (props) {
     dispatch(closeModal())
     await axios({
       method: 'POST',
-      url: 'http://localhost:5000/playlist/createPlaylist',
+      url: '/playlist/createPlaylist',
       withCredentials: true,
       headers,
       data: { formData }

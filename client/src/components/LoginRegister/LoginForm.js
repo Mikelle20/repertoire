@@ -35,13 +35,13 @@ function LoginForm () {
     e.preventDefault()
     if (queryParams) {
       const accessCode = queryParams.match('=(.*)')[1]
-      const url = 'http://localhost:5000/authorize/login'
+      const url = '/authorize/login'
       const res = await (await axios.post(url, { ...formData, accessCode }, {
         withCredentials: true
       })).data
 
       if (res.success === true) {
-        const accountConnected = await (await axios.post('http://localhost:5000/authorize/accountConnected',
+        const accountConnected = await (await axios.post('/authorize/accountConnected',
           { email: formData.email }, { withCredentials: true })).data
 
         if (accountConnected.success) {
@@ -53,13 +53,13 @@ function LoginForm () {
         setError({ isError: true, errorText: 'Incorrect email or password.' })
       }
     } else {
-      const url = 'http://localhost:5000/authorize/login'
+      const url = '/authorize/login'
       const res = await (await axios.post(url, { ...formData }, {
         withCredentials: true
       })).data
 
       if (res.success) {
-        const { success } = await (await axios.post('http://localhost:5000/authorize/accountConnected', { check: true, email: formData.email }, { withCredentials: true })).data
+        const { success } = await (await axios.post('/authorize/accountConnected', { check: true, email: formData.email }, { withCredentials: true })).data
 
         if (success) {
           window.sessionStorage.setItem('accessToken', JSON.stringify(res.accessToken))

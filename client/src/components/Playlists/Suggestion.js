@@ -38,7 +38,7 @@ function Suggestion (props) {
       if (prevState[id].filled === false) {
         axios({
           method: 'POST',
-          url: 'http://localhost:5000/suggestion/rate',
+          url: '/suggestion/rate',
           withCredentials: true,
           headers,
           data: {

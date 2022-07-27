@@ -20,7 +20,7 @@ function Suggestion () {
 
   React.useEffect(() => {
     axios.get(
-      'http://localhost:5000/friends/getFriends',
+      '/friends/getFriends',
       { withCredentials: true, headers }
     ).then(res => {
       dispatch(setFriends(res.data))
