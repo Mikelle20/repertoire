@@ -14,7 +14,36 @@ function Landing () {
         damping: 15
       }
     },
-
+    fade1: {
+      opacity: 0,
+      transition: {
+        repeat: Infinity,
+        delay: 7,
+        duration: 10,
+        repeatDelay: 24,
+        repeatType: 'reverse'
+      }
+    },
+    fade2: {
+      opacity: 0,
+      transition: {
+        repeat: Infinity,
+        delay: 24,
+        duration: 10,
+        repeatDelay: 0,
+        repeatType: 'reverse'
+      } 
+    },
+    fade3: {
+      opacity: 0,
+      transition: {
+        repeat: Infinity,
+        delay: 41,
+        duration: 10,
+        repeatDelay: 0,
+        repeatType: 'reverse'
+      } 
+    },
     fadeOut: {
       opacity: 1,
       transition: {
@@ -49,8 +78,9 @@ function Landing () {
       >
         <div className='landingAlbums'>
           <div className='landingAlbum1'>
-            <motion.img variants={variants} inital={{ opacity: 0 }} animate='fadeOut' src={require('../assets/landingImgs/caprisongs.jpeg')} alt='fka twigs' className='albumImg'/>
-            <motion.img variants={variants} inital={{ opacity: 1 }} animate='fadeIn' src={require('../assets/landingImgs/janet.jpeg')} className='albumImg2'></motion.img>
+            <motion.img variants={variants} inital={{ opacity: 1 }} animate='fade2' src={require('../assets/landingImgs/break_ur_heart.jpeg')} alt='break your heart' className='albumImg3'/>
+            <motion.img variants={variants} inital={{ opacity: 1 }} animate='fade3' src={require('../assets/landingImgs/caprisongs.jpeg')} alt='fka twigs' className='albumImg'/>
+            <motion.img variants={variants} inital={{ opacity: 1 }} animate='fade1' src={require('../assets/landingImgs/janet.jpeg')} className='albumImg2'></motion.img>
           </div>
           <div className='landingAlbum2'>
             <motion.img variants={variants} inital={{ opacity: 0 }} animate='fadeOut' src={require('../assets/landingImgs/phantasies.jpeg')} className='albumImg'></motion.img>
