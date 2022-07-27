@@ -11,7 +11,8 @@
     "make-seed": "npx sequelize-cli seed:generate --name demo-user",
     "seed": "npx sequelize-cli db:seed:all",
     "reap": "npx sequelize-cli db:seed:undo",
-    "reset": "npm run down && npm run migrate && npm start"
+    "reset": "npm run down && npm run migrate && npm start",
+    "postinstall": "cd client && npm i && npm run build"
   },
   "keywords": [],
   "author": "",
