@@ -30,6 +30,7 @@ const registerUser = async (req, res) => {
     })
     return res.status(200).json({ success: true })
   } catch (error) {
+    console.log(error)
     res.sendStatus(500)
   }
 }
@@ -114,6 +115,7 @@ const loginUser = async (req, res) => {
       })
     }
   } catch (error) {
+    console.log(error)
     res.sendStatus(500)
   }
 }
