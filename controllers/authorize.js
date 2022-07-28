@@ -115,7 +115,7 @@ const loginUser = async (req, res) => {
       })
     }
   } catch (error) {
-    csonsrepertoireapp.herokuapp.com
+    console.log(error)
     res.sendStatus(500)
   }
 }
