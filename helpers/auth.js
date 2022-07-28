@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken')
 const getAccess = async (refreshToken) => {
   const accessToken = await axios({
     method: 'POST',
-    url: 'http://localhost:5000/authorize/access_token',
+    url: '/authorize/access_token',
     data: { refreshToken }
   })
 
@@ -19,7 +19,7 @@ const generateAccessToken = (user) => {
 }
 
 const getAccessToken = async (user_id) => {
-  const url = 'http://localhost:5000/authorize/access_token'
+  const url = '/authorize/access_token'
   try {
     const refreshToken = await db.User.findOne({
       attributes: ['refresh_token'],
@@ -39,7 +39,7 @@ const getAccessToken = async (user_id) => {
 }
 
 const setAccount = async (accessCode, email) => {
-  const accountSet = await (await axios.post('http://localhost:5000/authorize/refresh_token', { accessCode, email })).data
+  const accountSet = await (await axios.post('/authorize/refresh_token', { accessCode, email })).data
   return accountSet
 }
 

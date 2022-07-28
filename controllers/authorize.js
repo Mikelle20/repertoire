@@ -115,7 +115,7 @@ const loginUser = async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error)
+    csonsrepertoireapp.herokuapp.com
     res.sendStatus(500)
   }
 }
@@ -317,8 +317,8 @@ const sendResetLink = async (req, res) => {
         to: email,
         from: 'repertoire.manager@gmail.com',
         subject: 'Password Reset Link',
-        text: `click here to reset password: http://localhost:3000/reset_password/?token=${token}`,
-        html: `<strong>click here to reset password: http://localhost:3000/reset_password/?token=${token}</strong>`
+        text: `click here to reset password: https://repertoireapp.herokuapp.com/reset_password/?token=${token}`,
+        html: `<strong>click here to reset password: https://repertoireapp.herokuapp.com/reset_password/?token=${token}</strong>`
       }
       sgMail.send(msg)
         .then(() => {
