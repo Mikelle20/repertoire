@@ -115,7 +115,7 @@ function SearchModal () {
         </div>
         <div className='searchModalBottom'>
             <div className='modalFriends'>
-              {friendIcons}
+              {friendIcons.length === 0 ? <span className='empty'>No Friends Yet</span> : friendIcons}
             </div>
         </div>
         {formData.friend_id &&

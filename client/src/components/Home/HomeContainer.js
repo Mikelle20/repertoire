@@ -51,11 +51,11 @@ function HomeContainer (props) {
       <h1 className='homeTitle'><img src={props.data.user.profile_image} className='profilePic'></img>Good {greeting}, {props.data.user.display_name}</h1>
       <h2 className='homeHeader'>Your top artist</h2>
       <div className='sideScrollDiv'>
-        {artists}
+        {artists.length !== 0 ? artists : <div className='empty'>No Top Artists!</div>}
       </div>
       <h2 className='homeHeader'>Your top tracks</h2>
       <div className='sideScrollDiv'>
-        {tracks}
+        {tracks.length !== 0 ? tracks : <div className='empty'>No Top Tracks!</div>}
       </div>
       <h1 className='homeHeader'>Suggestions from friends</h1>
       <div className='sideScrollDiv'>
