@@ -7,6 +7,8 @@ const { Op } = require('sequelize')
 const setHome = async (req, res) => {
   const user = req.user
 
+  console.log(user)
+
   try {
     const userData = await (await db.User.findOne({
       attributes: ['rating', 'display_name', 'profile_image', 'user_id', 'email'],
