@@ -8,7 +8,7 @@ function About () {
             <div className='infoContainer'>
                 <div className='aboutContainer'>
                     <h1 className='aboutHeader'>About</h1>
-                    <p className='aboutParagraph'>Founded in 2022, Repertoire is an independent created social media web application oriented around music, letting users recommend and rate music to and from their friends. Striving to create a community for music fans that are seeking build their repertoires. Repertoire was created by <Tooltip title={<div className='toolTip'><div>Email: mikellewade@gmail.com</div><div>My Spotify: <a className='link' href='https://open.spotify.com/user/mikellewade?si=c6dc1f6dd2f64a73'>elle 🍄🍒</a></div></div>}><span id='myname'>Mikelle</span></Tooltip> (they/them), a black and queer web developer. </p>
+                    <p className='aboutParagraph'>Founded in 2022, Repertoire is an independent created social media web application oriented around music, letting users recommend and rate music to and from their friends. Striving to create a community for music fans that are seeking to build their repertoires. Repertoire was created by <Tooltip title={<div className='toolTip'><div>Email: mikellewade@gmail.com</div><div>My Spotify: <a className='link' href='https://open.spotify.com/user/mikellewade?si=c6dc1f6dd2f64a73'>elle 🍄🍒</a></div></div>}><span id='myname'>Mikelle</span></Tooltip> (they/them), a black and queer web developer. </p>
                 </div>
 
                 <div className='faqContainer'>
