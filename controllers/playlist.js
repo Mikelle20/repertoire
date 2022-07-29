@@ -108,6 +108,15 @@ const deletePlaylist = async (req, res) => {
     const user = req.user
     const { playlistId } = req.body
 
+    const accessToken = await getAccessToken(user.user_id)
+
+    const headers = {
+      Accept: 'application/json',
+      Authorization: `Bearer ${accessToken}`
+    }
+
+    await axios.delete(`https://api.spotify.com/v1/playlists/${playlistId}/followers`, { headers })
+
     await db.Playlist.destroy({
       where: {
         author_id: user.user_id,

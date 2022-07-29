@@ -222,6 +222,7 @@ const getSocials = async (req, res) => {
 
         socials.push({
           playlistOwner: playlistAdded[i].dataValues.user_id,
+          createdAt: playlistAdded[i].dataValues.createdAt,
           ownerName: owner.display_name,
           ownerImage: owner.profile_image,
           playlistName: playlist.name,
@@ -230,6 +231,8 @@ const getSocials = async (req, res) => {
       }
     }
     const sortedSocials = sort(socials, { order: 'desc', by: 'createdAt' })
+
+    console.log(sortedSocials)
 
     res.status(200).send(sortedSocials)
   } catch (error) {

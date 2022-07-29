@@ -105,8 +105,6 @@ function SearchModal () {
   })
   return (
     <motion.div
-    drag
-    dragSnapToOrigin
     className='searchModal'>
         <div className='searchModalTop'>
             <img src={search.cover} className='searchModalImg'></img>

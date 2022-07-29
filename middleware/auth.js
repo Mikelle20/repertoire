@@ -8,6 +8,8 @@ const authenticateToken = (req, res, next) => {
 
     const { refreshToken } = req.cookies
 
+    console.log(refreshToken)
+
     const token = authHeader && authHeader.split(' ')[1]
 
     if (token == null) return res.status(401).json({ success: false, error: 'User Not Logged In.' })
@@ -25,6 +27,7 @@ const authenticateToken = (req, res, next) => {
             console.log('sent new token', true)
             next()
           } catch (error) {
+            console.log(error.response)
             return res.sendStatus(400)
           }
         }

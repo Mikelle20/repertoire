@@ -15,6 +15,7 @@ import Navbar from './components/Navbar'
 import { axiosAuth } from './utils'
 import PasswordReset from './pages/PasswordReset'
 import ResetPassword from './pages/ResetPassword'
+import About from './pages/About'
 
 function App () {
   const accessToken = JSON.parse(window.sessionStorage.getItem('accessToken')) || null
@@ -57,6 +58,7 @@ function App () {
         <Route path='/friends' element={<Friends/>} />
         <Route path='/reset' element={<PasswordReset/>} />
         <Route path='/reset_password' element={<ResetPassword/>} />
+        <Route path='/about' element={<About />} />
       </Routes>
     </>
 

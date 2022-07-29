@@ -98,8 +98,6 @@ function PlaylistModal (props) {
   })
   return (
     <motion.div
-    drag
-    dragSnapToOrigin
     className='playlistModal'>
       <form
       onSubmit={handleSubmit}

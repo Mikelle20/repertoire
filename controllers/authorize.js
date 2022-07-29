@@ -62,8 +62,8 @@ const loginUser = async (req, res) => {
       const decode = jwt.decode(accessToken)
 
       const refreshToken = jwt.sign({
-        email: user.dataValues.email,
-        user_id: user.dataValues.user_id
+        email: userData.dataValues.email,
+        user_id: userData.dataValues.user_id
       }, process.env.REFRESH_TOKEN_SECRET)
 
       await db.User.update({ server_refresh_token: refreshToken }, {

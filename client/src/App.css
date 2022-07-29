@@ -96,7 +96,7 @@ html, body {
 .landingTop{
   width: 100%;
   z-index: 0;
-  height: /*27.5rem*/ 50vh;
+  height: 50%;
   background-color:  #42559f;
   border-bottom-right-radius: 20%;
   -webkit-transform: skewY(2.5deg);
@@ -114,13 +114,22 @@ html, body {
 .landingBottom{
   z-index: 0;
   width: 100%;
-  height: 25vh;
+  height: 25%;
   background-color: #42559f;
 
   position: absolute;
   top: 0;
 }
 
+@media only screen and (min-width: 1100px) {
+  .landingTop{
+    height: 75vh;
+  }
+
+  .landingBottom{
+    height: 38vh;
+  }
+}
 .contentContainer{
   /* background-color: blueviolet; */
   display: grid;
@@ -314,6 +323,58 @@ html, body {
   .albumImg, .albumImg2{
     max-width: 6rem;
   }
+}
+
+/* ABOUT PAGE */
+
+.aboutContainer, .faqContainer{
+  padding: 40px;
+}
+
+.aboutContainer{
+  display: flex;
+  flex-direction: column;
+}
+
+.faqContainer{
+  display: flex;
+  flex-direction: column;
+  margin-top: -80px;
+}
+
+.faqSubHead{
+  align-self: flex-start;
+}
+
+.link{ 
+  text-decoration: none;
+  color: white;
+}
+
+.toolTip{
+  font-size: medium;
+}
+
+.link:hover{
+  color: #c3cbeb;
+}
+
+#myname{
+  text-decoration: underline;
+}
+
+.paragraph{
+  align-self: flex-start;
+  margin-top: 0px;
+  font-weight: 500;
+  font-size: medium;
+}
+
+.aboutParagraph{
+  align-self: flex-start;
+  margin-top: 0px;
+  font-weight: 500;
+  font-size: large;
 }
 
 /* REGISTER PAGE */

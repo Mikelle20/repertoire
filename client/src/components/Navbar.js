@@ -17,7 +17,7 @@ import axios from 'axios'
 
 const ResponsiveAppBar = () => {
   const accessToken = window.sessionStorage.getItem('accessToken')
-  const pages = [['Home', '/home'], ['Friends', '/friends'], ['Suggestion', '/suggestion'], ['Playlists', '/playlists']]
+  const pages = [['Home', '/home'], ['Friends', '/friends'], ['Suggestion', '/suggestion'], ['Playlists', '/playlists'], ['About', '/about']]
   const headers = {
     Authorization: `Bearer ${accessToken}`
   }
@@ -107,6 +107,9 @@ const ResponsiveAppBar = () => {
                   <MenuItem>
                    <NavLink className='navLink' to='/login'>Login</NavLink>
                   </MenuItem>
+                  <MenuItem>
+                    <NavLink className='navLink' to='/about'>About</NavLink>
+                  </MenuItem>
                 </>
                 : <>
                   {pages.map((page) => (
@@ -147,7 +150,8 @@ const ResponsiveAppBar = () => {
             {!accessToken
               ? <>
                 <NavLink className='navLinkFull' to='/register'>Register</NavLink>
-                <NavLink className='navLinkFull' to='/Login'>Login</NavLink>
+                <NavLink className='navLinkFull' to='/login'>Login</NavLink>
+                <NavLink className='navLinkFull' to='/about'>About</NavLink>
               </>
               : <>
                 {pages.map((page) => (
