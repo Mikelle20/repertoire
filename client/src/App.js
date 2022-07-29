@@ -29,7 +29,6 @@ function App () {
       }
       if (expiry < currentTime) {
         const res = await (await axiosAuth.get('/checkToken', { withCredentials: true, headers })).data
-        console.log('ran interceptor')
         res.accessToken && window.sessionStorage.setItem('accessToken', JSON.stringify(res.accessToken))
       }
     }

@@ -20,7 +20,6 @@ function ResetForm () {
   })
 
   const token = queryParams.match('=(.*)')[1]
-  console.log(token)
   React.useEffect(() => {
     if (formData.password === formData.confirmPassword) {
       setFormData((prevState) => {

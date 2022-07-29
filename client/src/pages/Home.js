@@ -21,7 +21,6 @@ function Home () {
 
   React.useEffect(() => {
     axios.get('/home/setHome', { withCredentials: true, headers }).then(res => {
-      console.log(res.data)
       setData(res.data)
     }).catch(res => {
       setError({
