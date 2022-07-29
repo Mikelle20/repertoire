@@ -26,7 +26,7 @@ function Home () {
     }).catch(res => {
       setError({
         isError: true,
-        error: 'Internal Server Error.'
+        error: '(500) Internal Server Error.'
       })
     })
 
@@ -35,7 +35,7 @@ function Home () {
     }).catch(res => {
       setError({
         isError: true,
-        error: 'Internal Server Error.'
+        error: '(500) Internal Server Error.'
       })
     })
   }, [])

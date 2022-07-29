@@ -18,7 +18,7 @@ const authenticateToken = (req, res, next) => {
           return res.sendStatus(403)
         } else {
           try {
-            const url = 'http://localhost:5000/authorize/userToken'
+            const url = 'https://repertoireapp.herokuapp.com/authorize/userToken'
             const res = await (await axios.post(url, { token: refreshToken })).data
             req.updatedToken = res.accessToken
             req.user = res.user
@@ -35,6 +35,7 @@ const authenticateToken = (req, res, next) => {
       }
     })
   } catch (error) {
+    console.log(error)
     res.sendStatus(500)
   }
 }

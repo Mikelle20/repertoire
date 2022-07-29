@@ -71,10 +71,7 @@ const getPlaylists = async (req, res) => {
     res.status(200).send(playlists)
   } catch (error) {
     console.log(error)
-    res.status(500).json({
-      success: false,
-      error: 'Something went wrong server side.'
-    })
+    res.sendStatus(500)
   }
 }
 
@@ -101,10 +98,8 @@ const getPlaylist = async (req, res) => {
       items: playlist.tracks
     })
   } catch (error) {
-    res.status(200).json({
-      success: false,
-      error: 'Something went wrong server side.'
-    })
+    console.log(error)
+    res.sendStatus(500)
   }
 }
 

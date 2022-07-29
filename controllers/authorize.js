@@ -48,13 +48,15 @@ const loginUser = async (req, res) => {
       if (!passwordsMatch) return res.status(200).json({ success: false, error: 'Incorrect Username or password.' })
 
       await setAccount(accessCode, email)
+      const userData = await (await db.User.findOne({ where: { email } }))
+
       const accessToken = generateAccessToken({
-        display_name: user.dataValues.display_name,
-        profile_image: user.dataValues.profile_image,
-        refresh_token: user.dataValues.refresh_token,
-        spotify_connected: user.dataValues.spotify_connected,
-        email: user.dataValues.email,
-        user_id: user.dataValues.user_id
+        display_name: userData.dataValues.display_name,
+        profile_image: userData.dataValues.profile_image,
+        refresh_token: userData.dataValues.refresh_token,
+        spotify_connected: userData.dataValues.spotify_connected,
+        email: userData.dataValues.email,
+        user_id: userData.dataValues.user_id
       })
 
       const decode = jwt.decode(accessToken)
@@ -224,26 +226,47 @@ const getRefreshToken = async (req, res) => {
       Authorization: `Bearer ${accessToken}`
     }
 
-    const userInfo = await (await axios.get('https://api.spotify.com/v1/me', { headers: bearerAuth })).data
+    // const userInfo = await (await axios.get('https://api.spotify.com/v1/me', { headers: bearerAuth })).data
 
-    if (userInfo.images[0]) {
-      db.User.update({
-        display_name: userInfo.display_name,
-        profile_image: userInfo.images[0].url,
-        user_id: userInfo.id
-      }, {
-        where: { email }
-      })
-    } else {
-      db.User.update({
-        display_name: userInfo.display_name,
-        user_id: userInfo.id
-      }, {
-        where: { email }
-      })
-    }
+    axios.get('https://api.spotify.com/v1/me', { headers: bearerAuth }).then(res => {
+      const userInfo = res.data
 
-    res.status(200).json({ success: true })
+      if (userInfo.images[0]) {
+        db.User.update({
+          display_name: userInfo.display_name,
+          profile_image: userInfo.images[0].url,
+          user_id: userInfo.id
+        }, {
+          where: { email }
+        })
+      } else {
+        db.User.update({
+          display_name: userInfo.display_name,
+          user_id: userInfo.id
+        }, {
+          where: { email }
+        })
+      }
+    }).finally(() => res.status(200).json({ success: true }))
+
+    // if (userInfo.images[0]) {
+    //   db.User.update({
+    //     display_name: userInfo.display_name,
+    //     profile_image: userInfo.images[0].url,
+    //     user_id: userInfo.id
+    //   }, {
+    //     where: { email }
+    //   })
+    // } else {
+    //   db.User.update({
+    //     display_name: userInfo.display_name,
+    //     user_id: userInfo.id
+    //   }, {
+    //     where: { email }
+    //   })
+    // }
+
+    // res.status(200).json({ success: true })
   } catch (error) {
     console.log(error)
     res.sendStatus(500)
@@ -326,7 +349,7 @@ const sendResetLink = async (req, res) => {
           console.log('Email sent')
         })
         .catch((error) => {
-          console.log(error)
+          console.log(error.response.body)
         })
     }
 
@@ -334,7 +357,7 @@ const sendResetLink = async (req, res) => {
       success: true
     })
   } catch (error) {
-    console.log(error)
+    console.log(error.response.body)
     res.sendStatus(500)
   }
 }

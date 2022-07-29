@@ -20,7 +20,7 @@ function Landing () {
         repeat: Infinity,
         delay: 7,
         duration: 10,
-        repeatDelay: 24,
+        repeatDelay: 34,
         repeatType: 'reverse'
       }
     },
@@ -30,7 +30,7 @@ function Landing () {
         repeat: Infinity,
         delay: 24,
         duration: 10,
-        repeatDelay: 0,
+        repeatDelay: 7,
         repeatType: 'reverse'
       } 
     },
@@ -40,7 +40,7 @@ function Landing () {
         repeat: Infinity,
         delay: 41,
         duration: 10,
-        repeatDelay: 0,
+        repeatDelay: 7,
         repeatType: 'reverse'
       } 
     },
@@ -55,6 +55,16 @@ function Landing () {
       }
     },
     fadeIn: {
+      opacity: 0,
+      transition: {
+        repeat: Infinity,
+        repeatType: 'reverse',
+        delay: 7,
+        duration: 10,
+        repeatDelay: 7
+      }
+    },
+    fadeIn2: {
       opacity: 0,
       transition: {
         repeat: Infinity,
@@ -78,9 +88,9 @@ function Landing () {
       >
         <div className='landingAlbums'>
           <div className='landingAlbum1'>
-            <motion.img variants={variants} inital={{ opacity: 1 }} animate='fade2' src={require('../assets/landingImgs/break_ur_heart.jpeg')} alt='break your heart' className='albumImg3'/>
-            <motion.img variants={variants} inital={{ opacity: 1 }} animate='fade3' src={require('../assets/landingImgs/caprisongs.jpeg')} alt='fka twigs' className='albumImg'/>
-            <motion.img variants={variants} inital={{ opacity: 1 }} animate='fade1' src={require('../assets/landingImgs/janet.jpeg')} className='albumImg2'></motion.img>
+            {/* <motion.img variants={variants} inital={{ opacity: 1 }} animate='fadeIn2' src={require('../assets/landingImgs/break_ur_heart.jpeg')} alt='break your heart' className='albumImg2'/> */}
+            <motion.img variants={variants} inital={{ opacity: 0 }} animate='fadeOut' src={require('../assets/landingImgs/caprisongs.jpeg')} alt='fka twigs' className='albumImg'/>
+            <motion.img variants={variants} inital={{ opacity: 1 }} animate='fadeIn' src={require('../assets/landingImgs/janet.jpeg')} className='albumImg2'></motion.img>
           </div>
           <div className='landingAlbum2'>
             <motion.img variants={variants} inital={{ opacity: 0 }} animate='fadeOut' src={require('../assets/landingImgs/phantasies.jpeg')} className='albumImg'></motion.img>

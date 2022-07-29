@@ -23,7 +23,7 @@ function Playlist () {
 
   React.useEffect(() => {
     axios.post('/suggestion/getSuggestions', { playlistId }, { withCredentials: true, headers }).then(res => {
-      dispatch(setSuggestions(res.data))
+      dispatch(setSuggestions(res.data.reverse()))
     }).catch(res => {
       dispatch(setError(true))
     })

@@ -19,16 +19,17 @@ function FriendSearchBar () {
   }
 
   const [friendsResults, setFriendsResults] = React.useState([])
-  const [updateStatus, setUpdateStatus] = React.useState(false)
+  const [updateStatus, setUpdateStatus] = React.useState(0)
 
   const handleSubmit = (id) => {
     axios.post('/friends/addFriend',
       { friend: id }, { withCredentials: true, headers }).then(res => {
       setUpdateStatus(prev => {
-        return !prev
-      }).catch(res => {
-        dispatch(setError(true))
+        const count = prev + 1
+        return count
       })
+    }).catch(res => {
+      dispatch(setError(true))
     })
   }
 
@@ -39,11 +40,11 @@ function FriendSearchBar () {
       withCredentials: true,
       headers,
       data: { friend: id }
-    }).then(res => {
+    }).then(() => {
       setUpdateStatus(prev => {
-        return !prev
+        return prev - 1
       })
-    }).catch(res => {
+    }).catch(() => {
       dispatch(setError(true))
     })
   }
@@ -52,7 +53,7 @@ function FriendSearchBar () {
     if (formData.search.length) {
       axios.post('/friends/searchFriends', formData, { withCredentials: true, headers }).then(res => {
         setFriendsResults(res.data)
-      }).catch(res => {
+      }).catch(() => {
         dispatch(setError(true))
       })
     }

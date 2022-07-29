@@ -10,6 +10,7 @@ const search = async (req, res) => {
   try {
     const { search } = req.body
     const user = req.user
+    console.log(user)
     const arr = []
 
     const accessToken = await getAccessToken(user.user_id)
@@ -39,7 +40,7 @@ const search = async (req, res) => {
 
     res.status(200).json(arr)
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     res.sendStatus(500)
   }
 }

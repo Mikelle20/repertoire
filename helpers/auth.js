@@ -39,8 +39,12 @@ const getAccessToken = async (user_id) => {
 }
 
 const setAccount = async (accessCode, email) => {
-  const accountSet = await (await axios.post('https://repertoireapp.herokuapp.com/authorize/refresh_token', { accessCode, email })).data
-  return accountSet
+  try {
+    const accountSet = await (await axios.post('https://repertoireapp.herokuapp.com/authorize/refresh_token', { accessCode, email })).data
+    return accountSet
+  } catch (error) {
+    console.log(error?.response)
+  }
 }
 
 module.exports = {

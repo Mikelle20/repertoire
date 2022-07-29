@@ -8,8 +8,6 @@ const setHome = async (req, res) => {
   const user = req.user
 
   try {
-    // const accessToken = await getAccessToken(user.email)
-
     const userData = await (await db.User.findOne({
       attributes: ['rating', 'display_name', 'profile_image', 'user_id', 'email'],
       where: { email: user.email }
@@ -66,7 +64,6 @@ const setHome = async (req, res) => {
         const friendHeaders = {
           Authorization: `Bearer ${friendToken}`
         }
-        console.log(friend)
 
         const recentListen = await (await axios.get('https://api.spotify.com/v1/me/player/recently-played?limit=1', { headers: friendHeaders })).data
         friendsListens.push({
@@ -150,7 +147,7 @@ const setHome = async (req, res) => {
       }
     })
   } catch (error) {
-    console.log(error.response)
+    console.log(error?.response)
     res.sendStatus(500)
   }
 }
@@ -234,10 +231,7 @@ const getSocials = async (req, res) => {
 
     res.status(200).send(sortedSocials)
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: 'Something went wrong on the server side.'
-    })
+    res.sendStatus(500)
   }
 }
 

@@ -30,7 +30,7 @@ function Playlists () {
     })
 
     axios.get('/playlist/getPlaylists', { withCredentials: true, headers }).then(res => {
-      setPlaylists(res.data)
+      setPlaylists(res.data.reverse())
     })
   }, [newPlaylist])
 

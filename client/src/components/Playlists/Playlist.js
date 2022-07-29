@@ -48,7 +48,7 @@ function Playlist (props) {
             whileTap={{ scale: 0.9 }}
             onClick={handleClick}
             className='cardBtn'>
-              Manage
+              View
             </motion.button>
             <motion.button
             tabIndex={0}
