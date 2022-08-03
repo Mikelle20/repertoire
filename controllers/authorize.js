@@ -7,6 +7,7 @@ const { nanoid } = require('nanoid')
 const { getAccess, setAccount, generateAccessToken } = require('../helpers/auth')
 const jwt = require('jsonwebtoken')
 const sgMail = require('@sendgrid/mail')
+const { Op } = require('sequelize')
 
 require('dotenv').config()
 
@@ -16,7 +17,7 @@ const registerUser = async (req, res) => {
     const emailRegex = /^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/
     const isEmail = emailRegex.test(email)
 
-    const userFound = await db.User.findOne({ where: { email } })
+    const userFound = await db.User.findOne({ where: { email: { [Op.iLike]: email } } })
 
     if (password.length <= 7) return res.status(200).json({ success: false, error: 'Password must be greater than 7 characters.' })
     if (!isEmail) return res.status(200).json({ success: false, error: 'Please enter valid email.' })
@@ -39,7 +40,7 @@ const loginUser = async (req, res) => {
   try {
     const accessCode = req.body.accessCode || null
     const { email, password } = req.body
-    const user = await (await db.User.findOne({ where: { email } })) || null
+    const user = await (await db.User.findOne({ where: { email: { [Op.iLike]: email } } })) || null
     const hashedPassword = user ? user.dataValues.password : ''
     const passwordsMatch = bcrypt.compareSync(password, hashedPassword)
 
@@ -48,7 +49,7 @@ const loginUser = async (req, res) => {
       if (!passwordsMatch) return res.status(200).json({ success: false, error: 'Incorrect Username or password.' })
 
       await setAccount(accessCode, email)
-      const userData = await (await db.User.findOne({ where: { email } }))
+      const userData = await (await db.User.findOne({ where: { email: { [Op.iLike]: email } } }))
 
       const accessToken = generateAccessToken({
         display_name: userData.dataValues.display_name,
@@ -184,7 +185,7 @@ const accountConnected = async (req, res) => {
     const { check } = req.body || null
     const { email } = req.body
     if (check) {
-      const user = await (await db.User.findOne({ attributes: ['spotify_connected'], where: { email } })).dataValues
+      const user = await (await db.User.findOne({ attributes: ['spotify_connected'], where: { email: { [Op.iLike]: email } } })).dataValues
 
       if (user.spotify_connected) return res.status(200).json({ success: true })
 
@@ -248,25 +249,6 @@ const getRefreshToken = async (req, res) => {
         })
       }
     }).finally(() => res.status(200).json({ success: true }))
-
-    // if (userInfo.images[0]) {
-    //   db.User.update({
-    //     display_name: userInfo.display_name,
-    //     profile_image: userInfo.images[0].url,
-    //     user_id: userInfo.id
-    //   }, {
-    //     where: { email }
-    //   })
-    // } else {
-    //   db.User.update({
-    //     display_name: userInfo.display_name,
-    //     user_id: userInfo.id
-    //   }, {
-    //     where: { email }
-    //   })
-    // }
-
-    // res.status(200).json({ success: true })
   } catch (error) {
     console.log(error)
     res.sendStatus(500)
@@ -330,7 +312,7 @@ const sendResetLink = async (req, res) => {
     const { email } = req.body
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
-    const user = await db.User.findOne({ where: { email } })
+    const user = await db.User.findOne({ where: { email: { [Op.iLike]: email } } })
 
     if (user) {
       const token = jwt.sign({ email }, process.env.RESET_TOKEN, { expiresIn: '1h' })

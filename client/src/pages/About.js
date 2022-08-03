@@ -20,7 +20,7 @@ function About () {
                     <p className='paragraph'>Yes, you can. However, they will not show up on Repertoire. This is because Repertoire only tracks items added to the playlists through the website by other users.</p>
 
                     <h2 className='faqSubHead'>My username search isn&apos;t showing results, why?</h2>
-                    <p className='paragraph'>Emails and Spotify usernames are case sensitive. Please make sure you are entering them correctly.</p>
+                    <p className='paragraph'>Spotify usernames are case sensitive. Please make sure you are entering them correctly.</p>
                 </div>
             </div>
         </div>

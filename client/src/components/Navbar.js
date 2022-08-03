@@ -33,10 +33,13 @@ const ResponsiveAppBar = () => {
   }
 
   const handleClick = async () => {
-    accessToken && (await axios.delete('/authorize/logout', { withCredentials: true }))
-    setData({})
-    window.sessionStorage.removeItem('accessToken')
-    window.location.href = '/login'
+    accessToken && (await axios.delete('/authorize/logout', { withCredentials: true })).then(() => {
+      setData({})
+      // window.sessionStorage.removeItem('accessToken')
+      window.sessionStorage.clear()
+    }).then(() => {
+      window.location.href = '/login'
+    })
   }
 
   const [data, setData] = React.useState({})

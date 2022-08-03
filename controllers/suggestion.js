@@ -10,7 +10,6 @@ const search = async (req, res) => {
   try {
     const { search } = req.body
     const user = req.user
-    console.log(user)
     const arr = []
 
     const accessToken = await getAccessToken(user.user_id)

@@ -9,7 +9,7 @@ function SocialItem (props) {
     {props.social.type
       ? <div tabIndex={0} className='socialItem'>
         <img className ='socialUserImg' src={props.social.senderImage}></img>
-        <span className='socialSong'>{props.social.senderName + ' gave ' + (props.social.songName.length >= 1500 ? ` ${props.social.songName.split(' ').slice(0, 3).join(' ')}... ` : props.social.songName) + ' a ' + props.social.rating * 5}</span>
+        <span className='socialSong'>{props.social.senderName + ' gave ' + (props.social.songName.length >= 1500 ? ` ${props.social.songName.split(' ').slice(0, 3).join(' ')}... ` : props.social.songName) + ' a ' + (props.social.rating * 5).toFixed(0)}</span>
     </div>
       : <div tabIndex={0} className='socialItem'>
            <img className ='socialUserImg' src={props.social.ownerImage}></img>

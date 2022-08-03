@@ -5,7 +5,7 @@ const db = require('../models')
 const addFriend = async (req, res) => {
   try {
     const { friend } = req.body
-    const user = await (await db.User.findOne({ where: { email: req.user.email } })).dataValues
+    const user = await (await db.User.findOne({ where: { email: req.user.user_id } })).dataValues
     const friendshipExists = await db.Friend.findOne({
       attributes: ['user_1', 'user_2', 'status'],
       where: {
@@ -62,7 +62,7 @@ const addFriend = async (req, res) => {
 
 const getFriends = async (req, res) => {
   try {
-    const user = await (await db.User.findOne({ where: { email: req.user.email } })).dataValues
+    const user = await (await db.User.findOne({ where: { user_id: req.user.user_id } })).dataValues
     const userFriends = await db.Friend.findAll({
       attributes: ['user_2', 'user_1'],
       where: {
