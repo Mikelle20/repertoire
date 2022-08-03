@@ -13,12 +13,13 @@ function Suggestion (props) {
     Authorization: `Bearer ${accessToken}`
   }
   const dispatch = useDispatch()
+  const rating = props.suggestion.rating.toFixed(1) * 5
 
   React.useEffect(() => {
-    setFillHeart(initialState[props.suggestion.rating])
+    setFillHeart(initialState[rating])
   }, [])
 
-  const [fillHeart, setFillHeart] = React.useState(initialState[0])
+  const [fillHeart, setFillHeart] = React.useState(initialState[rating])
 
   const handleClick = (id) => {
     setFillHeart(prevState => {
@@ -56,9 +57,13 @@ function Suggestion (props) {
     })
   }
 
+  console.log('hearts here', rating)
+
   return (
     <div tabIndex={0} className='suggestion'>
-        <img src={props.suggestion.senderImage} className='suggestionImage' />
+        <Tooltip title={props.suggestion.senderName}>
+          <img src={props.suggestion.senderImage} className='suggestionImage' />
+        </Tooltip>
         <Tooltip title={
           <>
             <img className='songImage' src={props.suggestion.songImage}></img>

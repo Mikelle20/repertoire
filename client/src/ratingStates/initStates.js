@@ -1,5 +1,5 @@
-export const initialState = {
-  0: [
+export const initialState = [
+  [
     {
       id: 0,
       filled: false
@@ -21,7 +21,7 @@ export const initialState = {
       filled: false
     }
   ],
-  0.2: [
+  [
     {
       id: 0,
       filled: true
@@ -43,7 +43,7 @@ export const initialState = {
       filled: false
     }
   ],
-  0.4: [
+  [
     {
       id: 0,
       filled: true
@@ -65,7 +65,7 @@ export const initialState = {
       filled: false
     }
   ],
-  0.6: [
+  [
     {
       id: 0,
       filled: true
@@ -87,7 +87,7 @@ export const initialState = {
       filled: false
     }
   ],
-  0.8: [
+  [
     {
       id: 0,
       filled: true
@@ -109,7 +109,7 @@ export const initialState = {
       filled: false
     }
   ],
-  1.0: [
+  [
     {
       id: 0,
       filled: true
@@ -131,4 +131,4 @@ export const initialState = {
       filled: true
     }
   ]
-}
+]
