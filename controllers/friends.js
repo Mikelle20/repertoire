@@ -5,7 +5,7 @@ const db = require('../models')
 const addFriend = async (req, res) => {
   try {
     const { friend } = req.body
-    const user = await (await db.User.findOne({ where: { email: req.user.user_id } })).dataValues
+    const user = await (await db.User.findOne({ where: { user_id: req.user.user_id } })).dataValues
     const friendshipExists = await db.Friend.findOne({
       attributes: ['user_1', 'user_2', 'status'],
       where: {
@@ -53,10 +53,8 @@ const addFriend = async (req, res) => {
       success: true
     })
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: 'Something went wrong on the server side.'
-    })
+    res.sendStatus(500)
+    console.log(error)
   }
 }
 
@@ -149,6 +147,7 @@ const searchFriends = async (req, res) => {
     }
     res.status(200).send(userFriends)
   } catch (error) {
+    console.log(error)
     res.sendStatus(500)
   }
 }
