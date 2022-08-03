@@ -230,11 +230,45 @@ const getSocials = async (req, res) => {
         })
       }
     }
+
+    const friends = []
+    const friendIds = await db.Friend.findAll({
+      where: {
+        status: 'friend',
+        [Op.or]: [
+          { user_1: user.user_id },
+          { user_2: user.user_id }
+        ]
+      },
+    })
+
+    for (let i = 0; i < friendIds.length; i++){
+      let friendId 
+
+      if (friendIds[i].dataValues.user_1 === user.user_id) {
+        friendId = friendIds[i].dataValues.user_2
+      } else {
+        friendId = friendIds[i].dataValues.user_1
+      }
+
+      const friend = await db.User.findOne({
+        where: { user_id: friendId },
+        attributes: ['user_id', 'display_name', 'profile_image']
+      })
+
+      friends.push(friend.dataValues)
+
+    }
+    const sortedFriends = sort(friends, { by: 'display_name'})
     const sortedSocials = sort(socials, { order: 'desc', by: 'createdAt' })
 
-    console.log(sortedSocials)
 
-    res.status(200).send(sortedSocials)
+
+    res.status(200).json({
+      success: true,
+      friends: sortedFriends,
+      socials: sortedSocials
+    })
   } catch (error) {
     res.sendStatus(500)
   }

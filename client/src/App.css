@@ -559,17 +559,22 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  align-self: center;
-  justify-self: center;
+  /* justify-content: center; */
+  /* align-self: center;
+  justify-self: center; */
   width: 50vw;
-  height: 100%;
+  height: 100vh;
   /* background-color: pink; */
 }
 
 .ratingContainer{
   margin-top: 10%;
   margin-right: 10%;
+}
+
+.friendsHomeContainer{
+  display: flex;
+  background-color: #2A3564;
 }
 
 .empty{
@@ -601,6 +606,18 @@ html, body {
   display: flex;
   flex-direction: column;
   border: 2px solid black;
+}
+
+.friendsHomeContainer{
+  display: flex;
+  justify-content: center;
+  border: 2px solid black;
+  padding-top: 10px;
+  background-color: #2A3564;
+  width: 15rem;
+  height: 11rem;
+  margin-right: 10%;
+  overflow-y: scroll;
 }
 
 .socialDiv::-webkit-scrollbar{
@@ -685,9 +702,9 @@ html, body {
 
 }
 
-.sideScrollDiv::-webkit-scrollbar{
+/* .sideScrollDiv::-webkit-scrollbar{
   display: none;
-}
+} */
 
 .sideItem{
   display: inline-flex;

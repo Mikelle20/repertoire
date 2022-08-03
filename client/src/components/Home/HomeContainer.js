@@ -5,6 +5,7 @@ import SocialItem from './SocialItem'
 import SideItem from './SideItem'
 import SuggestionItem from './SuggestionItem'
 import PlaylistItem from './PlaylistItem'
+import PlaylistFriend from '../Playlists/PlaylistFriend'
 import { nanoid } from '@reduxjs/toolkit'
 import RecentItem from './RecentItem'
 import TrackItems from './TrackItems'
@@ -38,8 +39,12 @@ function HomeContainer (props) {
     return <PlaylistItem key={nanoid()} playlist={playlist} />
   })
 
-  const socials = props.socials.map(social => {
+  const socials = props.socials.socials.map(social => {
     return <SocialItem key={nanoid()} social={social} />
+  })
+
+  const friendIcons = props.socials.friends.map(friend => {
+    return <PlaylistFriend key={nanoid()} friend={friend} />
   })
 
   const tracks = props.data.tracks.map(track => {
@@ -61,7 +66,7 @@ function HomeContainer (props) {
       <div className='sideScrollDiv'>
         {suggestions.length !== 0 ? suggestions : <div className='empty'>No Suggestions!</div>}
       </div>
-      <h2 className='homeHeader'>Your Playlists</h2>
+      <h2 className='homeHeader'>Your playlists</h2>
       <div className='sideScrollDiv'>
         {playlists.length !== 0 ? playlists : <div className='empty'>No Playlists!</div>}
       </div>
@@ -76,6 +81,12 @@ function HomeContainer (props) {
       </div>
       <div className='socialDiv'>
         {socials.length !== 0 ? socials : <div className='emptySocials'>No Socials</div>}
+      </div>
+      <div className='ratingContainer'>
+        <h2 className='homeHeader'>Your Friends</h2>
+      </div>
+      <div className='friendsHomeContainer'>
+        {friendIcons.length === 0 ? <div className='emptySocials'>No Friends</div> : friendIcons}
       </div>
     </div>
   </div>

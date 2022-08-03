@@ -33,7 +33,7 @@ const ResponsiveAppBar = () => {
   }
 
   const handleClick = async () => {
-    accessToken && (await axios.delete('/authorize/logout', { withCredentials: true })).then(() => {
+    await axios.delete('/authorize/logout', { withCredentials: true }).then(() => {
       setData({})
       // window.sessionStorage.removeItem('accessToken')
       window.sessionStorage.clear()
@@ -122,7 +122,7 @@ const ResponsiveAppBar = () => {
                   ))}
                   {accessToken
                     ? <MenuItem onClick={handleCloseNavMenu}>
-                      <NavLink className='navLink' to=''><span onClick={handleClick}>Logout</span></NavLink>
+                      <span className='navLink' onClick={handleClick}>Logout</span>
                     </MenuItem>
                     : <MenuItem onClick={handleCloseNavMenu}>
                      <NavLink className='navLink' to='/login'>Login</NavLink>
@@ -168,7 +168,7 @@ const ResponsiveAppBar = () => {
                 <span>{page[0]}</span>
               </NavLink>
                 ))}
-              {accessToken ? <NavLink className='navLinkFull' sx={{ my: 2, color: 'white', display: 'block' }} to=''><span onClick={handleClick}>Logout</span></NavLink> : <NavLink className='navLinkFull' sx={{ my: 2, color: 'white', display: 'block' }} to='/login'>Login</NavLink>}
+              {accessToken ? <span className='navLinkFull' onClick={handleClick}>Logout</span> : <NavLink className='navLinkFull' sx={{ my: 2, color: 'white', display: 'block' }} to='/login'>Login</NavLink>}
               </>}
           </Box>
 
