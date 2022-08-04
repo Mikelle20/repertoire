@@ -149,7 +149,7 @@ const setHome = async (req, res) => {
       }
     })
   } catch (error) {
-    console.log(error?.response)
+    console.log(error)
     res.sendStatus(500)
   }
 }
@@ -270,6 +270,7 @@ const getSocials = async (req, res) => {
       socials: sortedSocials
     })
   } catch (error) {
+    console.log(error)
     res.sendStatus(500)
   }
 }

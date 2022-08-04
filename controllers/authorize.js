@@ -176,6 +176,7 @@ const deleteToken = async (req, res) => {
       success: true
     })
   } catch (error) {
+    console.log(error)
     res.sendStatus(500)
   }
 }
@@ -196,6 +197,7 @@ const accountConnected = async (req, res) => {
       where: { email }
     }).then(res.status(200).json({ success: true, accountConnected: true }))
   } catch (error) {
+    console.log(error)
     res.sendStatus(500)
   }
 }
@@ -276,6 +278,7 @@ const getAccessToken = (req, res) => {
       res.json({ success: true, accessToken: resp.data.access_token })
     })
   } catch (error) {
+    console.log(error)
     res.sendStatus(500)
   }
 }
@@ -331,7 +334,7 @@ const sendResetLink = async (req, res) => {
           console.log('Email sent')
         })
         .catch((error) => {
-          console.log(error.response.body)
+          console.log(error)
         })
     }
 
@@ -339,7 +342,7 @@ const sendResetLink = async (req, res) => {
       success: true
     })
   } catch (error) {
-    console.log(error.response.body)
+    console.log(error)
     res.sendStatus(500)
   }
 }

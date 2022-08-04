@@ -39,7 +39,7 @@ const search = async (req, res) => {
 
     res.status(200).json(arr)
   } catch (error) {
-    // console.log(error)
+    console.log(error)
     res.sendStatus(500)
   }
 }
@@ -147,10 +147,8 @@ const rate = async (req, res) => {
       success: true
     })
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: 'Something went wrong server side.'
-    })
+    console.log(error)
+    res.sendStatus(500)
   }
 }
 
@@ -190,10 +188,8 @@ const getAccessedPlaylists = async (req, res) => {
 
     res.status(200).send(playlistsAccessed)
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: 'Something went wrong server side.'
-    })
+    console.log(error)
+    res.sendStatus(500)
   }
 }
 
@@ -255,10 +251,8 @@ const getSuggestions = async (req, res) => {
 
     res.status(200).send(arr)
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: 'Something went wrong server side.'
-    })
+    console.log(error)
+    res.sendStatus(500)
   }
 }
 

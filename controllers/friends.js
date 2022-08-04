@@ -179,10 +179,7 @@ const deleteFriend = async (req, res) => {
     })
   } catch (error) {
     console.log(error)
-    res.status(500).json({
-      success: false,
-      error: 'Something went wrong on the server side.'
-    })
+    res.sendStatus(500)
   }
 }
 

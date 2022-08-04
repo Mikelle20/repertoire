@@ -47,6 +47,7 @@ const createPlaylist = async (req, res) => {
       success: true
     })
   } catch (error) {
+    console.log(error)
     res.sendStatus(500)
   }
 }
@@ -143,10 +144,7 @@ const deletePlaylist = async (req, res) => {
     })
   } catch (error) {
     console.log(error)
-    res.status(500).json({
-      success: false,
-      error: 'Internal Server Error.'
-    })
+    res.sendStatus(500)
   }
 }
 
@@ -224,10 +222,7 @@ const friendsAccess = async (req, res) => {
     }
   } catch (error) {
     console.log(error)
-    res.status(500).json({
-      success: false,
-      error: 'Something went wrong on the server side.'
-    })
+    res.sendStatus(500)
   }
 }
 
