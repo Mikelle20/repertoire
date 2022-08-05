@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken')
 const getAccess = async (refreshToken) => {
   const accessToken = await axios({
     method: 'POST',
-    url: 'https://repertoireapp.herokuapp.com/authorize/access_token',
+    url: `${process.env.APP_URL}/authorize/access_token`,
     data: { refreshToken }
   })
 
@@ -19,7 +19,7 @@ const generateAccessToken = (user) => {
 }
 
 const getAccessToken = async (user_id) => {
-  const url = 'https://repertoireapp.herokuapp.com/authorize/access_token'
+  const url = `${process.env.APP_URL}/authorize/access_token`
   try {
     const refreshToken = await db.User.findOne({
       attributes: ['refresh_token'],
@@ -34,13 +34,14 @@ const getAccessToken = async (user_id) => {
 
     return accessToken
   } catch (error) {
+    console.log(error.response)
     return error
   }
 }
 
 const setAccount = async (accessCode, email) => {
   try {
-    const accountSet = await (await axios.post('https://repertoireapp.herokuapp.com/authorize/refresh_token', { accessCode, email })).data
+    const accountSet = await (await axios.post(`${process.env.APP_URL}/authorize/refresh_token`, { accessCode, email })).data
     return accountSet
   } catch (error) {
     console.log(error?.response)

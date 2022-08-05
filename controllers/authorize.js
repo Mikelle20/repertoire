@@ -262,6 +262,7 @@ const getAccessToken = (req, res) => {
     const { refreshToken } = req.body
 
     const params = `grant_type=refresh_token&refresh_token=${refreshToken}`
+    console.log('hhhhhheyeyeyeyeyeyeye',true, refreshToken)
     const basicAuth = 'Basic ' + new Buffer.from(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`).toString('base64')
 
     const headers = {
@@ -276,9 +277,9 @@ const getAccessToken = (req, res) => {
       headers
     }).then(resp => {
       res.json({ success: true, accessToken: resp.data.access_token })
-    })
+    }).catch((error) => console.log(error))
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     res.sendStatus(500)
   }
 }
