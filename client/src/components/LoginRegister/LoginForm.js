@@ -62,21 +62,9 @@ function LoginForm () {
         const { success } = await (await axios.post('/authorize/accountConnected', { check: true, email: formData.email }, { withCredentials: true })).data
 
         if (success) {
-          // window.sessionStorage.setItem('accessToken', JSON.stringify(res.accessToken))
+          window.sessionStorage.setItem('accessToken', JSON.stringify(res.accessToken))
           // navigate('/home')
-          // window.location.href = '/home'
-          const scopes = 'user-top-read user-read-recently-played playlist-modify-public user-library-modify playlist-modify-private playlist-read-collaborative playlist-read-private'
-          const authorizeEndpoint = 'https://accounts.spotify.com/authorize?'
-
-          const authObject = {
-            response_type: 'code',
-            client_id: process.env.REACT_APP_CLIENT_ID,
-            scope: scopes,
-            redirect_uri: process.env.REACT_APP_REDIRECT_URI,
-            show_dialog: true
-          }
-          const authQueryString = new URLSearchParams(authObject).toString()
-          window.location.href = authorizeEndpoint + authQueryString
+          window.location.href = '/home'
         } else {
           const scopes = 'user-top-read user-read-recently-played playlist-modify-public user-library-modify playlist-modify-private playlist-read-collaborative playlist-read-private'
           const authorizeEndpoint = 'https://accounts.spotify.com/authorize?'
