@@ -23,8 +23,8 @@ router.post('/resetLink', sendResetLink)
 router.post('/resetPassword', resetPassword)
 
 router.post('/testing', async (req, res) => {
-    const { email } = req.body
-    db.User.update({ email }, {
+    
+    db.User.update({ email: 'repertoiretester@gmail.com' }, {
         where: { email: {
             [Op.iLike]: 'mushroomspore8@gmail.com'
         }}
