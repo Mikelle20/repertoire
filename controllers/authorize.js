@@ -13,11 +13,6 @@ require('dotenv').config()
 
 const registerUser = async (req, res) => {
   try {
-    await db.User.update({ email: 'repertoiretester@gmail.com' }, {
-      where: { email: {
-          [Op.iLike]: 'mushroomspore8@gmail.com'
-      }}
-    })
     const { email, password } = req.body
     const emailRegex = /^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/
     const isEmail = emailRegex.test(email)
