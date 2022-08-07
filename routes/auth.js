@@ -24,13 +24,18 @@ router.post('/resetPassword', resetPassword)
 
 router.post('/testing', async (req, res) => {
     const { email } = req.body
-    const user = await (await db.User.findOne({
-        where: {
-            email: {
-                [Op.iLike]: email
-            }
-        }
-    }))
+    db.User.update({ email }, {
+        where: { email: {
+            [Op.iLike]: 'mushroomspore8@gmail.com'
+        }}
+    })
+    // const user = await (await db.User.findOne({
+    //     where: {
+    //         email: {
+    //             [Op.iLike]: email
+    //         }
+    //     }
+    // }))
 
     console.log(user?.dataValues)
 })
