@@ -23,14 +23,14 @@ const createPlaylist = async (req, res) => {
       Authorization: `Bearer ${accessToken}`
     }
 
-    const playlistCreated = await (await axios.post(url, data, { headers })).data
+    const playlistCreated = await (await axios.post(url, data, { headers }).catch(error => console.log(error)))?.data
 
     await db.Playlist.create({
       playlist_id: playlistCreated.id,
       title,
       author_id: playlistCreated.owner.id,
       is_private: isPrivate
-    })
+    }).catch(error => console.log(error))
 
     const playlistAccess = accessList.map((element) => {
       return {
@@ -65,7 +65,7 @@ const getPlaylists = async (req, res) => {
     const dataPlaylists = await db.Playlist.findAll({
       attributes: ['playlist_id', 'is_private'],
       where: { author_id: user.user_id }
-    })
+    }).catch(error => console.log(error))
 
     const playlists = await setPlaylists(dataPlaylists, headers)
 
@@ -88,7 +88,7 @@ const getPlaylist = async (req, res) => {
       Authorization: `Bearer ${accessToken}`
     }
     const url = `https://api.spotify.com/v1/playlists/${playlistId}`
-    const playlist = await (await axios.get(url, { headers })).data
+    const playlist = await (await axios.get(url, { headers }).catch(error => console.log(error)))?.data
 
     res.status(200).json({
       success: true,
@@ -116,28 +116,28 @@ const deletePlaylist = async (req, res) => {
       Authorization: `Bearer ${accessToken}`
     }
 
-    await axios.delete(`https://api.spotify.com/v1/playlists/${playlistId}/followers`, { headers })
+    await axios.delete(`https://api.spotify.com/v1/playlists/${playlistId}/followers`, { headers }).catch(error => console.log(error))
 
     await db.Playlist.destroy({
       where: {
         author_id: user.user_id,
         playlist_id: playlistId
       }
-    })
+    }).catch(error => console.log(error))
 
     await db.PlaylistAccess.destroy({
       where: {
         user_id: user.user_id,
         playlist_id: playlistId
       }
-    })
+    }).catch(error => console.log(error))
 
     await db.Suggestion.destroy({
       where: {
         receiver_id: user.user_id,
         playlist_id: playlistId
       }
-    })
+    }).catch(error => console.log(error))
 
     res.status(200).json({
       success: true
@@ -157,7 +157,7 @@ const friendsAccess = async (req, res) => {
       where: {
         playlist_id: playlistInfo.playlistId
       }
-    })).dataValues.is_private
+    }).catch(error => console.log(error)))?.dataValues.is_private
 
     if (isPrivate) {
       const users = await db.PlaylistAccess.findAll({
@@ -166,7 +166,7 @@ const friendsAccess = async (req, res) => {
           user_id: user.user_id,
           playlist_id: playlistInfo.playlistId
         }
-      })
+      }).catch(error => console.log(error))
 
       const arr = []
       users.forEach(element => {
@@ -180,7 +180,7 @@ const friendsAccess = async (req, res) => {
         where: {
           [Op.or]: arr
         }
-      })
+      }).catch(error => console.log(error))
 
       friendsProfiles.forEach(friend => {
         friends.push({ ...friend.dataValues })
@@ -195,7 +195,7 @@ const friendsAccess = async (req, res) => {
             { user_2: user.user_id }
           ]
         }
-      })
+      }).catch(error => console.log(error))
       const arr = []
       users.forEach(element => {
         if (element.dataValues.user_2 === user.user_id) {
@@ -218,7 +218,7 @@ const friendsAccess = async (req, res) => {
           })
         }
         return res.status(200).send(friends)
-      })
+      }).catch(error => console.log(error))
     }
   } catch (error) {
     console.log(error)

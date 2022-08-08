@@ -21,7 +21,7 @@ const authenticateToken = (req, res, next) => {
         } else {
           try {
             const url = `${process.env.APP_URL}/authorize/userToken`
-            const res = await (await axios.post(url, { token: refreshToken })).data
+            const res = await (await axios.post(url, { token: refreshToken }).catch(error => console.log(error)))?.data
             req.updatedToken = res.accessToken
             req.user = res.user
             console.log('sent new token', true)

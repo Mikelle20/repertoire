@@ -13,7 +13,7 @@ const setHome = async (req, res) => {
     const userData = await (await db.User.findOne({
       attributes: ['rating', 'display_name', 'profile_image', 'user_id', 'email'],
       where: { email: user.email }
-    })).dataValues
+    }))?.dataValues
 
     const accessToken = await getAccessToken(userData.user_id)
 
@@ -26,13 +26,13 @@ const setHome = async (req, res) => {
       where: {
         receiver_id: user.user_id
       }
-    })
+    }).catch(error => console.log(error))
 
     const playlists = await db.Playlist.findAll({
       where: {
         author_id: user.user_id
       }
-    })
+    }).catch(error => console.log(error))
 
     const friendships = await db.Friend.findAll({
       where: {
@@ -42,7 +42,7 @@ const setHome = async (req, res) => {
           { user_2: user.user_id }
         ]
       }
-    })
+    }).catch(error => console.log(error))
 
     const friends = []
     for (let i = 0; i < friendships.length; i++) {
@@ -61,13 +61,13 @@ const setHome = async (req, res) => {
 
         const friend = await (await db.User.findOne({
           where: { user_id: friends[i].friendId }
-        })).dataValues
+        }))?.dataValues
 
         const friendHeaders = {
           Authorization: `Bearer ${friendToken}`
         }
 
-        const recentListen = await (await axios.get('https://api.spotify.com/v1/me/player/recently-played?limit=1', { headers: friendHeaders })).data
+        const recentListen = await (await axios.get('https://api.spotify.com/v1/me/player/recently-played?limit=1', { headers: friendHeaders }).catch(error => console.log(error)))?.data
         friendsListens.push({
           friendName: friend.display_name,
           friendImage: friend.profile_image,
@@ -87,11 +87,11 @@ const setHome = async (req, res) => {
           method: 'GET',
           url: `https://api.spotify.com/v1/tracks/${suggestions[i].dataValues.song_id}`,
           headers
-        })).data
+        }).catch(error => console.log(error)))?.data
 
         const sender = await (await db.User.findOne({
           where: { user_id: suggestions[i].sender_id }
-        })).dataValues
+        }).catch(error => console.log(error)))?.dataValues
 
         homeSuggestions.push({
           songId: suggestions[i].dataValues.song_id,
@@ -112,7 +112,7 @@ const setHome = async (req, res) => {
           method: 'GET',
           url: `https://api.spotify.com/v1/playlists/${playlists[i].dataValues.playlist_id}`,
           headers
-        })).data
+        }).catch(error => console.log(error)))?.data
 
         homePlaylists.push({
           type: 0,
@@ -129,9 +129,9 @@ const setHome = async (req, res) => {
       method: 'GET',
       url: 'https://api.spotify.com/v1/me/top/artists?time_range=short_term&limit=10&offset=0',
       headers
-    })).data
+    }).catch(error => console.log(error)))?.data
 
-    const tracks = await (await axios.get('https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=10&offset=0', { headers })).data
+    const tracks = await (await axios.get('https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=10&offset=0', { headers }).catch(error => console.log(error)))?.data
 
     const sortedPlaylists = sort(homePlaylists, { order: 'desc', by: 'createdAt' })
     const sortedSuggestions = sort(homeSuggestions, { order: 'desc', by: 'createdAt' })
@@ -171,7 +171,7 @@ const getSocials = async (req, res) => {
       where: {
         reciever_id: user.user_id
       }
-    })
+    }).catch(error => console.log(error))
 
     if (ratings.length !== 0) {
       for (let i = 0; i < ratings.length; i++) {
@@ -179,13 +179,13 @@ const getSocials = async (req, res) => {
           method: 'GET',
           url: `https://api.spotify.com/v1/tracks/${ratings[i].dataValues.song_id}`,
           headers
-        })).data
+        }))?.data
 
         const sender = await (await db.User.findOne({
           where: {
             user_id: ratings[i].dataValues.sender_id
           }
-        })).dataValues
+        }).catch(error => console.log(error)))?.dataValues
 
         socials.push({
           type: 1,
@@ -204,7 +204,7 @@ const getSocials = async (req, res) => {
       where: {
         friend_id: user.user_id
       }
-    })
+    }).catch(error => console.log(error))
 
     if (playlistAdded.length !== 0) {
       for (let i = 0; i < playlistAdded.length; i++) {
@@ -212,13 +212,13 @@ const getSocials = async (req, res) => {
           method: 'GET',
           url: `https://api.spotify.com/v1/playlists/${playlistAdded[i].dataValues.playlist_id}`,
           headers
-        })).data
+        }).catch(error => console.log(error)))?.data
 
         const owner = await (await db.User.findOne({
           where: {
             user_id: playlistAdded[i].dataValues.user_id
           }
-        })).dataValues
+        }).catch(error => console.log(error)))?.dataValues
 
         socials.push({
           playlistOwner: playlistAdded[i].dataValues.user_id,
@@ -240,7 +240,7 @@ const getSocials = async (req, res) => {
           { user_2: user.user_id }
         ]
       },
-    })
+    }).catch(error => console.log(error))
 
     for (let i = 0; i < friendIds.length; i++){
       let friendId 
@@ -254,9 +254,9 @@ const getSocials = async (req, res) => {
       const friend = await db.User.findOne({
         where: { user_id: friendId },
         attributes: ['user_id', 'display_name', 'profile_image']
-      })
+      }).catch(error => console.log(error))
 
-      friends.push(friend.dataValues)
+      friends.push(friend?.dataValues)
 
     }
     const sortedFriends = sort(friends, { by: 'display_name'})

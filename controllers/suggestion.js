@@ -24,7 +24,7 @@ const search = async (req, res) => {
 
     const url = endPoint + `track%3A${search}&type=track&market=ES&limit=10`
 
-    const tracks = await (await axios.get(url, { headers })).data.tracks.items
+    const tracks = await (await axios.get(url, { headers }).catch(error => console.log(error)))?.data.tracks.items
 
     for (const element of tracks) {
       const track = {
@@ -68,7 +68,7 @@ const suggest = async (req, res) => {
 
     const url = `https://api.spotify.com/v1/playlists/${playlist_id}/tracks?uris=spotify%3Atrack%3A${song_id}`
 
-    await axios.post(url, null, { headers })
+    await axios.post(url, null, { headers }).catch(error => console.log(error))
 
     res.status(200).json({
       success: true
@@ -87,7 +87,7 @@ const suggest = async (req, res) => {
         sender_id: user.user_id,
         receiver_id: friend_id
       }
-    })
+    }).catch(error => console.log(error))
   }
 }
 
@@ -103,7 +103,7 @@ const rate = async (req, res) => {
         playlist_id: playlistId,
         song_id: songId
       }
-    })
+    }).catch(error => console.log(error))
 
     if (ratingExist) {
       await db.Rating.update({
@@ -115,7 +115,7 @@ const rate = async (req, res) => {
           playlist_id: playlistId,
           song_id: songId
         }
-      })
+      }).catch(error => console.log(error))
     } else {
       await db.Rating.create({
         sender_id: user.user_id,
@@ -123,7 +123,7 @@ const rate = async (req, res) => {
         song_id: songId,
         playlist_id: playlistId,
         rating
-      })
+      }).catch(error => console.log(error))
     }
 
     const ratings = await db.Rating.findAll({
@@ -131,7 +131,7 @@ const rate = async (req, res) => {
         reciever_id: receiverId
       },
       attributes: ['rating']
-    })
+    }).catch(error => console.log(error))
 
     const ratingSum = ratings.reduce((accumulator, object) => {
       return accumulator + object.rating
@@ -141,7 +141,7 @@ const rate = async (req, res) => {
 
     await db.User.update({ rating: newRating }, {
       where: { user_id: receiverId }
-    })
+    }).catch(error => console.log(error))
 
     res.status(200).json({
       success: true
@@ -173,7 +173,7 @@ const getAccessedPlaylists = async (req, res) => {
       }
     }).then(async (resp) => {
       playlistsAccessed = await stripPlaylists(resp, headers)
-    })
+    }).catch(error => console.log(error))
 
     await db.Playlist.findAll({
       attributes: ['playlist_id'],
@@ -184,7 +184,7 @@ const getAccessedPlaylists = async (req, res) => {
     }).then(async (resp) => {
       const otherPlaylists = await stripPlaylists(resp, headers)
       playlistsAccessed = [...playlistsAccessed, ...otherPlaylists]
-    })
+    }).catch(error => console.log(error))
 
     res.status(200).send(playlistsAccessed)
   } catch (error) {
@@ -212,7 +212,7 @@ const getSuggestions = async (req, res) => {
         playlist_id: playlistId,
         receiver_id: user.user_id
       }
-    })
+    }).catch(error => console.log(error))
 
     for (let i = 0; i < suggestions.length; i++) {
       const sender = await db.User.findOne({
@@ -220,13 +220,13 @@ const getSuggestions = async (req, res) => {
         where: {
           user_id: suggestions[i].dataValues.sender_id
         }
-      })
+      }).catch(error => console.log(error))
 
       const song = await (await axios({
         method: 'GET',
         url: `https://api.spotify.com/v1/tracks/${suggestions[i].dataValues.song_id}`,
         headers
-      })).data
+      }).catch(error => console.log(error)))?.data
 
       const rating = await db.Rating.findOne({
         attributes: ['rating'],
@@ -236,7 +236,7 @@ const getSuggestions = async (req, res) => {
           sender_id: user.user_id,
           reciever_id: suggestions[i].dataValues.sender_id
         }
-      })
+      }).catch(error => console.log(error))
 
       arr.push({
         songId: suggestions[i].dataValues.song_id,

@@ -17,7 +17,7 @@ const registerUser = async (req, res) => {
     const emailRegex = /^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/
     const isEmail = emailRegex.test(email)
 
-    const userFound = await db.User.findOne({ where: { email: { [Op.iLike]: email } } })
+    const userFound = await db.User.findOne({ where: { email: { [Op.iLike]: email } } }).catch(error => console.log(error))
 
     if (password.length <= 7) return res.status(200).json({ success: false, error: 'Password must be greater than 7 characters.' })
     if (!isEmail) return res.status(200).json({ success: false, error: 'Please enter valid email.' })
@@ -40,7 +40,7 @@ const loginUser = async (req, res) => {
   try {
     const accessCode = req.body.accessCode || null
     const { email, password } = req.body
-    const user = await (await db.User.findOne({ where: { email: { [Op.iLike]: email } } })) || null
+    const user = await (await db.User.findOne({ where: { email: { [Op.iLike]: email } } }).catch(error => console.log(error))) || null
     const hashedPassword = user ? user.dataValues.password : ''
     const passwordsMatch = bcrypt.compareSync(password, hashedPassword)
 
@@ -49,7 +49,7 @@ const loginUser = async (req, res) => {
       if (!passwordsMatch) return res.status(200).json({ success: false, error: 'Incorrect Username or password.' })
 
       await setAccount(accessCode, email)
-      const userData = await (await db.User.findOne({ where: { email: { [Op.iLike]: email } } }))
+      const userData = await (await db.User.findOne({ where: { email: { [Op.iLike]: email } } }).catch(error => console.log(error)))
 
       const accessToken = generateAccessToken({
         display_name: userData.dataValues.display_name,
@@ -69,7 +69,7 @@ const loginUser = async (req, res) => {
 
       await db.User.update({ server_refresh_token: refreshToken }, {
         where: { email }
-      })
+      }).catch(error => console.log(error))
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         sameSite: 'strict'
@@ -104,7 +104,7 @@ const loginUser = async (req, res) => {
 
       await db.User.update({ server_refresh_token: refreshToken }, {
         where: { user_id: user.dataValues.user_id }
-      })
+      }).catch(error => console.log(error))
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         sameSite: 'strict'
@@ -131,10 +131,10 @@ const getUserToken = async (req, res) => {
 
     const decodedToken = jwt.decode(refreshToken)
 
-    const userData = await (await db.User.findOne({
+    const userData = await db.User.findOne({
       attributes: ['display_name', 'user_id', 'profile_image', 'email', 'spotify_connected'],
       where: { user_id: decodedToken.user_id }
-    }))
+    }).catch(error => console.log(error))
 
     if (!userData) return res.sendStatus(403)
 
@@ -170,7 +170,7 @@ const deleteToken = async (req, res) => {
   try {
     await db.User.update({ server_refresh_token: null }, {
       where: { email: decodedToken.email }
-    })
+    }).catch(error => console.log(error))
     res.clearCookie('refreshToken')
     res.status(200).json({
       success: true
@@ -186,7 +186,7 @@ const accountConnected = async (req, res) => {
     const { check } = req.body || null
     const { email } = req.body
     if (check) {
-      const user = await (await db.User.findOne({ attributes: ['spotify_connected'], where: { email: { [Op.iLike]: email } } })).dataValues
+      const user = await (await db.User.findOne({ attributes: ['spotify_connected'], where: { email: { [Op.iLike]: email } } }))?.dataValues
 
       if (user.spotify_connected) return res.status(200).json({ success: true })
 
@@ -195,7 +195,9 @@ const accountConnected = async (req, res) => {
 
     db.User.update({ spotify_connected: true }, {
       where: { email }
-    }).then(res.status(200).json({ success: true, accountConnected: true }))
+    })
+      .then(res.status(200).json({ success: true, accountConnected: true }))
+      .catch(error => console.log(error))
   } catch (error) {
     console.log(error)
     res.sendStatus(500)
@@ -215,11 +217,11 @@ const getRefreshToken = async (req, res) => {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
 
-    const refreshToken = await (await axios.post('https://accounts.spotify.com/api/token', params, { headers: basicAuthHeaders })).data.refresh_token
+    const refreshToken = await (await axios.post('https://accounts.spotify.com/api/token', params, { headers: basicAuthHeaders }).catch(error => console.log(error)))?.data.refresh_token
 
     await db.User.update({ refresh_token: refreshToken }, {
       where: { email }
-    })
+    }).catch(error => console.log(error))
 
     const accessToken = await getAccess(refreshToken)
 
@@ -250,7 +252,9 @@ const getRefreshToken = async (req, res) => {
           where: { email }
         })
       }
-    }).finally(() => res.status(200).json({ success: true }))
+    })
+      .then(() => res.status(200).json({ success: true }))
+      .catch((error) => console.log(error))
   } catch (error) {
     console.log(error)
     res.sendStatus(500)
@@ -279,7 +283,7 @@ const getAccessToken = (req, res) => {
       res.json({ success: true, accessToken: resp.data.access_token })
     }).catch((error) => console.log(error))
   } catch (error) {
-    // console.log(error)
+    console.log(error)
     res.sendStatus(500)
   }
 }
@@ -293,7 +297,7 @@ const getUser = async (req, res) => {
     const user = await db.User.findOne({
       attributes: ['user_id', 'profile_image'],
       where: { email: decodedToken.email }
-    })
+    }).catch(error => console.log(error))
 
     res.status(200).json({
       success: true,
@@ -316,7 +320,7 @@ const sendResetLink = async (req, res) => {
     const { email } = req.body
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
-    const user = await db.User.findOne({ where: { email: { [Op.iLike]: email } } })
+    const user = await db.User.findOne({ where: { email: { [Op.iLike]: email } } }).catch(error => console.log(error))
 
     if (user) {
       const token = jwt.sign({ email }, process.env.RESET_TOKEN, { expiresIn: '1h' })
@@ -358,8 +362,8 @@ const resetPassword = async (req, res) => {
     jwt.verify(token, process.env.RESET_TOKEN, async (err, user) => {
       if (err) return res.status(200).json({ sucess: false, error: 'Token has expired, please send another email.' })
 
-      await db.User.update({ password: hashedPassword }, { where: { reset_token: token } })
-      await db.User.update({ reset_token: null }, { where: { email: user.email } })
+      await db.User.update({ password: hashedPassword }, { where: { reset_token: token } }).catch(error => console.log(error))
+      await db.User.update({ reset_token: null }, { where: { email: user.email } }).catch(error => console.log(error))
       res.status(200).json({ success: true })
     })
   } catch (error) {

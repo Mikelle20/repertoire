@@ -9,9 +9,9 @@ const getAccess = async (refreshToken) => {
     method: 'POST',
     url: `${process.env.APP_URL}/authorize/access_token`,
     data: { refreshToken }
-  })
+  }).catch(error => console.log(error))
 
-  return accessToken.data.accessToken
+  return accessToken?.data.accessToken
 }
 
 const generateAccessToken = (user) => {
@@ -30,7 +30,7 @@ const getAccessToken = async (user_id) => {
       method: 'POST',
       url,
       data: { refreshToken: refreshToken.dataValues.refresh_token }
-    })).data.accessToken
+    }).catch(error => console.log(error)))?.data.accessToken
 
     return accessToken
   } catch (error) {
@@ -41,7 +41,7 @@ const getAccessToken = async (user_id) => {
 
 const setAccount = async (accessCode, email) => {
   try {
-    const accountSet = await (await axios.post(`${process.env.APP_URL}/authorize/refresh_token`, { accessCode, email })).data
+    const accountSet = await (await axios.post(`${process.env.APP_URL}/authorize/refresh_token`, { accessCode, email }).catch(error => console.log(error)))?.data
     return accountSet
   } catch (error) {
     console.log(error?.response)

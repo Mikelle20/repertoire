@@ -22,22 +22,18 @@ router.get('/checkToken', authenticateToken, checkToken)
 router.post('/resetLink', sendResetLink)
 router.post('/resetPassword', resetPassword)
 
-// router.post('/testing', async (req, res) => {
+router.post('/testing', async (req, res) => {
     
-//     db.User.update({ email: 'repertoiretester@gmail.com' }, {
-//         where: { email: {
-//             [Op.iLike]: 'mushroomspore8@gmail.com'
-//         }}
-//     })
-//     // const user = await (await db.User.findOne({
-//     //     where: {
-//     //         email: {
-//     //             [Op.iLike]: email
-//     //         }
-//     //     }
-//     // }))
+   const { email } = req.body
+    const user = await (await db.User.findOne({
+        where: {
+            email: {
+                [Op.iLike]: undefined
+            }
+        }
+    }).catch(error => console.log(error)))?.dataValues
 
-//     console.log(user?.dataValues)
-// })
+    console.log(user)
+})
 
 module.exports = router

@@ -41,7 +41,7 @@ const getStatus = async (searcher, arr) => {
             status: 'no association'
           })
         }
-      })
+      }).catch(error => console.log(error))
     }
 
     return statuses

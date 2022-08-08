@@ -6,7 +6,7 @@ const stripPlaylists = async (arr, headers) => {
 
   for (const element of arr) {
     const url = `https://api.spotify.com/v1/playlists/${element.dataValues.playlist_id}`
-    const playlist = await (await axios.get(url, { headers })).data
+    const playlist = await (await axios.get(url, { headers }).catch(error => console.log(error)))?.data
 
     if (playlist.error) {
       db.Playlist.destroy({

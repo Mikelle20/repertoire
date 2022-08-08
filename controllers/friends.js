@@ -5,7 +5,7 @@ const db = require('../models')
 const addFriend = async (req, res) => {
   try {
     const { friend } = req.body
-    const user = await (await db.User.findOne({ where: { user_id: req.user.user_id } })).dataValues
+    const user = await (await db.User.findOne({ where: { user_id: req.user.user_id } }).catch(error => console.log(error)))?.dataValues
     const friendshipExists = await db.Friend.findOne({
       attributes: ['user_1', 'user_2', 'status'],
       where: {
@@ -40,7 +40,7 @@ const addFriend = async (req, res) => {
             }
           ]
         }
-      })
+      }).catch((error) => console.log(error))
     } else {
       db.Friend.create({
         user_1: user.user_id,
@@ -60,7 +60,7 @@ const addFriend = async (req, res) => {
 
 const getFriends = async (req, res) => {
   try {
-    const user = await (await db.User.findOne({ where: { user_id: req.user.user_id } })).dataValues
+    const user = await (await db.User.findOne({ where: { user_id: req.user.user_id } }).catch(error => console.log(error)))?.dataValues
     const userFriends = await db.Friend.findAll({
       attributes: ['user_2', 'user_1'],
       where: {
@@ -70,7 +70,7 @@ const getFriends = async (req, res) => {
           { user_2: user.user_id }
         ]
       }
-    })
+    }).catch(error => console.log(error))
 
     const friends = []
 
@@ -89,7 +89,7 @@ const getFriends = async (req, res) => {
       }
     }).then(resp => {
       res.status(200).send(resp)
-    })
+    }).catch(error => console.log(error))
   } catch (error) {
     console.log(error)
     res.sendStatus(500)
@@ -112,7 +112,7 @@ const searchFriends = async (req, res) => {
           ]
         }
       }
-    })
+    }).catch(error => console.log(error))
 
     const friendStatus = await getStatus(user.user_id, users)
 
@@ -172,7 +172,7 @@ const deleteFriend = async (req, res) => {
           }
         ]
       }
-    })
+    }).catch(error => console.log(error))
 
     res.status(200).json({
       success: true
