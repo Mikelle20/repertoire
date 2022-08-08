@@ -34,7 +34,12 @@ function Playlist () {
       dispatch(setError(true))
     })
     axios.post('/playlist/getPlaylist', { playlistId }, { withCredentials: true, headers }).then(res => {
-      setData(res.data)
+      console.log(res.data)
+      if (res.data.ownership === false) {
+        window.location.href = '/home'
+      } else {
+        setData(res.data)
+      }
     }).catch(res => {
       dispatch(setError(true))
     })

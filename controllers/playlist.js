@@ -81,6 +81,9 @@ const getPlaylist = async (req, res) => {
   const user = req.user
 
   try {
+    const playlistOwner = await (await db.Playlist.findOne({ where: { playlist_id: playlistId }}).catch(error => console.log(error))).dataValues.author_id
+    console.log(playlistOwner)
+    if (user.user_id !== playlistOwner ) return res.status(200).json({ success: true, ownership: false }) 
     const accessToken = await getAccessToken(user.user_id)
 
     const headers = {
