@@ -1,6 +1,7 @@
-const ratingAvg = (sum, count) => {
-  const avg = (sum / count) * 5.0
-  return avg
-}
-
-module.exports = ratingAvg
+var ratingAvg = function (sum, count) {
+    var avg = (sum / count) * 5.0;
+    return avg;
+};
+module.exports = {
+    ratingAvg: ratingAvg,
+};

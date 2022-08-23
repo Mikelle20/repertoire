@@ -1,11 +1,11 @@
-const express = require('express')
-const { addFriend, getFriends, searchFriends, deleteFriend } = require('../controllers/friends')
-const { authenticateToken } = require('../middleware/auth')
-const router = express.Router()
-
-router.post('/addFriend', authenticateToken, addFriend)
-router.get('/getFriends', authenticateToken, getFriends)
-router.post('/searchFriends', authenticateToken, searchFriends)
-router.delete('/deleteFriend', authenticateToken, deleteFriend)
-
-module.exports = router
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var express = require('express');
+var authenticateToken = require('../middleware/auth').authenticateToken;
+var _a = require('../controllers/friends'), addFriend = _a.addFriend, getFriends = _a.getFriends, searchFriends = _a.searchFriends, deleteFriend = _a.deleteFriend;
+var router = express.Router();
+router.post('/addFriend', authenticateToken, addFriend);
+router.get('/getFriends', authenticateToken, getFriends);
+router.post('/searchFriends', authenticateToken, searchFriends);
+router.delete('/deleteFriend', authenticateToken, deleteFriend);
+module.exports = router;

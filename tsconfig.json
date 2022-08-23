@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "rootDir": "./",
+        "outDir": "./",
+        "types": [ "node" ],
+        "typeRoots": [ "../node_modules/@types" ],
+        "project": "./",
+        "moduleResolution": "Node",
+        "target": "ES5",
+    },
+    "exclude": [
+        "./client"
+    ],
+}

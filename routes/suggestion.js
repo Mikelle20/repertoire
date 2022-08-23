@@ -1,12 +1,12 @@
-const express = require('express')
-const { search, suggest, getAccessedPlaylists, getSuggestions, rate } = require('../controllers/suggestion')
-const { authenticateToken } = require('../middleware/auth')
-const router = express.Router()
-
-router.post('/search', authenticateToken, search)
-router.post('/suggest', authenticateToken, suggest)
-router.post('/accessedPlaylists', authenticateToken, getAccessedPlaylists)
-router.post('/getSuggestions', authenticateToken, getSuggestions)
-router.post('/rate', authenticateToken, rate)
-
-module.exports = router
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var express = require('express');
+var authenticateToken = require('../middleware/auth').authenticateToken;
+var _a = require('../controllers/suggestion'), search = _a.search, suggest = _a.suggest, rate = _a.rate, getAccessedPlaylists = _a.getAccessedPlaylists, getSuggestions = _a.getSuggestions;
+var router = express.Router();
+router.post('/search', authenticateToken, search);
+router.post('/suggest', authenticateToken, suggest);
+router.post('/accessedPlaylists', authenticateToken, getAccessedPlaylists);
+router.post('/getSuggestions', authenticateToken, getSuggestions);
+router.post('/rate', authenticateToken, rate);
+module.exports = router;

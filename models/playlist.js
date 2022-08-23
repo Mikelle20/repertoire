@@ -1,7 +1,9 @@
-'use strict'
+'use strict';
+
 const {
-  Model
-} = require('sequelize')
+  Model,
+} = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Playlist extends Model {
     /**
@@ -9,20 +11,20 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate (models) {
-      Playlist.belongsToMany(models.User, { through: 'playlist_access', foreignKey: 'playlistId' })
+    static associate(models) {
+      Playlist.belongsToMany(models.User, { through: 'playlist_access', foreignKey: 'playlistId' });
     }
   }
   Playlist.init({
     playlist_id: DataTypes.STRING,
     author_id: DataTypes.STRING,
     is_private: DataTypes.BOOLEAN,
-    title: DataTypes.STRING
+    title: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Playlist',
     onDelete: 'CASCADE',
-    updatedAt: false
-  })
-  return Playlist
-}
+    updatedAt: false,
+  });
+  return Playlist;
+};
